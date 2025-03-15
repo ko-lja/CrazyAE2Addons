@@ -1,21 +1,30 @@
 package net.oktawia.crazyae2addons.menus;
 
+import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.network.NetworkDirection;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
+
+import java.util.logging.Logger;
 
 public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
     private final ContainerLevelAccess access;
     private final BlockEntity blockEntity;
 
-    public Boolean en = false;
-    public Integer dur = 0;
+    @GuiSync(38)
+    public boolean en;
+
+    @GuiSync(94)
+    public int dur;
+
     private static final String ACTION_SEND_STATE = "ActionSendState";
     private static final String ACTION_SEND_DURATION = "ActionSendDuration";
 
@@ -27,10 +36,19 @@ public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
         super(Menus.CRAFTING_CANCELER_MENU, id, ip, host);
         this.access = ContainerLevelAccess.create(ip.player.level(), host.getBlockPos());
         this.blockEntity = host;
+        en = getHost().getEnabled();
+        dur = getHost().getDuration();
 
         registerClientAction(ACTION_SEND_STATE, Boolean.class, this::sendState);
         registerClientAction(ACTION_SEND_DURATION, Integer.class, this::sendDuration);
-        setGuiState(this.getHost().getEnabled(), this.getHost().getDuration());
+    }
+
+    public void setEnabled(boolean en){
+        this.en = en;
+    }
+
+    public void setDuration(int dur){
+        this.dur = dur;
     }
 
     @Override
@@ -43,6 +61,7 @@ public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
         return this.access.evaluate((world, pos) -> world.getBlockEntity(pos) == this.blockEntity, true);
     }
     public void sendState(boolean state){
+        setEnabled(state);
         if (isClientSide()){
             sendClientAction(ACTION_SEND_STATE, state);
         }
@@ -53,6 +72,7 @@ public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
     }
 
     public void sendDuration(int duration){
+        setDuration(duration);
         if (isClientSide()){
             sendClientAction(ACTION_SEND_DURATION, duration);
         }

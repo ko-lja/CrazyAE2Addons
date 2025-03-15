@@ -1,11 +1,14 @@
 package net.oktawia.crazyae2addons.screens;
 
+import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.TabButton;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.PlainTextButton;
 import appeng.menu.implementations.UpgradeableMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -15,20 +18,20 @@ import net.oktawia.crazyae2addons.Utils;
 import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
 
-public class CraftingCancelerScreen<C extends CraftingCancelerMenu> extends UpgradeableScreen<CraftingCancelerMenu> {
+import java.util.logging.Logger;
+
+public class CraftingCancelerScreen<C extends CraftingCancelerMenu> extends AEBaseScreen<C> {
     private static AETextField duration;
     private static AECheckbox onoffbutton;
-    private static TabButton confirm;
-    public static Integer dur = 0;
-    public static boolean en = false;
+    private static PlainTextButton confirm;
     public static boolean initialized;
 
     @Override
     protected void updateBeforeRender(){
         super.updateBeforeRender();
         if (!initialized){
-            duration.setValue(String.valueOf(dur));
-            onoffbutton.setSelected(en);
+            duration.setValue(String.valueOf(getMenu().dur));
+            onoffbutton.setSelected(getMenu().en);
             initialized = true;
         }
     }
@@ -50,11 +53,8 @@ public class CraftingCancelerScreen<C extends CraftingCancelerMenu> extends Upgr
                 style, Minecraft.getInstance().font, 0, 0, 0, 0
         );
         duration.setBordered(false);
-        confirm = new TabButton(
-                Icon.VALID, Component.literal(CrazyAddons.checkmark), btn -> {
-            validateInput();
-        }
-        );
+        confirm = new PlainTextButton(
+                0,0,0,0, Component.literal("Save"), btn -> {validateInput();}, Minecraft.getInstance().font);
     }
 
     private void validateInput(){
@@ -85,10 +85,5 @@ public class CraftingCancelerScreen<C extends CraftingCancelerMenu> extends Upgr
         }
         menu.sendState(en);
         menu.sendDuration(dur);
-    }
-
-    public void updateCraftingCancellerStatus(Boolean state, Integer duration){
-        en = state;
-        dur = duration;
     }
 }

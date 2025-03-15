@@ -1,13 +1,14 @@
 package net.oktawia.crazyae2addons.defs;
 
 import appeng.core.AppEng;
-import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
+import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
+import net.oktawia.crazyae2addons.menus.EntityTickerMenu;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +26,11 @@ public class Menus {
             "crafting_canceler",
             CraftingCancelerMenu::new,
             CraftingCancelerBE.class
+
+    );    public static final MenuType<EntityTickerMenu> ENTITY_TICKER_MENU = create(
+            "entity_ticker",
+            EntityTickerMenu::new,
+            EntityTickerPart.class
     );
 
     public static <C extends AEBaseMenu, I> MenuType<C> create(

@@ -3,7 +3,7 @@
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
     "texture": "guis/blank_background.png",
-    "srcRect": [0, 0, 176, 199]
+    "srcRect": [0, 0, 176, 205]
   },
   "text": {
     "dialog_title": {
@@ -58,7 +58,7 @@
   },
   "widgets": {
     "onoffbutton": {
-      "left": 78,
+      "left": 82,
       "top": 47,
       "width": 20,
       "height": 12
@@ -70,10 +70,10 @@
       "height": 12
     },
     "confirm": {
-      "left": 150,
-      "top": 77,
-      "width": 12,
-      "height": 12
+      "left": 135,
+      "top": 85,
+      "width": 30,
+      "height": 16
     }
   }
 }

@@ -15,12 +15,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
-import net.oktawia.crazyae2addons.defs.BlockEntities;
-import net.oktawia.crazyae2addons.defs.Blocks;
-import net.oktawia.crazyae2addons.defs.Items;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.*;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
+import net.oktawia.crazyae2addons.menus.EntityTickerMenu;
 import net.oktawia.crazyae2addons.screens.CraftingCancelerScreen;
+import net.oktawia.crazyae2addons.screens.EntityTickerScreen;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import appeng.init.client.InitScreens;
@@ -66,8 +65,8 @@ public class CrazyAddons
         return new ResourceLocation(MODID, path);
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event)
-    {
+    private void commonSetup(final FMLCommonSetupEvent event){
+        new UpgradeCards(event);
     }
 
     // Add the example block item to the building blocks tab
@@ -91,6 +90,11 @@ public class CrazyAddons
                     Menus.CRAFTING_CANCELER_MENU,
                     CraftingCancelerScreen<CraftingCancelerMenu>::new,
                     "/screens/crafting_canceler.json"
+            );
+            InitScreens.register(
+                    Menus.ENTITY_TICKER_MENU,
+                    EntityTickerScreen<EntityTickerMenu>::new,
+                    "/screens/entity_ticker.json"
             );
         }
     }

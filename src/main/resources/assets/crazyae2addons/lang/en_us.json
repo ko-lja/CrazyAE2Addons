@@ -1,18 +1,20 @@
 {
-  "block.crazyae2addons.crafting_canceler": "Crafting Canceler",
+  "block.crazyae2addons.crafting_canceler_block": "Crafting Canceler",
   "item.crazyae2addons.rr_item_p2p_tunnel": "Round Robin Item P2P Tunnel",
   "item.crazyae2addons.entity_ticker": "Entity Ticker",
-  "block.crazyae2addons.crafting_canceller": "Crafting Canceller",
+  "block.crazyae2addons.crafting_canceler": "Crafting Canceler",
+  "block.crazyae2addons.crafting_canceler_block_item": "Crafting Canceler",
   "block.crazyae2addons.limited_pattern_provider": "Limited Pattern Provider",
-  "gui.crazyae2addons.crafting_canceller": "Crafting Canceller",
-  "gui.crazyae2addons.crafting_canceller_state": "Enabled",
-  "gui.crazyae2addons.crafting_canceller_inputlabel": "Max duration (s)",
-  "gui.crazyae2addons.crafting_canceller_infol1": "Set max frozen craft time",
-  "gui.crazyae2addons.crafting_canceller_infol2": "before reschedule [15-360s]",
+  "gui.crazyae2addons.crafting_canceler": "Crafting Canceller",
+  "gui.crazyae2addons.crafting_canceler_state": "Enabled",
+  "gui.crazyae2addons.crafting_canceler_inputlabel": "Max duration (s)",
+  "gui.crazyae2addons.crafting_canceler_infol1": "Set max frozen craft time",
+  "gui.crazyae2addons.crafting_canceler_infol2": "before reschedule [15-360s]",
   "gui.crazyae2addons.limited_pattern": "Pattern",
   "gui.crazyae2addons.entity_ticker": "Entity Ticker",
   "gui.crazyae2addons.entity_ticker_info1": "Each card adds 8 to the",
   "gui.crazyae2addons.entity_ticker_info2": "machines speed multiplier",
   "gui.crazyae2addons.entity_ticker_enabled": "Enabled",
-  "gui.crazyae2addons.nbt_export_bus": "NBT Export Bus"
+  "gui.crazyae2addons.nbt_export_bus": "NBT Export Bus",
+  "group.entity_ticker.name": "Entity Ticker"
 }

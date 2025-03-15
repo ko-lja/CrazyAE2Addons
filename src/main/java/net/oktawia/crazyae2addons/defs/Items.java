@@ -6,9 +6,12 @@ import appeng.api.parts.PartModels;
 import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
+import net.minecraft.Util;
 import net.minecraft.world.item.Item;
 import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.items.CraftingCancelerBlockItem;
+import net.oktawia.crazyae2addons.items.EntityTickerPartItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +27,11 @@ public class Items {
             "crafting_canceler_block_item",
             CraftingCancelerBlockItem::new
     );
+
+    public static final ItemDefinition<EntityTickerPartItem> ENTITY_TICKER_PART_ITEM = Util.make(() -> {
+        PartModels.registerModels(PartModelsHelper.createModels(EntityTickerPart.class));
+        return item("Entity Ticker", "entity_ticker", EntityTickerPartItem::new);
+    });
 
     public static List<ItemDefinition<?>> getItems() {
         return Collections.unmodifiableList(ITEMS);
