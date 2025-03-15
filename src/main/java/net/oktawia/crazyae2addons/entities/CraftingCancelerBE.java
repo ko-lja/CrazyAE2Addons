@@ -17,7 +17,9 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.oktawia.crazyae2addons.defs.BlockEntities;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
 import org.jetbrains.annotations.Nullable;
 import java.time.Instant;
@@ -30,8 +32,8 @@ public class CraftingCancelerBE extends AENetworkBlockEntity implements MenuProv
     private Instant intervalStart;
     private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
 
-    public CraftingCancelerBE(BlockPos pos, BlockState state) {
-        super(RegEntities.CRAFTING_CANCELER_BE.get(), pos, state);
+    public CraftingCancelerBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+        super(blockEntityType, pos, blockState);
         this.duration = 0;
         this.enabled = false;
         this.getMainNode().setIdlePowerUsage((double)4.0F).addService(IGridTickable.class, this).setFlags(GridFlags.REQUIRE_CHANNEL);

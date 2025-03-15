@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import net.oktawia.crazyae2addons.defs.BlockEntities;
 import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +26,7 @@ public class CraftingCancelerBlock extends AEBaseEntityBlock<CraftingCancelerBE>
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CraftingCancelerBE(pos, state);
+        return new CraftingCancelerBE(BlockEntities.CRAFTING_CANCELER_BE, pos, state);
     }
 
 

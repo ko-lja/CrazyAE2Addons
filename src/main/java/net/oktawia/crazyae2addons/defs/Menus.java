@@ -6,13 +6,14 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
+import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExpMenus {
+public class Menus {
 
     private static final Map<ResourceLocation, MenuType<?>> MENU_TYPES = new HashMap<>();
 
@@ -21,9 +22,9 @@ public class ExpMenus {
     }
 
     public static final MenuType<CraftingCancelerMenu> CRAFTING_CANCELER_MENU = create(
-            "crafting_canceler",
+            "crafting_canceler_menu",
             CraftingCancelerMenu::new,
-            CraftingCancelerMenu.class
+            CraftingCancelerBE.class
     );
 
     public static <C extends AEBaseMenu, I> MenuType<C> create(

@@ -9,7 +9,7 @@ import appeng.core.definitions.BlockDefinition;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.oktawia.crazyae2addons.items.CraftingCancelerBlockItem
+import net.oktawia.crazyae2addons.items.CraftingCancelerBlockItem;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.blocks.CraftingCancelerBlock;
 
@@ -18,7 +18,7 @@ public class Blocks {
     private static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
     public static final BlockDefinition<CraftingCancelerBlock> CRAFTING_CANCELER_BLOCK = block(
             "Crafting Canceler",
-            "crafting_canceler",
+            "crafting_canceler_block",
             CraftingCancelerBlock::new,
             CraftingCancelerBlockItem::new
     );

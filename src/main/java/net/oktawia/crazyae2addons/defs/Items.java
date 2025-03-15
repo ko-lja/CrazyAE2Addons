@@ -21,7 +21,7 @@ public class Items {
 
     public static final ItemDefinition<CraftingCancelerBlockItem> CRAFTING_CANCELER_BLOCK_ITEM = item(
             "Crafting Canceler",
-            "crafting_canceler",
+            "crafting_canceler_block_item",
             CraftingCancelerBlockItem::new
     );
 

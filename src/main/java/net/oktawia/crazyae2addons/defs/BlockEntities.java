@@ -19,7 +19,7 @@ import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 public class BlockEntities {
     private static final Map<ResourceLocation, BlockEntityType<?>> BLOCK_ENTITY_TYPES = new HashMap<>();
     public static final BlockEntityType<CraftingCancelerBE> CRAFTING_CANCELER_BE = create(
-            "crafting_canceler",
+            "crafting_canceler_be",
             CraftingCancelerBE.class,
             CraftingCancelerBE::new,
             Blocks.CRAFTING_CANCELER_BLOCK);

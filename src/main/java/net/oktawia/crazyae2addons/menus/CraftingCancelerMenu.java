@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 
 public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
@@ -23,7 +24,7 @@ public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
     }
 
     public CraftingCancelerMenu(int id, Inventory ip, CraftingCancelerBE host) {
-        super(RegMenus.CRAFTING_CANCELER_MENU.get(), id, ip, host);
+        super(Menus.CRAFTING_CANCELER_MENU, id, ip, host);
         this.access = ContainerLevelAccess.create(ip.player.level(), host.getBlockPos());
         this.blockEntity = host;
 

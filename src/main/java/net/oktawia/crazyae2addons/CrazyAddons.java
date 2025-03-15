@@ -1,6 +1,9 @@
 package net.oktawia.crazyae2addons;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -12,6 +15,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
+import net.oktawia.crazyae2addons.defs.BlockEntities;
+import net.oktawia.crazyae2addons.defs.Blocks;
+import net.oktawia.crazyae2addons.defs.Items;
+import net.oktawia.crazyae2addons.defs.Menus;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -32,10 +41,24 @@ public class CrazyAddons
 
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
-        modEventBus.addListener(this::addCreative);
-        RegBlocks.BLOCKS.register(modEventBus);
-        RegEntities.BLOCK_ENTITIES.register(modEventBus);
-        RegMenus.MENUS.register(modEventBus);
+        modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener((RegisterEvent event) -> {
+            if (event.getRegistryKey().equals(Registries.BLOCK)) {
+                Blocks.getBlocks().forEach(b -> {
+                    ForgeRegistries.BLOCKS.register(b.id(), b.block());
+                    ForgeRegistries.ITEMS.register(b.id(), b.asItem());
+                });
+            }
+            if (event.getRegistryKey().equals(Registries.ITEM)) {
+                Items.getItems().forEach(i -> ForgeRegistries.ITEMS.register(i.id(), i.asItem()));
+            }
+            if (event.getRegistryKey().equals(Registries.BLOCK_ENTITY_TYPE)) {
+                BlockEntities.getBlockEntityTypes().forEach(ForgeRegistries.BLOCK_ENTITY_TYPES::register);
+            }
+            if (event.getRegistryKey().equals(Registries.MENU)) {
+                Menus.getMenuTypes().forEach(ForgeRegistries.MENU_TYPES::register);
+            }
+        });
     }
 
     public static @NotNull ResourceLocation makeId(String path) {
