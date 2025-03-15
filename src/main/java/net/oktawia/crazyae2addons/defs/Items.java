@@ -10,8 +10,12 @@ import net.minecraft.Util;
 import net.minecraft.world.item.Item;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
+import net.oktawia.crazyae2addons.Parts.NBTExportBusPart;
+import net.oktawia.crazyae2addons.Parts.RRItemP2PTunnelPart;
 import net.oktawia.crazyae2addons.items.CraftingCancelerBlockItem;
 import net.oktawia.crazyae2addons.items.EntityTickerPartItem;
+import net.oktawia.crazyae2addons.items.NBTExportBusPartItem;
+import net.oktawia.crazyae2addons.items.RRItemP2PTunnelPartItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,15 +26,19 @@ public class Items {
 
     private static final List<ItemDefinition<?>> ITEMS = new ArrayList<>();
 
-    public static final ItemDefinition<CraftingCancelerBlockItem> CRAFTING_CANCELER_BLOCK_ITEM = item(
-            "Crafting Canceler",
-            "crafting_canceler_block_item",
-            CraftingCancelerBlockItem::new
-    );
-
     public static final ItemDefinition<EntityTickerPartItem> ENTITY_TICKER_PART_ITEM = Util.make(() -> {
         PartModels.registerModels(PartModelsHelper.createModels(EntityTickerPart.class));
         return item("Entity Ticker", "entity_ticker", EntityTickerPartItem::new);
+    });
+
+    public static final ItemDefinition<RRItemP2PTunnelPartItem> RR_ITEM_P2P_TUNNEL_PART = Util.make(() -> {
+        PartModels.registerModels(PartModelsHelper.createModels(RRItemP2PTunnelPart.class));
+        return item("RR Item P2P Tunnel", "rr_item_p2p_tunnel", RRItemP2PTunnelPartItem::new);
+    });
+
+    public static final ItemDefinition<NBTExportBusPartItem> NBT_EXPORT_BUS_PART_ITEM = Util.make(() -> {
+        PartModels.registerModels(PartModelsHelper.createModels(NBTExportBusPart.class));
+        return item("NBT Export Bus", "nbt_export_bus", NBTExportBusPartItem::new);
     });
 
     public static List<ItemDefinition<?>> getItems() {

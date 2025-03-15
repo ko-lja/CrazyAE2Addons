@@ -18,8 +18,10 @@ import net.minecraftforge.registries.RegisterEvent;
 import net.oktawia.crazyae2addons.defs.*;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
 import net.oktawia.crazyae2addons.menus.EntityTickerMenu;
+import net.oktawia.crazyae2addons.menus.NBTExportBusMenu;
 import net.oktawia.crazyae2addons.screens.CraftingCancelerScreen;
 import net.oktawia.crazyae2addons.screens.EntityTickerScreen;
+import net.oktawia.crazyae2addons.screens.NBTExportBusScreen;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import appeng.init.client.InitScreens;
@@ -95,6 +97,11 @@ public class CrazyAddons
                     Menus.ENTITY_TICKER_MENU,
                     EntityTickerScreen<EntityTickerMenu>::new,
                     "/screens/entity_ticker.json"
+            );
+            InitScreens.register(
+                    Menus.NBT_EXPORT_BUS_MENU,
+                    NBTExportBusScreen<NBTExportBusMenu>::new,
+                    "/screens/nbt_export_bus.json"
             );
         }
     }

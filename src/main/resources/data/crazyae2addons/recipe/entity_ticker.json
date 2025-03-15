@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "N": {
+      "item": "minecraft:nether_star"
+    },
+    "C": {
+      "item": "ae2:cell_component_256k"
+    },
+    "S": {
+      "item": "ae2:sky_stone_block"
+    }
+  },
+  "pattern": [
+    "SCS",
+    "CNC",
+    "SCS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "crazyae2addons:entity_ticker"
+  }
+}

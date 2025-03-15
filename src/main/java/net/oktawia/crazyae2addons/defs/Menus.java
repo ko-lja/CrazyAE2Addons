@@ -5,10 +5,12 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
+import net.oktawia.crazyae2addons.Parts.NBTExportBusPart;
 import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
 import net.oktawia.crazyae2addons.menus.EntityTickerMenu;
+import net.oktawia.crazyae2addons.menus.NBTExportBusMenu;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,10 +29,16 @@ public class Menus {
             CraftingCancelerMenu::new,
             CraftingCancelerBE.class
 
-    );    public static final MenuType<EntityTickerMenu> ENTITY_TICKER_MENU = create(
+    );
+    public static final MenuType<EntityTickerMenu> ENTITY_TICKER_MENU = create(
             "entity_ticker",
             EntityTickerMenu::new,
             EntityTickerPart.class
+    );
+    public static final MenuType<NBTExportBusMenu> NBT_EXPORT_BUS_MENU = create(
+            "nbt_export_bus",
+            NBTExportBusMenu::new,
+            NBTExportBusPart.class
     );
 
     public static <C extends AEBaseMenu, I> MenuType<C> create(

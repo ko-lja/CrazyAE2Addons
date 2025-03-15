@@ -1,0 +1,39 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json"],
+  "background": {
+    "texture": "guis/blank_background_no_inv.png",
+    "srcRect": [0, 0, 176, 205]
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.crazyae2addons.nbt_export_bus"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  },
+  "widgets": {
+    "mode": {
+      "left": 15,
+      "top": 47,
+      "width": 50,
+      "height": 12
+    },
+    "data": {
+      "left": 15,
+      "top": 77,
+      "width": 110,
+      "height": 16
+    },
+    "confirm": {
+      "left": 135,
+      "top": 77,
+      "width": 30,
+      "height": 16
+    }
+  }
+}

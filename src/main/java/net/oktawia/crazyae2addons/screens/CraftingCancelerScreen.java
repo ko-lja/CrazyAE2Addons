@@ -1,24 +1,16 @@
 package net.oktawia.crazyae2addons.screens;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Icon;
-import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.AETextField;
-import appeng.client.gui.widgets.TabButton;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.PlainTextButton;
-import appeng.menu.implementations.UpgradeableMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.Utils;
-import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
 
-import java.util.logging.Logger;
 
 public class CraftingCancelerScreen<C extends CraftingCancelerMenu> extends AEBaseScreen<C> {
     private static AETextField duration;

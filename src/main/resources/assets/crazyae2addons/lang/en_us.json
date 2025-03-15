@@ -16,5 +16,6 @@
   "gui.crazyae2addons.entity_ticker_info2": "machines speed multiplier",
   "gui.crazyae2addons.entity_ticker_enabled": "Enabled",
   "gui.crazyae2addons.nbt_export_bus": "NBT Export Bus",
-  "group.entity_ticker.name": "Entity Ticker"
+  "group.entity_ticker.name": "Entity Ticker",
+  "item.crazyae2addons.nbt_export_bus": "NBT Export Bus"
 }

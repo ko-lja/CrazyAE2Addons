@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "N": {
+      "item": "minecraft:name_tag"
+    },
+    "C": {
+      "item": "ae2:export_bus"
+    },
+    "S": {
+      "item": "ae2:fuzzy_card"
+    }
+  },
+  "pattern": [
+    "SCS",
+    "CNC",
+    "SCS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "crazyae2addons:nbt_export_bus"
+  }
+}
