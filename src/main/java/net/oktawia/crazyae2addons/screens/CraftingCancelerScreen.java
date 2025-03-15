@@ -6,14 +6,16 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.TabButton;
+import appeng.menu.implementations.UpgradeableMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.Utils;
+import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
 
-public class CraftingCancelerScreen extends UpgradeableScreen<CraftingCancelerMenu> {
+public class CraftingCancelerScreen<C extends CraftingCancelerMenu> extends UpgradeableScreen<CraftingCancelerMenu> {
     private static AETextField duration;
     private static AECheckbox onoffbutton;
     private static TabButton confirm;
@@ -31,8 +33,8 @@ public class CraftingCancelerScreen extends UpgradeableScreen<CraftingCancelerMe
         }
     }
 
-    public CraftingCancelerScreen(CraftingCancelerMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, new ScreenStyle());
+    public CraftingCancelerScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
+        super(menu, playerInventory, title, style);
         setupGui();
         this.widgets.add("onoffbutton", onoffbutton);
         this.widgets.add("duration", duration);

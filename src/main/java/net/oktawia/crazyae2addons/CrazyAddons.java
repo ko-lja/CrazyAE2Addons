@@ -1,8 +1,6 @@
 package net.oktawia.crazyae2addons;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,8 +19,11 @@ import net.oktawia.crazyae2addons.defs.BlockEntities;
 import net.oktawia.crazyae2addons.defs.Blocks;
 import net.oktawia.crazyae2addons.defs.Items;
 import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
+import net.oktawia.crazyae2addons.screens.CraftingCancelerScreen;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
+import appeng.init.client.InitScreens;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(CrazyAddons.MODID)
@@ -85,8 +86,12 @@ public class CrazyAddons
     public static class ClientModEvents
     {
         @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event)
-        {
+        public static void onClientSetup(FMLClientSetupEvent event) {
+            InitScreens.register(
+                    Menus.CRAFTING_CANCELER_MENU,
+                    CraftingCancelerScreen<CraftingCancelerMenu>::new,
+                    "/screens/crafting_canceler.json"
+            );
         }
     }
 }

@@ -22,7 +22,7 @@ public class Menus {
     }
 
     public static final MenuType<CraftingCancelerMenu> CRAFTING_CANCELER_MENU = create(
-            "crafting_canceler_menu",
+            "crafting_canceler",
             CraftingCancelerMenu::new,
             CraftingCancelerBE.class
     );
