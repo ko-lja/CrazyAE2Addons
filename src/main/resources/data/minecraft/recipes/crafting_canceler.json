@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "T": {
       "item": "ae2:monitor"
@@ -18,7 +17,6 @@
     "TMT"
   ],
   "result": {
-    "count": 1,
-    "id": "crazyae2addons:crafting_canceler"
+    "item": "crazyae2addons:crafting_canceler_block"
   }
 }

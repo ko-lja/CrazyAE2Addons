@@ -1,6 +1,8 @@
 package net.oktawia.crazyae2addons;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -59,6 +61,9 @@ public class CrazyAddons
             }
             if (event.getRegistryKey().equals(Registries.MENU)) {
                 Menus.getMenuTypes().forEach(ForgeRegistries.MENU_TYPES::register);
+            }
+            if (event.getRegistryKey().equals(Registries.CREATIVE_MODE_TAB)) {
+                Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CreativeTab.ID, CreativeTab.TAB);
             }
         });
     }

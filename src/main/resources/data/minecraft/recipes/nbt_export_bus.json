@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "N": {
       "item": "minecraft:name_tag"
@@ -18,7 +17,6 @@
     "SCS"
   ],
   "result": {
-    "count": 1,
-    "id": "crazyae2addons:nbt_export_bus"
+    "item": "crazyae2addons:nbt_export_bus"
   }
 }
