@@ -10,17 +10,16 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
-import appeng.api.upgrades.UpgradeInventories;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.util.inv.AppEngInternalInventory;
-import com.mojang.logging.LogUtils;
+import appeng.util.inv.FilteredInternalInventory;
+import appeng.util.inv.filter.AEItemFilters;
 import dev.shadowsoffire.apotheosis.ench.table.EnchantingStatRegistry;
 import dev.shadowsoffire.apotheosis.ench.table.RealEnchantmentHelper;
-import mob_grinding_utils.MobGrindingUtils;
+import appeng.api.upgrades.UpgradeInventories;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -37,7 +36,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
+import appeng.api.inventories.ISegmentedInventory;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -51,6 +50,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.oktawia.crazyae2addons.defs.BlockEntities;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.menus.AutoEnchanterMenu;
 import org.jetbrains.annotations.NotNull;
@@ -89,7 +89,13 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
     public final AppEngInternalInventory outputInv = new AppEngInternalInventory(this, 1, 1);
     public final InternalInventory inv = new CombinedInternalInventory(this.inputInv, this.outputInv);
 
-    private AutoEnchanterMenu menu;
+    public final FilteredInternalInventory inputExposed =
+            new FilteredInternalInventory(this.inputInv, AEItemFilters.INSERT_ONLY);
+    public final FilteredInternalInventory outputExposed =
+            new FilteredInternalInventory(this.outputInv, AEItemFilters.EXTRACT_ONLY);
+    public final InternalInventory invExposed = new CombinedInternalInventory(this.inputExposed, this.outputExposed);
+
+    public AutoEnchanterMenu menu;
 
     @Override
     public void onReady() {
@@ -98,6 +104,11 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
         if (tag.contains("level")){
             this.selectedLevel = tag.getInt("level");
         }
+    }
+
+    @Override
+    protected InternalInventory getExposedInventoryForSide(Direction facing) {
+        return this.invExposed;
     }
 
     @Override
@@ -147,8 +158,7 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
 
     public AutoEnchanterBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
-        this.upgrades = UpgradeInventories.forMachine(net.oktawia.crazyae2addons.defs.Blocks.AUTO_ENCHANTER_BLOCK, getUpgradeSlots(),
-                this::saveChanges);
+        this.upgrades = UpgradeInventories.forMachine(net.oktawia.crazyae2addons.defs.Blocks.AUTO_ENCHANTER_BLOCK, getUpgradeSlots(), this::saveChanges);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(4)
@@ -156,9 +166,26 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
         intervalStart = Instant.now();
     }
 
+    @Nullable
+    @Override
+    public InternalInventory getSubInventory(ResourceLocation id) {
+        if (id.equals(ISegmentedInventory.STORAGE)) {
+            return this.getInternalInventory();
+        } else if (id.equals(ISegmentedInventory.UPGRADES)) {
+            return this.upgrades;
+        }
+
+        return super.getSubInventory(id);
+    }
+
     @Override
     public InternalInventory getInternalInventory() {
         return this.inv;
+    }
+
+    @Override
+    public IUpgradeInventory getUpgrades() {
+        return upgrades;
     }
 
     @Override

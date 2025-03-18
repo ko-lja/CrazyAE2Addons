@@ -25,9 +25,9 @@ public class AutoEnchanterMenu extends UpgradeableMenu<AutoEnchanterBE> {
         super(Menus.AUTO_ENCHANTER_MENU, id, ip, host);
         this.getHost().setMenu(this);
         registerClientAction(ACTION_SYNC_LEVEL, Integer.class, this::syncLevel);
-        this.addSlot(new RestrictedSlot(getHost().inputInv.toContainer(), 0, 0, 0, Items.BOOK.getDefaultInstance()), SlotSemantics.MACHINE_INPUT);
-        this.addSlot(new RestrictedSlot(getHost().inputInv.toContainer(), 1, 0, 0, Items.LAPIS_LAZULI.getDefaultInstance()), SlotSemantics.MACHINE_INPUT);
-        this.addSlot(new ExtractSlot(getHost().outputInv.toContainer(), 0, 0, 0), SlotSemantics.MACHINE_OUTPUT);
+        this.addSlot(new RestrictedSlot(getHost().inputExposed.toContainer(), 0, 0, 0, Items.BOOK.getDefaultInstance()), SlotSemantics.MACHINE_INPUT);
+        this.addSlot(new RestrictedSlot(getHost().inputExposed.toContainer(), 1, 0, 0, Items.LAPIS_LAZULI.getDefaultInstance()), SlotSemantics.MACHINE_INPUT);
+        this.addSlot(new ExtractSlot(getHost().outputExposed.toContainer(), 0, 0, 0), SlotSemantics.MACHINE_OUTPUT);
 
     }
 
