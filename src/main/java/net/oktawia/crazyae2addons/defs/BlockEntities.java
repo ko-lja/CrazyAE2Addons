@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
 import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 import net.oktawia.crazyae2addons.entities.PatternModifierBE;
 
@@ -28,6 +29,12 @@ public class BlockEntities {
             PatternModifierBE.class,
             PatternModifierBE::new,
             Blocks.PATTERN_MODIFIER_BLOCK);
+
+    public static final BlockEntityType<AutoEnchanterBE> AUTO_ENCHANTER_BE = create(
+            "auto_enchanter_be",
+            AutoEnchanterBE.class,
+            AutoEnchanterBE::new,
+            Blocks.AUTO_ENCHANTER_BLOCK);
 
     public static Map<ResourceLocation, BlockEntityType<?>> getBlockEntityTypes() {
         return Collections.unmodifiableMap(BLOCK_ENTITY_TYPES);

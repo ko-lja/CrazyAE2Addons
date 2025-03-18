@@ -9,7 +9,9 @@ import appeng.core.definitions.BlockDefinition;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.oktawia.crazyae2addons.blocks.AutoEnchanterBlock;
 import net.oktawia.crazyae2addons.blocks.PatternModifierBlock;
+import net.oktawia.crazyae2addons.items.AutoEnchanterBlockItem;
 import net.oktawia.crazyae2addons.items.CraftingCancelerBlockItem;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.blocks.CraftingCancelerBlock;
@@ -29,6 +31,12 @@ public class Blocks {
             "pattern_modifier_block",
             PatternModifierBlock::new,
             PatternModifierBlockItem::new
+    );
+    public static final BlockDefinition<AutoEnchanterBlock> AUTO_ENCHANTER_BLOCK = block(
+            "Auto Enchanter",
+            "auto_enchanter_block",
+            AutoEnchanterBlock::new,
+            AutoEnchanterBlockItem::new
     );
 
 

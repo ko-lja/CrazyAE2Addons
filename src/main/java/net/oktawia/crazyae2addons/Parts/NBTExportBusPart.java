@@ -32,8 +32,11 @@ import appeng.util.prioritylist.DefaultPriorityList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
+import net.oktawia.crazyae2addons.menus.NBTExportBusMenu;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class NBTExportBusPart extends IOBusPart {
@@ -56,6 +59,7 @@ public class NBTExportBusPart extends IOBusPart {
     private StackExportStrategy exportStrategy;
     public boolean matchmode;
     public String data;
+    private NBTExportBusMenu menu;
 
     public NBTExportBusPart(IPartItem<?> partItem) {
         super(TickRates.ExportBus, StackWorldBehaviors.hasExportStrategyFilter(), partItem);
@@ -73,7 +77,6 @@ public class NBTExportBusPart extends IOBusPart {
             return false;
         }
 
-        // Jeśli kryteria składają się wyłącznie z pary ANY:ANY
         if (criteria.getAllKeys().size() == 1 && criteria.contains("ANY")) {
             Tag onlyTag = criteria.get("ANY");
             if (onlyTag instanceof StringTag && ((StringTag) onlyTag).getAsString().equals("ANY")) {
@@ -81,7 +84,6 @@ public class NBTExportBusPart extends IOBusPart {
             }
         }
 
-        // Sprawdzamy, czy w kryteriach występuje wildcard ANY:ANY
         boolean allowExtraTags = false;
         for (String critKey : criteria.getAllKeys()) {
             Tag critValue = criteria.get(critKey);
@@ -93,11 +95,9 @@ public class NBTExportBusPart extends IOBusPart {
         }
 
         if (matchAll) {
-            // Jeśli wildcard nie występuje, liczba tagów musi być identyczna
             if (!allowExtraTags && itemTag.getAllKeys().size() != criteria.getAllKeys().size()) {
                 return false;
             }
-            // Dla każdego wpisu z kryteriów sprawdzamy dopasowanie
             for (String critKey : criteria.getAllKeys()) {
                 Tag critValue = criteria.get(critKey);
                 if (critKey.equals("ANY")) {
@@ -248,5 +248,27 @@ public class NBTExportBusPart extends IOBusPart {
         } else {
             return MODELS_OFF;
         }
+    }
+
+    public void setMenu(NBTExportBusMenu menu){
+        this.menu = menu;
+    }
+
+    @Override
+    public void readFromNBT(CompoundTag extra) {
+        super.readFromNBT(extra);
+        if(extra.contains("filter")){
+            this.data = extra.getString("filter");
+        }
+        if(extra.contains("matchmode")){
+            this.matchmode = extra.getBoolean("matchmode");
+        }
+    }
+
+    @Override
+    public void writeToNBT(CompoundTag extra) {
+        super.writeToNBT(extra);
+        extra.putString("filter", this.data);
+        extra.putBoolean("matchmode", this.matchmode);
     }
 }

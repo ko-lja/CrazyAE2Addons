@@ -6,13 +6,11 @@ import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.oktawia.crazyae2addons.Parts.NBTExportBusPart;
+import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
 import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.entities.PatternModifierBE;
-import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
-import net.oktawia.crazyae2addons.menus.EntityTickerMenu;
-import net.oktawia.crazyae2addons.menus.NBTExportBusMenu;
-import net.oktawia.crazyae2addons.menus.PatternModifierMenu;
+import net.oktawia.crazyae2addons.menus.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,6 +44,11 @@ public class Menus {
             "pattern_modifier",
             PatternModifierMenu::new,
             PatternModifierBE.class
+    );
+    public static final MenuType<AutoEnchanterMenu> AUTO_ENCHANTER_MENU = create(
+            "auto_enchanter",
+            AutoEnchanterMenu::new,
+            AutoEnchanterBE.class
     );
 
 

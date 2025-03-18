@@ -10,55 +10,40 @@ import net.oktawia.crazyae2addons.interfaces.IIgnoreNBT;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ListCraftingInventory.class)
 public class MixinListCraftingInventory implements IIgnoreNBT {
 
-    @Final
-    @Shadow
-    public KeyCounter list;
+    @Shadow private KeyCounter list;
+    @Unique private boolean ignoreNBT = false;
 
-    @Final
-    @Shadow
-    private ListCraftingInventory.ChangeListener listener;
-
-    @Unique
-    public boolean ignoreNBT = false;
+    @Redirect(
+            method = "extract(Lappeng/api/stacks/AEKey;JLappeng/api/config/Actionable;)J",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lappeng/api/stacks/KeyCounter;get(Lappeng/api/stacks/AEKey;)J"
+            )
+    )
+    private long redirectGet(KeyCounter instance, AEKey key) {
+        if (getIgnoreNBT()) {
+            return instance.findFuzzy(key, FuzzyMode.IGNORE_ALL).size();
+        } else {
+            return instance.get(key);
+        }
+    }
 
     @Unique
     @Override
-    public void setIgnoreNBT(boolean mode){
+    public void setIgnoreNBT(boolean mode) {
         this.ignoreNBT = mode;
     }
 
+    @Unique
     @Override
     public boolean getIgnoreNBT() {
         return this.ignoreNBT;
     }
-
-    /**
-     * @author oktawia
-     * @reason add ignore nbt option
-     */
-    @Overwrite(remap = false)
-    public long extract(AEKey what, long amount, Actionable mode) {
-        long available;
-        if (ignoreNBT){
-            available = list.findFuzzy(what, FuzzyMode.IGNORE_ALL).size();
-        } else {
-            available = list.get(what);
-        }
-        var extracted = Math.min(available, amount);
-        if (mode == Actionable.MODULATE) {
-            if (available > extracted) {
-                list.remove(what, extracted);
-            } else {
-                list.remove(what);
-            }
-            listener.onChange(what);
-        }
-        return extracted;
-    }
-
 }

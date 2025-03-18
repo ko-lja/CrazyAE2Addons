@@ -12,10 +12,8 @@ import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.Parts.NBTExportBusPart;
 import net.oktawia.crazyae2addons.Parts.RRItemP2PTunnelPart;
-import net.oktawia.crazyae2addons.items.CraftingCancelerBlockItem;
-import net.oktawia.crazyae2addons.items.EntityTickerPartItem;
-import net.oktawia.crazyae2addons.items.NBTExportBusPartItem;
-import net.oktawia.crazyae2addons.items.RRItemP2PTunnelPartItem;
+import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
+import net.oktawia.crazyae2addons.items.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

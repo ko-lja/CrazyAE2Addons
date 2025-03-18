@@ -26,11 +26,13 @@ public class NBTExportBusMenu extends AEBaseMenu {
         this.host = host;
         this.mode = host.matchmode;
         this.data = host.data;
+        this.host.setMenu(this);
     }
 
     public void updateMatchMode(boolean mode){
         this.mode = mode;
         this.host.matchmode = mode;
+        this.host.getHost().markForSave();
         if (isClientSide()) {
             sendClientAction(SEND_MATCH_MODE, mode);
         }
@@ -39,6 +41,7 @@ public class NBTExportBusMenu extends AEBaseMenu {
     public void updateData(String data){
         this.data = data;
         this.host.data = data;
+        this.host.getHost().markForSave();
         if (isClientSide()){
             sendClientAction(SEND_DATA, data);
         }

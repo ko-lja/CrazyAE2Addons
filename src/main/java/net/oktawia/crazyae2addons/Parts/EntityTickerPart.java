@@ -100,13 +100,16 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
     }
 
     private  <T extends BlockEntity> void tickBlockEntity(@NotNull T blockEntity) {
+        int powerDraw = (int) ((1024 * pow(4, energyUsageScaleValue * getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD))) / actionsPerTick);
+        double extractedPower = getMainNode().getGrid().getEnergyService().extractAEPower(powerDraw, Actionable.MODULATE, PowerMultiplier.CONFIG);
+        if (extractedPower < powerDraw){
+            return;
+        }
         BlockPos pos = blockEntity.getBlockPos();
         BlockEntityTicker<T> blockEntityTicker = this.getLevel().getBlockState(pos).getTicker(this.getLevel(),
                 (BlockEntityType<T>) blockEntity.getType());
         if (blockEntityTicker == null) return;
         int speed = (int) pow(2, getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD));
-        int powerDraw = (int) ((1024 * pow(4, energyUsageScaleValue * getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD))) / actionsPerTick);
-        getMainNode().getGrid().getEnergyService().extractAEPower(powerDraw, Actionable.MODULATE, PowerMultiplier.CONFIG);
         for (int i = 0; i < speed * (8 / actionsPerTick) - 1; i++) {
             blockEntityTicker.tick(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(),
                     blockEntity);

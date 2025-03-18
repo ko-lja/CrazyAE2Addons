@@ -18,14 +18,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import net.oktawia.crazyae2addons.defs.*;
-import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
-import net.oktawia.crazyae2addons.menus.EntityTickerMenu;
-import net.oktawia.crazyae2addons.menus.NBTExportBusMenu;
-import net.oktawia.crazyae2addons.menus.PatternModifierMenu;
-import net.oktawia.crazyae2addons.screens.CraftingCancelerScreen;
-import net.oktawia.crazyae2addons.screens.EntityTickerScreen;
-import net.oktawia.crazyae2addons.screens.NBTExportBusScreen;
-import net.oktawia.crazyae2addons.screens.PatternModifierScreen;
+import net.oktawia.crazyae2addons.menus.*;
+import net.oktawia.crazyae2addons.screens.*;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import appeng.init.client.InitScreens;
@@ -114,6 +108,11 @@ public class CrazyAddons
                     Menus.PATTERN_MODIFIER_MENU,
                     PatternModifierScreen<PatternModifierMenu>::new,
                     "/screens/pattern_modifier.json"
+            );
+            InitScreens.register(
+                    Menus.AUTO_ENCHANTER_MENU,
+                    AutoEnchanterScreen<AutoEnchanterMenu>::new,
+                    "/screens/auto_enchanter.json"
             );
         }
     }
