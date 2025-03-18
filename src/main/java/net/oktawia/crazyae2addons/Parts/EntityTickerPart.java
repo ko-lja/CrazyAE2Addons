@@ -61,11 +61,6 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
                 .addService(IGridTickable.class,this);
     }
 
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
-
     public IPartModel getStaticModels() {
         return MODELS.getModel(this.isPowered(), this.isActive());
     }

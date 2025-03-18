@@ -8,9 +8,11 @@ import net.minecraft.world.inventory.MenuType;
 import net.oktawia.crazyae2addons.Parts.NBTExportBusPart;
 import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
+import net.oktawia.crazyae2addons.entities.PatternModifierBE;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
 import net.oktawia.crazyae2addons.menus.EntityTickerMenu;
 import net.oktawia.crazyae2addons.menus.NBTExportBusMenu;
+import net.oktawia.crazyae2addons.menus.PatternModifierMenu;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,6 +42,12 @@ public class Menus {
             NBTExportBusMenu::new,
             NBTExportBusPart.class
     );
+    public static final MenuType<PatternModifierMenu> PATTERN_MODIFIER_MENU = create(
+            "pattern_modifier",
+            PatternModifierMenu::new,
+            PatternModifierBE.class
+    );
+
 
     public static <C extends AEBaseMenu, I> MenuType<C> create(
             String id, MenuTypeBuilder.MenuFactory<C, I> factory, Class<I> host) {

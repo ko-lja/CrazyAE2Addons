@@ -34,9 +34,6 @@ public class NBTExportBusMenu extends AEBaseMenu {
         if (isClientSide()) {
             sendClientAction(SEND_MATCH_MODE, mode);
         }
-        else{
-            LogUtils.getLogger().info(String.valueOf(mode));
-        }
     }
 
     public void updateData(String data){
@@ -44,9 +41,6 @@ public class NBTExportBusMenu extends AEBaseMenu {
         this.host.data = data;
         if (isClientSide()){
             sendClientAction(SEND_DATA, data);
-        }
-        else{
-            LogUtils.getLogger().info(data);
         }
     }
 }

@@ -157,11 +157,18 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly fg.deobf("appeng:appliedenergistics2-forge:15.3.3")
     runtimeOnly fg.deobf("appeng:appliedenergistics2-forge:15.3.3")
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")) {
+        jarJar.ranged(it, "[0.4.1,)")
+    }
 }
 
+mixin {
+    add sourceSets.main, "mixins.crazyae2addons.refmap.json"
+    config "mixins.crazyae2addons.json"
+}
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
 // When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.

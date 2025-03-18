@@ -9,9 +9,11 @@ import appeng.core.definitions.BlockDefinition;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.oktawia.crazyae2addons.blocks.PatternModifierBlock;
 import net.oktawia.crazyae2addons.items.CraftingCancelerBlockItem;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.blocks.CraftingCancelerBlock;
+import net.oktawia.crazyae2addons.items.PatternModifierBlockItem;
 
 public class Blocks {
 
@@ -22,6 +24,13 @@ public class Blocks {
             CraftingCancelerBlock::new,
             CraftingCancelerBlockItem::new
     );
+    public static final BlockDefinition<PatternModifierBlock> PATTERN_MODIFIER_BLOCK = block(
+            "Pattern Modifier",
+            "pattern_modifier_block",
+            PatternModifierBlock::new,
+            PatternModifierBlockItem::new
+    );
+
 
     public static List<BlockDefinition<?>> getBlocks() {
         return Collections.unmodifiableList(BLOCKS);

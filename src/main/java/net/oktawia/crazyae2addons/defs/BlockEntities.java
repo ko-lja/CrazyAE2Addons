@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
+import net.oktawia.crazyae2addons.entities.PatternModifierBE;
 
 public class BlockEntities {
     private static final Map<ResourceLocation, BlockEntityType<?>> BLOCK_ENTITY_TYPES = new HashMap<>();
@@ -22,6 +23,11 @@ public class BlockEntities {
             CraftingCancelerBE.class,
             CraftingCancelerBE::new,
             Blocks.CRAFTING_CANCELER_BLOCK);
+    public static final BlockEntityType<PatternModifierBE> PATTERN_MODIFIER_BE = create(
+            "pattern_modifier_be",
+            PatternModifierBE.class,
+            PatternModifierBE::new,
+            Blocks.PATTERN_MODIFIER_BLOCK);
 
     public static Map<ResourceLocation, BlockEntityType<?>> getBlockEntityTypes() {
         return Collections.unmodifiableMap(BLOCK_ENTITY_TYPES);
