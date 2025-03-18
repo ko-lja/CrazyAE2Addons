@@ -20,5 +20,6 @@
   "item.crazyae2addons.nbt_export_bus": "NBT Export Bus",
   "gui.crazyae2addons.pattern_modifier": "Ignore NBT Pattern Modifier",
   "block.crazyae2addons.pattern_modifier_block": "Ignore NBT Pattern Modifier",
-  "gui.crazyae2addons.auto_enchanter": "Auto Enchanter"
+  "gui.crazyae2addons.auto_enchanter": "Auto Enchanter",
+  "group.auto_enchanter.name": "Auto Enchanter"
 }

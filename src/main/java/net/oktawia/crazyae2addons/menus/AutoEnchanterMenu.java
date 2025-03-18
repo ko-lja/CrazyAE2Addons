@@ -4,7 +4,6 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
-import appeng.menu.slot.AppEngSlot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Items;
@@ -29,6 +28,7 @@ public class AutoEnchanterMenu extends UpgradeableMenu<AutoEnchanterBE> {
         this.addSlot(new RestrictedSlot(getHost().inputInv.toContainer(), 0, 0, 0, Items.BOOK.getDefaultInstance()), SlotSemantics.MACHINE_INPUT);
         this.addSlot(new RestrictedSlot(getHost().inputInv.toContainer(), 1, 0, 0, Items.LAPIS_LAZULI.getDefaultInstance()), SlotSemantics.MACHINE_INPUT);
         this.addSlot(new ExtractSlot(getHost().outputInv.toContainer(), 0, 0, 0), SlotSemantics.MACHINE_OUTPUT);
+
     }
 
     public void syncLevel(int level) {

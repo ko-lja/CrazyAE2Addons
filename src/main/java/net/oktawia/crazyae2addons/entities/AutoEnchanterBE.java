@@ -8,8 +8,12 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.util.inv.AppEngInternalInventory;
@@ -33,6 +37,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -65,6 +70,7 @@ import javax.annotation.Nonnull;
 public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTickable, MenuProvider, IUpgradeableObject, IFluidHandler {
 
     public int selectedLevel = 1;
+    private final IUpgradeInventory upgrades;
 
     public static final Set<TagKey<Fluid>> XP_FLUID_TAGS = Set.of(
             TagKey.create(Registries.FLUID, new ResourceLocation("forge", "experience")),
@@ -141,6 +147,8 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
 
     public AutoEnchanterBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
+        this.upgrades = UpgradeInventories.forMachine(net.oktawia.crazyae2addons.defs.Blocks.AUTO_ENCHANTER_BLOCK, getUpgradeSlots(),
+                this::saveChanges);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(4)
@@ -234,7 +242,8 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
         } catch (Exception ignored) {
             return TickRateModulation.IDLE;
         }
-        if (targetState.is(Blocks.ENCHANTING_TABLE) && Instant.now().getEpochSecond() - intervalStart.getEpochSecond() > 10) {
+        int speed = Math.max(this.upgrades.getInstalledUpgrades(AEItems.SPEED_CARD), 1);
+        if (targetState.is(Blocks.ENCHANTING_TABLE) && Instant.now().getEpochSecond() - intervalStart.getEpochSecond() > 20/(speed + 1)) {
 
             double extractedPower;
             try {
@@ -298,8 +307,6 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
         return TickRateModulation.IDLE;
     }
 
-
-
     @Override
     public boolean hasCustomName() {
         return super.hasCustomName();
@@ -338,6 +345,10 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
         }
 
         return super.getCapability(capability, side);
+    }
+
+    protected int getUpgradeSlots() {
+        return 4;
     }
 }
 
