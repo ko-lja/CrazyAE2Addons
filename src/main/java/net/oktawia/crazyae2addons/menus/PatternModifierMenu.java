@@ -12,14 +12,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.entities.PatternModifierBE;
-import net.oktawia.crazyae2addons.screens.PatternModifierScreen;
 
 public class PatternModifierMenu extends UpgradeableMenu<PatternModifierBE> {
 
     public static String SYNC_TAG = "syncTag";
-    public static PatternModifierScreen<?> screen;
 
-    @GuiSync(8921)
+    @GuiSync(892)
     public String text = "No Item";
 
     public PatternModifierMenu(int id, Inventory ip, PatternModifierBE host) {
