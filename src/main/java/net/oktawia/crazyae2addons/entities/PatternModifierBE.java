@@ -10,15 +10,12 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.util.ConfigInventory;
 import appeng.util.inv.AppEngInternalInventory;
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.crazyae2addons.defs.Menus;
@@ -43,30 +40,7 @@ public class PatternModifierBE extends AEBaseInvBlockEntity implements MenuProvi
 
     @Override
     public void onChangeInventory(InternalInventory inv, int slot) {
-        updateText(inv.getStackInSlot(slot));
-    }
-
-    public boolean isValidItem(AEItemKey item){
-        return item.fuzzyEquals(AEItemKey.of(AEItems.PROCESSING_PATTERN.stack()), FuzzyMode.IGNORE_ALL);
-    }
-
-    public void updateText(ItemStack stack){
-        if (stack.isEmpty()){
-            this.getMenu().setText("No Item");
-            return;
-        }
-        AEItemKey item = AEItemKey.of(stack);
-        if (isValidItem(item)){
-            CompoundTag currentTag = item.getTag();
-            boolean nbtIgnoreValue = currentTag.getBoolean("ignorenbt");
-            if (nbtIgnoreValue){
-                this.getMenu().setText("Setting: Ignore NBT");
-            } else {
-                this.getMenu().setText("Setting: DO NOT Ignore NBT");
-            }
-        } else {
-            this.getMenu().setText("Invalid Item");
-        }
+        getMenu().updateText(inv.getStackInSlot(slot));
     }
 
     public void setMenu(PatternModifierMenu menu){

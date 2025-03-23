@@ -13,12 +13,9 @@ import net.oktawia.crazyae2addons.menus.PatternModifierMenu;
 
 public class PatternModifierScreen<C extends PatternModifierMenu> extends UpgradeableScreen<C> {
     private static PlainTextButton confirm;
-    private static PlainTextButton status;
-    private String text = "No Item";
 
     public PatternModifierScreen(PatternModifierMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super((C) menu, playerInventory, title, style);
-        menu.setScreen(this);
         setupGui();
         this.widgets.add("confirm", confirm);
     }
@@ -31,13 +28,9 @@ public class PatternModifierScreen<C extends PatternModifierMenu> extends Upgrad
         this.getMenu().syncTag();
     }
 
-    public void setText(String text){
-        this.text = text;
-    }
-
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, this.text, this.getGuiLeft() + 88, this.getGuiTop() + 30, 0xFFFFFF);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, getMenu().text, this.getGuiLeft() + 88, this.getGuiTop() + 30, 0xFFFFFF);
     }
 }

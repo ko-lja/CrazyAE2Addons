@@ -1,18 +1,16 @@
 package net.oktawia.crazyae2addons.menus;
 
+import appeng.api.config.FuzzyMode;
 import appeng.api.stacks.AEItemKey;
-import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
+import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
-import com.mojang.logging.LogUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.oktawia.crazyae2addons.defs.Menus;
-import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
 import net.oktawia.crazyae2addons.entities.PatternModifierBE;
 import net.oktawia.crazyae2addons.screens.PatternModifierScreen;
 
@@ -20,6 +18,9 @@ public class PatternModifierMenu extends UpgradeableMenu<PatternModifierBE> {
 
     public static String SYNC_TAG = "syncTag";
     public static PatternModifierScreen<?> screen;
+
+    @GuiSync(8921)
+    public String text = "No Item";
 
     public PatternModifierMenu(int id, Inventory ip, PatternModifierBE host) {
         super(Menus.PATTERN_MODIFIER_MENU, id, ip, host);
@@ -30,7 +31,7 @@ public class PatternModifierMenu extends UpgradeableMenu<PatternModifierBE> {
 
     public void syncTag(){
         ItemStack item = this.getSlots(SlotSemantics.STORAGE).get(0).getItem();
-        if (getHost().isValidItem(AEItemKey.of(item))){
+        if (isValidItem(AEItemKey.of(item))){
             CompoundTag currentTag = item.getOrCreateTag();
             boolean tag;
             if (currentTag.contains("ignorenbt")){
@@ -41,21 +42,32 @@ public class PatternModifierMenu extends UpgradeableMenu<PatternModifierBE> {
             currentTag.putBoolean("ignorenbt", tag);
             item.setTag(currentTag);
         }
-        getHost().updateText(item);
+        updateText(item);
         if (isClientSide()) {
             sendClientAction(SYNC_TAG);
         }
     }
 
-    public void setScreen(PatternModifierScreen<?> scr){
-        screen = scr;
+    public void updateText(ItemStack stack){
+        if (stack.isEmpty()){
+            text = "No Item";
+            return;
+        }
+        AEItemKey item = AEItemKey.of(stack);
+        if (isValidItem(item)){
+            CompoundTag currentTag = item.getTag();
+            boolean nbtIgnoreValue = currentTag.getBoolean("ignorenbt");
+            if (nbtIgnoreValue){
+                text = "Setting: Ignore NBT";
+            } else {
+                text = "Setting: DO NOT Ignore NBT";
+            }
+        } else {
+            text = "Invalid Item";
+        }
     }
 
-    public PatternModifierScreen<?> getScreen(){
-        return screen;
-    }
-
-    public void setText(String text){
-        this.getScreen().setText(text);
+    public boolean isValidItem(AEItemKey item) {
+        return item.fuzzyEquals(AEItemKey.of(AEItems.PROCESSING_PATTERN.stack()), FuzzyMode.IGNORE_ALL);
     }
 }
