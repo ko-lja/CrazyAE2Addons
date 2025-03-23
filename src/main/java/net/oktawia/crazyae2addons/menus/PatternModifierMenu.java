@@ -12,21 +12,20 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
 import net.oktawia.crazyae2addons.entities.PatternModifierBE;
 import net.oktawia.crazyae2addons.screens.PatternModifierScreen;
 
 public class PatternModifierMenu extends UpgradeableMenu<PatternModifierBE> {
 
-    public static PatternModifierBE host;
     public static String SYNC_TAG = "syncTag";
     public static PatternModifierScreen<?> screen;
 
-    public PatternModifierMenu(int id, Inventory playerInventory, PatternModifierBE host) {
-        super(Menus.PATTERN_MODIFIER_MENU, id, playerInventory, host);
-        this.host = host;
+    public PatternModifierMenu(int id, Inventory ip, PatternModifierBE host) {
+        super(Menus.PATTERN_MODIFIER_MENU, id, ip, host);
+        this.getHost().setMenu(this);
         this.addSlot(new AppEngSlot(host.getInternalInventory(), 0), SlotSemantics.STORAGE);
         registerClientAction(SYNC_TAG, this::syncTag);
-        host.setMenu(this);
     }
 
     public void syncTag(){
@@ -48,12 +47,12 @@ public class PatternModifierMenu extends UpgradeableMenu<PatternModifierBE> {
         }
     }
 
-    public void setScreen(PatternModifierScreen<?> screen){
-        this.screen = screen;
+    public void setScreen(PatternModifierScreen<?> scr){
+        screen = scr;
     }
 
     public PatternModifierScreen<?> getScreen(){
-        return this.screen;
+        return screen;
     }
 
     public void setText(String text){
