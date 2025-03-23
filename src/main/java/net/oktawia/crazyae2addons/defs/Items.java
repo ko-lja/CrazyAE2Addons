@@ -12,7 +12,6 @@ import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.Parts.NBTExportBusPart;
 import net.oktawia.crazyae2addons.Parts.RRItemP2PTunnelPart;
-import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
 import net.oktawia.crazyae2addons.items.*;
 
 import java.util.ArrayList;
@@ -38,6 +37,7 @@ public class Items {
         PartModels.registerModels(PartModelsHelper.createModels(NBTExportBusPart.class));
         return item("NBT Export Bus", "nbt_export_bus", NBTExportBusPartItem::new);
     });
+
 
     public static List<ItemDefinition<?>> getItems() {
         return Collections.unmodifiableList(ITEMS);

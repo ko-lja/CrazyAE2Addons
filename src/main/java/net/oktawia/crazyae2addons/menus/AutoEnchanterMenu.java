@@ -1,6 +1,5 @@
 package net.oktawia.crazyae2addons.menus;
 
-import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
@@ -9,6 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Items;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
+
 
 public class AutoEnchanterMenu extends UpgradeableMenu<AutoEnchanterBE> {
     public String fluidCapacity = "32000";
@@ -28,7 +28,6 @@ public class AutoEnchanterMenu extends UpgradeableMenu<AutoEnchanterBE> {
         this.addSlot(new RestrictedSlot(getHost().inputExposed.toContainer(), 0, 0, 0, Items.BOOK.getDefaultInstance()), SlotSemantics.MACHINE_INPUT);
         this.addSlot(new RestrictedSlot(getHost().inputExposed.toContainer(), 1, 0, 0, Items.LAPIS_LAZULI.getDefaultInstance()), SlotSemantics.MACHINE_INPUT);
         this.addSlot(new ExtractSlot(getHost().outputExposed.toContainer(), 0, 0, 0), SlotSemantics.MACHINE_OUTPUT);
-
     }
 
     public void syncLevel(int level) {

@@ -52,6 +52,11 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
     private static final P2PModels MODELS = new P2PModels(
             new ResourceLocation(CrazyAddons.MODID, "part/entity_ticker_part_item"));
 
+    @PartModels
+    public static List<IPartModel> getModels() {
+        return MODELS.getModels();
+    }
+
     private static final Logger LOGGER = LogUtils.getLogger();
     public EntityTickerPart(IPartItem<?> partItem) {
         super(partItem);

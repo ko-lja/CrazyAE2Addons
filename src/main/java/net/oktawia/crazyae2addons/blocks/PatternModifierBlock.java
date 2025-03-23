@@ -1,5 +1,6 @@
 package net.oktawia.crazyae2addons.blocks;
 
+import appeng.api.upgrades.IUpgradeableObject;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseEntityBlock;
 import appeng.menu.locator.MenuLocators;
@@ -18,7 +19,7 @@ import net.oktawia.crazyae2addons.entities.PatternModifierBE;
 import org.jetbrains.annotations.Nullable;
 
 
-public class PatternModifierBlock extends AEBaseEntityBlock<PatternModifierBE> {
+public class PatternModifierBlock extends AEBaseEntityBlock<PatternModifierBE> implements IUpgradeableObject {
     public PatternModifierBlock() {
         super(AEBaseBlock.metalProps());
     }

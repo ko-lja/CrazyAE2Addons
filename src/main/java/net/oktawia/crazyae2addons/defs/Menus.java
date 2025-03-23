@@ -41,7 +41,7 @@ public class Menus {
             NBTExportBusPart.class
     );
     public static final MenuType<PatternModifierMenu> PATTERN_MODIFIER_MENU = create(
-            "pattern_modifier",
+            "nbt_pattern_modifier",
             PatternModifierMenu::new,
             PatternModifierBE.class
     );
