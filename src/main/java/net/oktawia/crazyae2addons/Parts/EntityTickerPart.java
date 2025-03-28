@@ -46,7 +46,7 @@ import static java.lang.Math.pow;
 public class EntityTickerPart extends UpgradeablePart implements IGridTickable, MenuProvider, IUpgradeableObject {
 
     public static final float energyUsageScaleValue = 1f;
-    public static final int actionsPerTick = 2;
+    public static final int actionsPerSec = 20;
     public EntityTickerMenu menu;
 
     private static final P2PModels MODELS = new P2PModels(
@@ -87,7 +87,7 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
 
     @Override
     public TickingRequest getTickingRequest(IGridNode iGridNode) {
-        return new TickingRequest(20/actionsPerTick, 20/actionsPerTick, false, true);
+        return new TickingRequest(20/actionsPerSec, 20/actionsPerSec, false, true);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
     }
 
     private  <T extends BlockEntity> void tickBlockEntity(@NotNull T blockEntity) {
-        int powerDraw = (int) ((1024 * pow(4, energyUsageScaleValue * getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD))) / actionsPerTick);
+        int powerDraw = (int) (1024 * pow(4, energyUsageScaleValue * getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD)));
         double extractedPower = getMainNode().getGrid().getEnergyService().extractAEPower(powerDraw, Actionable.MODULATE, PowerMultiplier.CONFIG);
         if (extractedPower < powerDraw){
             return;
@@ -115,7 +115,7 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
                 (BlockEntityType<T>) blockEntity.getType());
         if (blockEntityTicker == null) return;
         int speed = (int) pow(2, getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD));
-        for (int i = 0; i < speed * (8 / actionsPerTick) - 1; i++) {
+        for (int i = 0; i < speed - 1; i++) {
             blockEntityTicker.tick(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(),
                     blockEntity);
         }
