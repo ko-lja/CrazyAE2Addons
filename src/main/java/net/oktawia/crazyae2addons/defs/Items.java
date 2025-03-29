@@ -9,6 +9,7 @@ import appeng.items.parts.PartModelsHelper;
 import net.minecraft.Util;
 import net.minecraft.world.item.Item;
 import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.Parts.DisplayPart;
 import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.Parts.NBTExportBusPart;
 import net.oktawia.crazyae2addons.Parts.RRItemP2PTunnelPart;
@@ -36,6 +37,11 @@ public class Items {
     public static final ItemDefinition<NBTExportBusPartItem> NBT_EXPORT_BUS_PART_ITEM = Util.make(() -> {
         PartModels.registerModels(PartModelsHelper.createModels(NBTExportBusPart.class));
         return item("NBT Export Bus", "nbt_export_bus", NBTExportBusPartItem::new);
+    });
+
+    public static final ItemDefinition<DisplayPartItem> DISPLAY_MNITOR_PART_ITEM = Util.make(() -> {
+        PartModels.registerModels(PartModelsHelper.createModels(DisplayPart.class));
+        return item("Display Monitor", "display_monitor", DisplayPartItem::new);
     });
 
 

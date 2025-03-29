@@ -5,6 +5,7 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
+import net.oktawia.crazyae2addons.Parts.DisplayPart;
 import net.oktawia.crazyae2addons.Parts.NBTExportBusPart;
 import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
 import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
@@ -49,6 +50,11 @@ public class Menus {
             "auto_enchanter",
             AutoEnchanterMenu::new,
             AutoEnchanterBE.class
+    );
+    public static final MenuType<DisplayMenu> DISPLAY_MENU = create(
+            "display",
+            DisplayMenu::new,
+            DisplayPart.class
     );
 
 

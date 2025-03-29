@@ -5,6 +5,7 @@ import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseEntityBlock;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
+import appeng.util.Platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -15,8 +16,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.oktawia.crazyae2addons.defs.BlockEntities;
+import net.oktawia.crazyae2addons.defs.Blocks;
+import net.oktawia.crazyae2addons.defs.Items;
 import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 
 public class AutoEnchanterBlock  extends AEBaseEntityBlock<AutoEnchanterBE> implements IUpgradeableObject {
     public AutoEnchanterBlock() {

@@ -89,6 +89,11 @@ public class CrazyAddons {
                     AutoEnchanterScreen<AutoEnchanterMenu>::new,
                     "/screens/auto_enchanter.json"
             );
+            InitScreens.register(
+                    Menus.DISPLAY_MENU,
+                    DisplayScreen<DisplayMenu>::new,
+                    "/screens/display.json"
+            );
         }
     }
 }
