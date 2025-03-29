@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "ae2:monitor"
+    },
+    "B": {
+      "item": "minecraft:book"
+    }
+  },
+  "pattern": [
+    "DB"
+  ],
+  "result": {
+    "item": "crazyae2addons:display_monitor"
+  }
+}
