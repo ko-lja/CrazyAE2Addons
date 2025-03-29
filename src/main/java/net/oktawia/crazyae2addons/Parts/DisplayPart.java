@@ -8,12 +8,12 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.automation.PlaneModels;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.logging.LogUtils;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -23,8 +23,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.network.PacketDistributor;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.menus.DisplayMenu;
+import net.oktawia.crazyae2addons.network.DisplayNetworkHandler;
+import net.oktawia.crazyae2addons.network.DisplayValuePacket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.entity.player.Player;
@@ -46,8 +49,8 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
     private static final PlaneModels MODELS = new PlaneModels("part/display_mon_off",
             "part/display_mon_on");
 
-    private byte spin = 0; // 0-3
-    public String textValue = "";
+    public byte spin = 0; // 0-3
+    public String textValue;
 
     @PartModels
     public static List<IPartModel> getModels() {
@@ -60,6 +63,7 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(1)
                 .addService(IGridTickable.class, this);
+        this.textValue = "";
     }
 
     @Override
@@ -79,6 +83,10 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (!getLevel().isClientSide()) {
+            DisplayNetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
+                    new DisplayValuePacket(this.getBlockEntity().getBlockPos(), this.textValue, this.getSide(), this.spin));
+        }
         return TickRateModulation.IDLE;
     }
 
@@ -106,6 +114,25 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
     }
 
     @Override
+    public void readFromNBT(CompoundTag extra) {
+        super.readFromNBT(extra);
+        if(extra.contains("textvalue")){
+            this.textValue = extra.getString("textvalue");
+        }
+        if(extra.contains("spin")){
+            this.spin = extra.getByte("spin");
+        }
+    }
+
+
+    @Override
+    public void writeToNBT(CompoundTag extra) {
+        super.writeToNBT(extra);
+        extra.putString("textvalue", this.textValue);
+        extra.putByte("spin", this.spin);
+    }
+
+    @Override
     public boolean requireDynamicRender() {
         return true;
     }
@@ -113,7 +140,6 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
     @Override
     public final void onPlacement(Player player) {
         super.onPlacement(player);
-
         final byte rotation = (byte) (Mth.floor(player.getYRot() * 4F / 360F + 2.5D) & 3);
         if (getSide() == Direction.UP || getSide() == Direction.DOWN) {
             this.spin = rotation;
@@ -124,7 +150,7 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
     @OnlyIn(Dist.CLIENT)
     public void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
                               int combinedLightIn, int combinedOverlayIn) {
-        if (!this.isPowered() || textValue.isEmpty()){
+        if (!this.isPowered() || this.textValue.isEmpty()){
             return;
         }
         poseStack.pushPose();
@@ -187,7 +213,6 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
                     case 0 -> {
                         theSpin = 0.0F;
                         poseStack.translate(0, 0, 0);
-                        LogUtils.getLogger().info("A");
                     }
                     case 1 -> {
                         theSpin = -90.0F;
@@ -212,7 +237,7 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
         poseStack.scale(1.0f / 64.0f, -1.0f / 64.0f, 1.0f / 64.0f);
 
 
-        String[] lines = textValue.split("&nl");
+        String[] lines = this.textValue.split("&nl");
         String longestLine = Arrays.stream(lines)
                 .max(Comparator.comparingInt(String::length))
                 .orElse("");

@@ -2,7 +2,6 @@ package net.oktawia.crazyae2addons.menus;
 
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.implementations.UpgradeableMenu;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.Parts.DisplayPart;
 import net.oktawia.crazyae2addons.defs.Menus;
@@ -29,5 +28,6 @@ public class DisplayMenu extends AEBaseMenu {
         if (isClientSide()){
             sendClientAction(ACTION_SYNC_DISPLAY_VALUE, value);
         }
+        this.host.getHost().markForSave();
     }
 }

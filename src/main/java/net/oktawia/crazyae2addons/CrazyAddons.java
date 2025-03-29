@@ -1,6 +1,5 @@
 package net.oktawia.crazyae2addons;
 
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -17,15 +16,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import net.oktawia.crazyae2addons.defs.*;
 import net.oktawia.crazyae2addons.menus.*;
+import net.oktawia.crazyae2addons.network.DisplayNetworkHandler;
 import net.oktawia.crazyae2addons.screens.*;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 import appeng.init.client.InitScreens;
 
 @Mod(CrazyAddons.MODID)
 public class CrazyAddons {
     public static final String MODID = "crazyae2addons";
-    private static final Logger LOGGER = LogUtils.getLogger();
 
     public CrazyAddons(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
@@ -33,6 +31,7 @@ public class CrazyAddons {
         modEventBus.addListener(this::onRegisterEvent);
 
         MinecraftForge.EVENT_BUS.register(this);
+        DisplayNetworkHandler.registerPackets();
     }
 
     public static @NotNull ResourceLocation makeId(String path) {
