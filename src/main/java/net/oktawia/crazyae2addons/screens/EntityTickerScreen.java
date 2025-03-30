@@ -15,9 +15,9 @@ public class EntityTickerScreen<C extends EntityTickerMenu> extends UpgradeableS
     @Override
     protected void updateBeforeRender(){
         super.updateBeforeRender();
-        double powerUsage =  1024 * pow(4, EntityTickerPart.energyUsageScaleValue * getMenu().upgradeNum);
-        setTextContent("energy", Component.empty().append(String.format("Energy Usage: %s FE/t", Utils.shortenNumber(powerUsage))));
-        setTextContent("speed", Component.empty().append(String.format("Current multiplier: %d", (int) pow(2, getMenu().upgradeNum))));
+        double powerUsage =  256 * pow(4, EntityTickerPart.energyUsageScaleValue * getMenu().upgradeNum);
+        setTextContent("energy", Component.literal(String.format("Energy Usage: %s FE/t", Utils.shortenNumber(powerUsage))));
+        setTextContent("speed", Component.literal(String.format("Current multiplier: %d", (int) pow(2, (getMenu().upgradeNum + 1)))));
     }
 
     public EntityTickerScreen(
@@ -26,8 +26,8 @@ public class EntityTickerScreen<C extends EntityTickerMenu> extends UpgradeableS
     }
 
     public void refreshGui(){
-        double powerUsage = 1024 * pow(4, EntityTickerPart.energyUsageScaleValue *  getMenu().upgradeNum);
-        setTextContent("energy", Component.empty().append(String.format("Energy Usage: %s FE/t", Utils.shortenNumber(powerUsage))));
-        setTextContent("speed", Component.empty().append(String.format("Current multiplier: %d", (int) pow(2,  getMenu().upgradeNum))));
+        double powerUsage = 256 * pow(4, EntityTickerPart.energyUsageScaleValue *  getMenu().upgradeNum);
+        setTextContent("energy", Component.literal(String.format("Energy Usage: %s FE/t", Utils.shortenNumber(powerUsage))));
+        setTextContent("speed", Component.literal(String.format("Current multiplier: %d", (int) pow(2,  (getMenu().upgradeNum + 1)))));
     }
 }

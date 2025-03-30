@@ -105,8 +105,8 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
     }
 
     private  <T extends BlockEntity> void tickBlockEntity(@NotNull T blockEntity) {
-        int powerDraw = (int) (1024 * pow(4, energyUsageScaleValue * getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD)));
-        double extractedPower = getMainNode().getGrid().getEnergyService().extractAEPower(powerDraw, Actionable.MODULATE, PowerMultiplier.CONFIG);
+        int powerDraw = (int) (256 * pow(4, energyUsageScaleValue * getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD)));
+        double extractedPower = getMainNode().getGrid().getEnergyService().extractAEPower(powerDraw, Actionable.MODULATE, PowerMultiplier.CONFIG) / 2; // convert to FE
         if (extractedPower < powerDraw){
             return;
         }
@@ -114,7 +114,7 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
         BlockEntityTicker<T> blockEntityTicker = this.getLevel().getBlockState(pos).getTicker(this.getLevel(),
                 (BlockEntityType<T>) blockEntity.getType());
         if (blockEntityTicker == null) return;
-        int speed = (int) pow(2, getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD));
+        int speed = (int) pow(2, (getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD) + 1));
         for (int i = 0; i < speed - 1; i++) {
             blockEntityTicker.tick(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(),
                     blockEntity);
