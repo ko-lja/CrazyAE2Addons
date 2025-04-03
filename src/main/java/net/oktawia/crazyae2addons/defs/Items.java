@@ -7,7 +7,12 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import net.minecraft.Util;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.Parts.DisplayPart;
 import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
@@ -44,6 +49,7 @@ public class Items {
         return item("Display Monitor", "display_monitor", DisplayPartItem::new);
     });
 
+    public static final ItemDefinition<xpShardItem> XP_SHARD_ITEM = Util.make(() -> item("XP Shard", "xp_shard", xpShardItem::new));
 
     public static List<ItemDefinition<?>> getItems() {
         return Collections.unmodifiableList(ITEMS);

@@ -39,10 +39,10 @@ public class Blocks {
             AutoEnchanterBlockItem::new
     );
 
-
     public static List<BlockDefinition<?>> getBlocks() {
         return Collections.unmodifiableList(BLOCKS);
     }
+
 
     public static <T extends Block> BlockDefinition<T> block(
             String englishName,

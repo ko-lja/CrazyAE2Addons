@@ -20,7 +20,7 @@ public class AutoEnchanterScreen<C extends AutoEnchanterMenu> extends Upgradeabl
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, "%s/%s mB".formatted(getMenu().fluidAmount, getMenu().fluidCapacity), this.getGuiLeft() + 88, this.getGuiTop() + 30, 0xFFFFFF);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, "%.2f%%".formatted((float) getMenu().holdedXp / getMenu().xpCap * 100), this.getGuiLeft() + 88, this.getGuiTop() + 30, 0xFFFFFF);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, "XP Amount", this.getGuiLeft() + 88, this.getGuiTop() + 20, 0xFFFFFF);
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, "Selected Level: %s".formatted(getMenu().selectedLevel), this.getGuiLeft() + 115, this.getGuiTop() + 45, 0xFFFFFF);
     }

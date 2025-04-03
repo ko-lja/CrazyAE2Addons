@@ -34,6 +34,7 @@ public class CrazyAddons {
         DisplayNetworkHandler.registerPackets();
     }
 
+
     public static @NotNull ResourceLocation makeId(String path) {
         return new ResourceLocation(MODID, path);
     }

@@ -16,7 +16,9 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
+import appeng.util.inv.filter.AEItemDefinitionFilter;
 import appeng.util.inv.filter.AEItemFilters;
+import com.mojang.logging.LogUtils;
 import dev.shadowsoffire.apotheosis.ench.table.EnchantingStatRegistry;
 import dev.shadowsoffire.apotheosis.ench.table.RealEnchantmentHelper;
 import appeng.api.upgrades.UpgradeInventories;
@@ -53,6 +55,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.oktawia.crazyae2addons.defs.BlockEntities;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.menus.AutoEnchanterMenu;
+import net.oktawia.crazyae2addons.misc.AEItemStackFilteredInputSlot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import net.minecraftforge.registries.tags.ITag;
@@ -71,6 +74,9 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
 
     public int selectedLevel = 1;
     private final IUpgradeInventory upgrades;
+    public int holdedXp = 0;
+    public int waitingFor = 0;
+    public int xpCap = 1600;
 
     public static final Set<TagKey<Fluid>> XP_FLUID_TAGS = Set.of(
             TagKey.create(Registries.FLUID, new ResourceLocation("forge", "experience")),
@@ -85,15 +91,21 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
         }
         return false;
     });
-    public final AppEngInternalInventory inputInv = new AppEngInternalInventory(this, 2, 64);
+    public final AppEngInternalInventory inputBook = new AppEngInternalInventory(this, 1, 64);
+    public final AppEngInternalInventory inputLapis = new AppEngInternalInventory(this, 1, 64);
+    public final AppEngInternalInventory inputXpShards = new AppEngInternalInventory(this, 1, 64);
     public final AppEngInternalInventory outputInv = new AppEngInternalInventory(this, 1, 1);
-    public final InternalInventory inv = new CombinedInternalInventory(this.inputInv, this.outputInv);
+    public final InternalInventory inv = new CombinedInternalInventory(this.inputBook, this.inputLapis, this.inputXpShards, this.outputInv);
 
-    public final FilteredInternalInventory inputExposed =
-            new FilteredInternalInventory(this.inputInv, AEItemFilters.INSERT_ONLY);
+    public final FilteredInternalInventory inputExposedBook =
+            new FilteredInternalInventory(this.inputBook, new AEItemStackFilteredInputSlot(Items.BOOK.getDefaultInstance()));
+    public final FilteredInternalInventory inputExposedLapis =
+            new FilteredInternalInventory(this.inputLapis, new AEItemStackFilteredInputSlot(Items.LAPIS_LAZULI.getDefaultInstance()));
+    public final FilteredInternalInventory inputExposedXpShards =
+            new FilteredInternalInventory(this.inputXpShards, new AEItemStackFilteredInputSlot(net.oktawia.crazyae2addons.defs.Items.XP_SHARD_ITEM.stack()));
     public final FilteredInternalInventory outputExposed =
             new FilteredInternalInventory(this.outputInv, AEItemFilters.EXTRACT_ONLY);
-    public final InternalInventory invExposed = new CombinedInternalInventory(this.inputExposed, this.outputExposed);
+    public final InternalInventory invExposed = new CombinedInternalInventory(this.inputExposedBook, this.inputExposedLapis, this.inputExposedXpShards, this.outputExposed);
 
     public AutoEnchanterMenu menu;
 
@@ -103,6 +115,9 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
         CompoundTag tag = this.getPersistentData();
         if (tag.contains("level")){
             this.selectedLevel = tag.getInt("level");
+        }
+        if (tag.contains("xp")){
+            this.holdedXp = tag.getInt("xp");
         }
     }
 
@@ -134,9 +149,14 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
     @Override
     public int fill(FluidStack resource, FluidAction action) {
         var filledAmount = this.fluidInv.fill(resource, action);
+        this.holdedXp = this.holdedXp + this.fluidInv.getFluidAmount() / 20;
+        this.fluidInv.setFluid(FluidStack.EMPTY);
+        this.markForUpdate();
+        CompoundTag tag = this.getPersistentData();
+        tag.putInt("xp", this.holdedXp);
         AutoEnchanterMenu curMenu = this.getMenu();
         if (curMenu != null){
-            curMenu.fluidAmount = String.valueOf(this.fluidInv.getFluidAmount());
+            curMenu.holdedXp = this.holdedXp;
         }
         return filledAmount;
     }
@@ -151,10 +171,7 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
         return this.fluidInv.drain(maxDrain, action);
     }
 
-    public record EnchantCost(int xpLevels, int lapis) {
-    }
-
-    private Instant intervalStart;
+    public record EnchantCost(int xpLevels, int lapis) {}
 
     public AutoEnchanterBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -163,7 +180,6 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(4)
                 .addService(IGridTickable.class,this);
-        intervalStart = Instant.now();
     }
 
     @Nullable
@@ -190,16 +206,35 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
 
     @Override
     public void onChangeInventory(InternalInventory inv, int slot) {
+        var stack = inv.getStackInSlot(slot);
+        if (stack.getItem() == net.oktawia.crazyae2addons.defs.Items.XP_SHARD_ITEM.stack().getItem()) {
+            int missingXp = this.xpCap - this.holdedXp;
 
+            if (missingXp <= 0) {
+                return;
+            }
+
+            int available = stack.getCount();
+            int toExtract = Math.min(missingXp, available);
+
+            this.holdedXp += toExtract;
+            if (this.getMenu() != null){
+                this.getMenu().holdedXp = this.holdedXp;
+            }
+
+            inv.extractItem(slot, toExtract, false);
+            CompoundTag tag = this.getPersistentData();
+            tag.putInt("xp", this.holdedXp);
+
+            this.markForUpdate();
+            this.setChanged();
+        }
     }
+
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(20, 20, false, true);
-    }
-
-    public static int getTotalXpForLevels(int level) {
-        return level * level + 6 * level;
     }
 
     public static EnchantingStatRegistry.Stats gatherStats(Level world, BlockPos tablePos, int radius) {
@@ -247,8 +282,7 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
     public static EnchantCost calculateEnchantCost(int enchantOption, ItemStack what, EnchantingStatRegistry.Stats stats) {
         RandomSource rand = RandomSource.create();
         int xpCost = RealEnchantmentHelper.getEnchantmentCost(rand, enchantOption, stats.eterna(), what);
-        xpCost = Math.max(getTotalXpForLevels(xpCost), 16);
-        int lapisCost = enchantOption + 1;
+        int lapisCost = enchantOption;
         return new EnchantCost(xpCost, lapisCost);
     }
 
@@ -269,9 +303,8 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
         } catch (Exception ignored) {
             return TickRateModulation.IDLE;
         }
-        int speed = Math.max(this.upgrades.getInstalledUpgrades(AEItems.SPEED_CARD), 1);
-        if (targetState.is(Blocks.ENCHANTING_TABLE) && Instant.now().getEpochSecond() - intervalStart.getEpochSecond() > 20/(speed + 1)) {
 
+        if (targetState.is(Blocks.ENCHANTING_TABLE) && this.waitingFor >= 5) {
             double extractedPower;
             try {
                  extractedPower = getMainNode().getGrid().getEnergyService().extractAEPower(128, Actionable.MODULATE, PowerMultiplier.CONFIG);
@@ -296,7 +329,7 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
                 enchantLevel = enchantLevel * 2 / 3;
             }
 
-            EnchantCost cost = calculateEnchantCost(2, book, stats);
+            EnchantCost cost = calculateEnchantCost(selectedLevel, book, stats);
 
             if (!outputInv.isEmpty()){
                 return TickRateModulation.IDLE;
@@ -309,13 +342,13 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
                 return TickRateModulation.IDLE;
 
             int requiredXpFluid = cost.xpLevels;
-            FluidStack extracted = fluidInv.drain(requiredXpFluid, IFluidHandler.FluidAction.SIMULATE);
-            if (extracted.getAmount() < requiredXpFluid)
+
+            if (this.holdedXp < requiredXpFluid)
                 return TickRateModulation.IDLE;
 
+            this.holdedXp = this.holdedXp - cost.xpLevels;
             inv.extractItem(0, 1, false);
             inv.extractItem(1, cost.lapis, false);
-            fluidInv.setFluid(new FluidStack(fluidInv.getFluid(), fluidInv.getFluidAmount() - requiredXpFluid));
 
             book = enchantWithApotheosis(
                     book,
@@ -326,10 +359,16 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
 
             outputInv.setItemDirect(0, book);
 
-            intervalStart = Instant.now();
+            this.waitingFor = 0;
+
             if (getMenu() != null){
-                this.getMenu().fluidAmount = String.valueOf(this.fluidInv.getFluidAmount());
+                this.getMenu().holdedXp = this.holdedXp;
+
+            CompoundTag tag = this.getPersistentData();
+            tag.putInt("xp", this.holdedXp);
             }
+        } else {
+            this.waitingFor = this.waitingFor + 1;
         }
         return TickRateModulation.IDLE;
     }
@@ -375,7 +414,7 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
     }
 
     protected int getUpgradeSlots() {
-        return 4;
+        return 0;
     }
 }
 

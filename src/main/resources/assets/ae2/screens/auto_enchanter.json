@@ -17,7 +17,7 @@
     }
   },
   "slots": {
-    "MACHINE_INPUT": {
+    "STORAGE": {
       "left": 8,
       "top": 59,
       "grid": "HORIZONTAL"

@@ -8,13 +8,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Items;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
+import net.oktawia.crazyae2addons.misc.RestrictedSlot;
 
 
 public class AutoEnchanterMenu extends UpgradeableMenu<AutoEnchanterBE> {
-    public String fluidCapacity = "32000";
+    public int xpCap = 1600;
 
     @GuiSync(173)
-    public String fluidAmount = String.valueOf(getHost().fluidInv.getFluidAmount());
+    public int holdedXp = getHost().holdedXp;
 
     public String ACTION_SYNC_LEVEL = "actionSyncLevel";
 
@@ -25,8 +26,9 @@ public class AutoEnchanterMenu extends UpgradeableMenu<AutoEnchanterBE> {
         super(Menus.AUTO_ENCHANTER_MENU, id, ip, host);
         this.getHost().setMenu(this);
         registerClientAction(ACTION_SYNC_LEVEL, Integer.class, this::syncLevel);
-        this.addSlot(new RestrictedSlot(getHost().inputExposed.toContainer(), 0, 0, 0, Items.BOOK.getDefaultInstance()), SlotSemantics.MACHINE_INPUT);
-        this.addSlot(new RestrictedSlot(getHost().inputExposed.toContainer(), 1, 0, 0, Items.LAPIS_LAZULI.getDefaultInstance()), SlotSemantics.MACHINE_INPUT);
+        this.addSlot(new RestrictedSlot(getHost().inputExposedBook.toContainer(), 0, 0, 0, Items.BOOK.getDefaultInstance()), SlotSemantics.STORAGE);
+        this.addSlot(new RestrictedSlot(getHost().inputExposedLapis.toContainer(), 0, 0, 0, Items.LAPIS_LAZULI.getDefaultInstance()), SlotSemantics.STORAGE);
+        this.addSlot(new RestrictedSlot(getHost().inputExposedXpShards.toContainer(), 0, 0, 0, net.oktawia.crazyae2addons.defs.Items.XP_SHARD_ITEM.stack()), SlotSemantics.STORAGE);
         this.addSlot(new ExtractSlot(getHost().outputExposed.toContainer(), 0, 0, 0), SlotSemantics.MACHINE_OUTPUT);
     }
 
