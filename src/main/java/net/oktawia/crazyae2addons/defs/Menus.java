@@ -5,12 +5,11 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
+import net.oktawia.crazyae2addons.Parts.DataExtractorPart;
 import net.oktawia.crazyae2addons.Parts.DisplayPart;
 import net.oktawia.crazyae2addons.Parts.NBTExportBusPart;
-import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
-import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
+import net.oktawia.crazyae2addons.entities.*;
 import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
-import net.oktawia.crazyae2addons.entities.PatternModifierBE;
 import net.oktawia.crazyae2addons.menus.*;
 
 import java.util.Collections;
@@ -55,6 +54,26 @@ public class Menus {
             "display",
             DisplayMenu::new,
             DisplayPart.class
+    );
+    public static final MenuType<MEDataControllerMenu> ME_DATA_CONTROLLER_MENU = create(
+            "me_data_controller",
+            MEDataControllerMenu::new,
+            MEDataControllerBE.class
+    );
+    public static final MenuType<DataExtractorMenu> DATA_EXTRACTOR_MENU = create(
+            "data_extractor",
+            DataExtractorMenu::new,
+            DataExtractorPart.class
+    );
+    public static final MenuType<DataProcessorMenu> DATA_PROCESSOR_MENU = create(
+            "data_processor",
+            DataProcessorMenu::new,
+            DataProcessorBE.class
+    );
+    public static final MenuType<DataProcessorSubMenu> DATA_PROCESSOR_SUB_MENU = create(
+            "data_processor_sub",
+            DataProcessorSubMenu::new,
+            DataProcessorBE.class
     );
 
 

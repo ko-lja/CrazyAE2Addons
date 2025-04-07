@@ -7,6 +7,7 @@ import appeng.api.networking.crafting.*;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.blockentity.grid.AENetworkBlockEntity;
@@ -22,8 +23,10 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.Tags;
 import net.oktawia.crazyae2addons.Utils;
 import net.oktawia.crazyae2addons.defs.BlockEntities;
 import net.oktawia.crazyae2addons.defs.Menus;
@@ -36,6 +39,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class CraftingCancelerBE extends AENetworkBlockEntity implements MenuProvider, IGridTickable, IUpgradeableObject {
     private boolean enabled;
@@ -114,7 +118,8 @@ public class CraftingCancelerBE extends AENetworkBlockEntity implements MenuProv
                 ICraftingPlan plan = futurePlan.get();
                 getMainNode().getGrid().getCraftingService().submitJob(
                         plan, null, null, true, simRequester.getActionSource());
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                LogUtils.getLogger().error(e.getMessage());
             }
         }), 5);
     }

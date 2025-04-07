@@ -24,7 +24,10 @@
   "group.auto_enchanter.name": "Auto Enchanter",
   "block.crazyae2addons.auto_enchanter_block": "Auto Enchanter",
   "gui.crazyae2addons.display_info1": "Use \"&nl\" for new lines",
+  "gui.crazyae2addons.display_info2": "or \"&name for variables",
   "gui.crazyae2addons.display": "Display",
   "item.crazyae2addons.display_monitor": "Display",
-  "item.crazyae2addons.xp_shard": "XP Shard"
+  "item.crazyae2addons.xp_shard": "XP Shard",
+  "gui.crazyae2addons.me_data_controller": "ME Data Controller",
+  "block.crazyae2addons.me_data_controller": "ME Data Controller"
 }

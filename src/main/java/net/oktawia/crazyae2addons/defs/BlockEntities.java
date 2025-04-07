@@ -13,9 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
-import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
-import net.oktawia.crazyae2addons.entities.PatternModifierBE;
+import net.oktawia.crazyae2addons.entities.*;
 
 public class BlockEntities {
     private static final Map<ResourceLocation, BlockEntityType<?>> BLOCK_ENTITY_TYPES = new HashMap<>();
@@ -35,6 +33,18 @@ public class BlockEntities {
             AutoEnchanterBE.class,
             AutoEnchanterBE::new,
             Blocks.AUTO_ENCHANTER_BLOCK);
+
+    public static final BlockEntityType<MEDataControllerBE> ME_DATA_CONTROLLER_BE = create(
+            "me_data_controller_be",
+            MEDataControllerBE.class,
+            MEDataControllerBE::new,
+            Blocks.ME_DATA_CONTROLLER_BLOCK);
+
+    public static final BlockEntityType<DataProcessorBE> DATA_PROCESSOR_BE = create(
+            "data_processor_be",
+            DataProcessorBE.class,
+            DataProcessorBE::new,
+            Blocks.DATA_PROCESSOR_BLOCK);
 
     public static Map<ResourceLocation, BlockEntityType<?>> getBlockEntityTypes() {
         return Collections.unmodifiableMap(BLOCK_ENTITY_TYPES);

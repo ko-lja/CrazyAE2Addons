@@ -4,11 +4,11 @@ import appeng.api.inventories.InternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import net.minecraft.world.item.ItemStack;
 
-public class AEItemStackFilteredInputSlot implements IAEItemFilter {
+public class AEItemStackFilteredSlot implements IAEItemFilter {
 
     public ItemStack item;
 
-    public AEItemStackFilteredInputSlot(ItemStack input) {
+    public AEItemStackFilteredSlot(ItemStack input) {
         this.item = input;
     }
 

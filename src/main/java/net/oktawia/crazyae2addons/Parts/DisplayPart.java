@@ -1,8 +1,9 @@
 package net.oktawia.crazyae2addons.Parts;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
@@ -25,8 +26,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.entities.MEDataControllerBE;
 import net.oktawia.crazyae2addons.menus.DisplayMenu;
-import net.oktawia.crazyae2addons.network.DisplayNetworkHandler;
+import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.DisplayValuePacket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,7 +44,6 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.items.parts.PartModels;
 import appeng.parts.AEBasePart;
-import org.jline.utils.Log;
 
 public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvider {
 
@@ -51,6 +52,7 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
 
     public byte spin = 0; // 0-3
     public String textValue;
+    public Map<String, Integer> variables = Map.of();
 
     @PartModels
     public static List<IPartModel> getModels() {
@@ -84,8 +86,21 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (!getLevel().isClientSide()) {
-            DisplayNetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
-                    new DisplayValuePacket(this.getBlockEntity().getBlockPos(), this.textValue, this.getSide(), this.spin));
+            String variables;
+            if (this.getGridNode() != null && !this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()){
+                MEDataControllerBE controller = this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
+                Map<String, Integer> merged = new HashMap<>();
+                for (Map<String, Integer> inner : controller.variables.values()) {
+                    merged.putAll(inner);
+                }
+                variables = merged.entrySet().stream()
+                        .map(e -> e.getKey() + ":" + e.getValue())
+                        .collect(Collectors.joining("|"));
+            } else {
+                variables = "";
+            }
+            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
+                    new DisplayValuePacket(this.getBlockEntity().getBlockPos(), this.textValue, this.getSide(), this.spin, variables));
         }
         return TickRateModulation.IDLE;
     }
@@ -144,6 +159,24 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
         if (getSide() == Direction.UP || getSide() == Direction.DOWN) {
             this.spin = rotation;
         }
+    }
+
+    public static String replaceVariables(String textValue, Map<String, Integer> variables) {
+        Pattern pattern = Pattern.compile("&(\\w+)");
+        Matcher matcher = pattern.matcher(textValue);
+        StringBuffer result = new StringBuffer();
+
+        while (matcher.find()) {
+            String key = matcher.group(1);
+            String replacement = variables.containsKey(key)
+                    ? String.valueOf(variables.get(key))
+                    : matcher.group(0);
+
+            matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
+        }
+
+        matcher.appendTail(result);
+        return result.toString();
     }
 
     @Override
@@ -236,8 +269,8 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
         poseStack.translate(0, 0, 0.51);
         poseStack.scale(1.0f / 64.0f, -1.0f / 64.0f, 1.0f / 64.0f);
 
-
-        String[] lines = this.textValue.split("&nl");
+        String valFormatted = replaceVariables(this.textValue, this.variables);
+        String[] lines = valFormatted.split("&nl");
         String longestLine = Arrays.stream(lines)
                 .max(Comparator.comparingInt(String::length))
                 .orElse("");

@@ -9,13 +9,9 @@ import appeng.core.definitions.BlockDefinition;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.oktawia.crazyae2addons.blocks.AutoEnchanterBlock;
-import net.oktawia.crazyae2addons.blocks.PatternModifierBlock;
-import net.oktawia.crazyae2addons.items.AutoEnchanterBlockItem;
-import net.oktawia.crazyae2addons.items.CraftingCancelerBlockItem;
+import net.oktawia.crazyae2addons.blocks.*;
+import net.oktawia.crazyae2addons.items.*;
 import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.blocks.CraftingCancelerBlock;
-import net.oktawia.crazyae2addons.items.PatternModifierBlockItem;
 
 public class Blocks {
 
@@ -37,6 +33,18 @@ public class Blocks {
             "auto_enchanter_block",
             AutoEnchanterBlock::new,
             AutoEnchanterBlockItem::new
+    );
+    public static final BlockDefinition<MEDataControllerBlock> ME_DATA_CONTROLLER_BLOCK = block(
+            "ME Data Controller",
+            "me_data_controller_block",
+            MEDataControllerBlock::new,
+            MEDataControllerBlockItem::new
+    );
+    public static final BlockDefinition<DataProcessorBlock> DATA_PROCESSOR_BLOCK = block(
+            "Data Processor",
+            "data_processor_block",
+            DataProcessorBlock::new,
+            DataProcessorBlockItem::new
     );
 
     public static List<BlockDefinition<?>> getBlocks() {

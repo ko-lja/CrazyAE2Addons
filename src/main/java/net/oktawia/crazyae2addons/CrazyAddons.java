@@ -16,7 +16,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import net.oktawia.crazyae2addons.defs.*;
 import net.oktawia.crazyae2addons.menus.*;
-import net.oktawia.crazyae2addons.network.DisplayNetworkHandler;
+import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.screens.*;
 import org.jetbrains.annotations.NotNull;
 import appeng.init.client.InitScreens;
@@ -31,7 +31,7 @@ public class CrazyAddons {
         modEventBus.addListener(this::onRegisterEvent);
 
         MinecraftForge.EVENT_BUS.register(this);
-        DisplayNetworkHandler.registerPackets();
+        NetworkHandler.registerPackets();
     }
 
 
@@ -93,6 +93,26 @@ public class CrazyAddons {
                     Menus.DISPLAY_MENU,
                     DisplayScreen<DisplayMenu>::new,
                     "/screens/display.json"
+            );
+            InitScreens.register(
+                    Menus.ME_DATA_CONTROLLER_MENU,
+                    MEDataControllerScreen<MEDataControllerMenu>::new,
+                    "/screens/me_data_controller.json"
+            );
+            InitScreens.register(
+                    Menus.DATA_EXTRACTOR_MENU,
+                    DataExtractorScreen<DataExtractorMenu>::new,
+                    "/screens/data_extractor.json"
+            );
+            InitScreens.register(
+                    Menus.DATA_PROCESSOR_MENU,
+                    DataProcessorScreen<DataProcessorMenu>::new,
+                    "/screens/data_processor.json"
+            );
+            InitScreens.register(
+                    Menus.DATA_PROCESSOR_SUB_MENU,
+                    DataProcessorSubScreen<DataProcessorSubMenu>::new,
+                    "/screens/data_processor_sub.json"
             );
         }
     }

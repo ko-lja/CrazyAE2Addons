@@ -11,14 +11,11 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.core.definitions.AEItems;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
-import appeng.util.inv.filter.AEItemDefinitionFilter;
 import appeng.util.inv.filter.AEItemFilters;
-import com.mojang.logging.LogUtils;
 import dev.shadowsoffire.apotheosis.ench.table.EnchantingStatRegistry;
 import dev.shadowsoffire.apotheosis.ench.table.RealEnchantmentHelper;
 import appeng.api.upgrades.UpgradeInventories;
@@ -44,7 +41,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -52,15 +48,13 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.oktawia.crazyae2addons.defs.BlockEntities;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.menus.AutoEnchanterMenu;
-import net.oktawia.crazyae2addons.misc.AEItemStackFilteredInputSlot;
+import net.oktawia.crazyae2addons.misc.AEItemStackFilteredSlot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import net.minecraftforge.registries.tags.ITag;
 
-import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
 import java.lang.Math;
@@ -98,11 +92,11 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
     public final InternalInventory inv = new CombinedInternalInventory(this.inputBook, this.inputLapis, this.inputXpShards, this.outputInv);
 
     public final FilteredInternalInventory inputExposedBook =
-            new FilteredInternalInventory(this.inputBook, new AEItemStackFilteredInputSlot(Items.BOOK.getDefaultInstance()));
+            new FilteredInternalInventory(this.inputBook, new AEItemStackFilteredSlot(Items.BOOK.getDefaultInstance()));
     public final FilteredInternalInventory inputExposedLapis =
-            new FilteredInternalInventory(this.inputLapis, new AEItemStackFilteredInputSlot(Items.LAPIS_LAZULI.getDefaultInstance()));
+            new FilteredInternalInventory(this.inputLapis, new AEItemStackFilteredSlot(Items.LAPIS_LAZULI.getDefaultInstance()));
     public final FilteredInternalInventory inputExposedXpShards =
-            new FilteredInternalInventory(this.inputXpShards, new AEItemStackFilteredInputSlot(net.oktawia.crazyae2addons.defs.Items.XP_SHARD_ITEM.stack()));
+            new FilteredInternalInventory(this.inputXpShards, new AEItemStackFilteredSlot(net.oktawia.crazyae2addons.defs.Items.XP_SHARD_ITEM.stack()));
     public final FilteredInternalInventory outputExposed =
             new FilteredInternalInventory(this.outputInv, AEItemFilters.EXTRACT_ONLY);
     public final InternalInventory invExposed = new CombinedInternalInventory(this.inputExposedBook, this.inputExposedLapis, this.inputExposedXpShards, this.outputExposed);

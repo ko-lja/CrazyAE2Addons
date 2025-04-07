@@ -1,4 +1,4 @@
-package net.oktawia.crazyae2addons.menus;
+package net.oktawia.crazyae2addons.misc;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;

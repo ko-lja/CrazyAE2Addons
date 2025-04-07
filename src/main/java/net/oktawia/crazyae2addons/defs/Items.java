@@ -7,17 +7,9 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import net.minecraft.Util;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.Parts.DisplayPart;
-import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
-import net.oktawia.crazyae2addons.Parts.NBTExportBusPart;
-import net.oktawia.crazyae2addons.Parts.RRItemP2PTunnelPart;
+import net.oktawia.crazyae2addons.Parts.*;
 import net.oktawia.crazyae2addons.items.*;
 
 import java.util.ArrayList;
@@ -49,8 +41,29 @@ public class Items {
         return item("Display Monitor", "display_monitor", DisplayPartItem::new);
     });
 
-    public static final ItemDefinition<xpShardItem> XP_SHARD_ITEM = Util.make(() -> item("XP Shard", "xp_shard", xpShardItem::new));
+    public static final ItemDefinition<DataExtractorPartItem> DATA_EXTRACTOR_PART_ITEM = Util.make(() -> {
+        PartModels.registerModels(PartModelsHelper.createModels(DataExtractorPart.class));
+        return item("Data Extractor", "data_extractor", DataExtractorPartItem::new);
+    });
 
+    public static final ItemDefinition<XpShardItem> XP_SHARD_ITEM = Util.make(() -> item("XP Shard", "xp_shard", XpShardItem::new));
+
+    private static final List<ItemDefinition<?>> CARDS = new ArrayList<>();
+    public static final ItemDefinition<AddCard> ADD_CARD = Util.make(() -> item("ADD Logic Card", "add_card", AddCard::new));
+    public static final ItemDefinition<SubCard> SUB_CARD = Util.make(() -> item("SUB Logic Card", "sub_card", SubCard::new));
+    public static final ItemDefinition<MulCard> MUL_CARD = Util.make(() -> item("MUL Logic Card", "mul_card", MulCard::new));
+    public static final ItemDefinition<DivCard> DIV_CARD = Util.make(() -> item("DIV Logic Card", "div_card", DivCard::new));
+    public static final ItemDefinition<MinCard> MIN_CARD = Util.make(() -> item("MIN Logic Card", "min_card", MinCard::new));
+    public static final ItemDefinition<MaxCard> MAX_CARD = Util.make(() -> item("MAX Logic Card", "max_card", MaxCard::new));
+    public static final ItemDefinition<BsrCard> BSR_CARD = Util.make(() -> item("BSR Logic Card", "bsr_card", BsrCard::new));
+    public static final ItemDefinition<BslCard> BSL_CARD = Util.make(() -> item("BSL Logic Card", "bsl_card", BslCard::new));
+    public static final ItemDefinition<HitCard> HIT_CARD = Util.make(() -> item("HIT Logic Card", "hit_card", HitCard::new));
+    public static final ItemDefinition<HifCard> HIF_CARD = Util.make(() -> item("HIF Logic Card", "hif_card", HifCard::new));
+
+
+    public static List<ItemDefinition<?>> getCards() {
+        return Collections.unmodifiableList(CARDS);
+    }
     public static List<ItemDefinition<?>> getItems() {
         return Collections.unmodifiableList(ITEMS);
     }
@@ -65,6 +78,9 @@ public class Items {
             String englishName, String id, Function<Item.Properties, T> factory) {
         var definition = new ItemDefinition<>(englishName, CrazyAddons.makeId(id), factory.apply(new Item.Properties()));
         ITEMS.add(definition);
+        if(id.contains("card")){
+            CARDS.add(definition);
+        }
         return definition;
     }
 }

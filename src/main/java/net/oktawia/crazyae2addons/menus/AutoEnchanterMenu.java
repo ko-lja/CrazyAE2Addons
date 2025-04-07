@@ -3,12 +3,15 @@ package net.oktawia.crazyae2addons.menus;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
+import appeng.menu.slot.AppEngSlot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Items;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
-import net.oktawia.crazyae2addons.misc.RestrictedSlot;
+import net.oktawia.crazyae2addons.misc.AEItemStackFilteredSlot;
+import net.oktawia.crazyae2addons.misc.AppEngFilteredSlot;
+import net.oktawia.crazyae2addons.misc.ExtractSlot;
 
 
 public class AutoEnchanterMenu extends UpgradeableMenu<AutoEnchanterBE> {
@@ -26,9 +29,9 @@ public class AutoEnchanterMenu extends UpgradeableMenu<AutoEnchanterBE> {
         super(Menus.AUTO_ENCHANTER_MENU, id, ip, host);
         this.getHost().setMenu(this);
         registerClientAction(ACTION_SYNC_LEVEL, Integer.class, this::syncLevel);
-        this.addSlot(new RestrictedSlot(getHost().inputExposedBook.toContainer(), 0, 0, 0, Items.BOOK.getDefaultInstance()), SlotSemantics.STORAGE);
-        this.addSlot(new RestrictedSlot(getHost().inputExposedLapis.toContainer(), 0, 0, 0, Items.LAPIS_LAZULI.getDefaultInstance()), SlotSemantics.STORAGE);
-        this.addSlot(new RestrictedSlot(getHost().inputExposedXpShards.toContainer(), 0, 0, 0, net.oktawia.crazyae2addons.defs.Items.XP_SHARD_ITEM.stack()), SlotSemantics.STORAGE);
+        this.addSlot(new AppEngFilteredSlot(getHost().inputExposedBook, 0, Items.BOOK.getDefaultInstance()), SlotSemantics.STORAGE);
+        this.addSlot(new AppEngFilteredSlot(getHost().inputExposedLapis, 0, Items.LAPIS_LAZULI.getDefaultInstance()), SlotSemantics.STORAGE);
+        this.addSlot(new AppEngFilteredSlot(getHost().inputExposedXpShards, 0, net.oktawia.crazyae2addons.defs.Items.XP_SHARD_ITEM.stack()), SlotSemantics.STORAGE);
         this.addSlot(new ExtractSlot(getHost().outputExposed.toContainer(), 0, 0, 0), SlotSemantics.MACHINE_OUTPUT);
     }
 
