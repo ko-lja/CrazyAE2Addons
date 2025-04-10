@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.oktawia.crazyae2addons.defs.BlockEntities;
 import net.oktawia.crazyae2addons.entities.DataProcessorBE;
-import net.oktawia.crazyae2addons.entities.MEDataControllerBE;
 import org.jetbrains.annotations.Nullable;
 
 public class DataProcessorBlock extends AEBaseEntityBlock<DataProcessorBE> implements IUpgradeableObject {

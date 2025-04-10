@@ -1,4 +1,4 @@
-package net.oktawia.crazyae2addons.Parts;
+package net.oktawia.crazyae2addons.parts;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -9,6 +9,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.automation.PlaneModels;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.logging.LogUtils;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -43,16 +44,16 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.items.parts.PartModels;
-import appeng.parts.AEBasePart;
+import org.jline.utils.Log;
 
-public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvider {
+public class DisplayPart extends NotifyablePart implements MenuProvider {
 
     private static final PlaneModels MODELS = new PlaneModels("part/display_mon_off",
             "part/display_mon_on");
 
     public byte spin = 0; // 0-3
-    public String textValue;
-    public Map<String, Integer> variables = Map.of();
+    public String textValue = "";
+    public HashMap<String, Integer> variables = new HashMap<>();
 
     @PartModels
     public static List<IPartModel> getModels() {
@@ -63,9 +64,24 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
         super(partItem);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
-                .setIdlePowerUsage(1)
-                .addService(IGridTickable.class, this);
-        this.textValue = "";
+                .setIdlePowerUsage(1);
+    }
+
+    @Override
+    public void doNotify(String name, Integer value) {
+        this.variables.put(name, value);
+        if (!getLevel().isClientSide()) {
+            String variables;
+            if (this.getGridNode() != null && !this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()){
+                variables = this.variables.entrySet().stream()
+                        .map(e -> e.getKey() + ":" + e.getValue())
+                        .collect(Collectors.joining("|"));
+            } else {
+                variables = "";
+            }
+            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
+                    new DisplayValuePacket(this.getBlockEntity().getBlockPos(), this.textValue, this.getSide(), this.spin, variables));
+        }
     }
 
     @Override
@@ -76,33 +92,6 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
     @Override
     public float getCableConnectionLength(AECableType cable) {
         return 1;
-    }
-
-    @Override
-    public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(20, 20, false, true);
-    }
-
-    @Override
-    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        if (!getLevel().isClientSide()) {
-            String variables;
-            if (this.getGridNode() != null && !this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()){
-                MEDataControllerBE controller = this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
-                Map<String, Integer> merged = new HashMap<>();
-                for (Map<String, Integer> inner : controller.variables.values()) {
-                    merged.putAll(inner);
-                }
-                variables = merged.entrySet().stream()
-                        .map(e -> e.getKey() + ":" + e.getValue())
-                        .collect(Collectors.joining("|"));
-            } else {
-                variables = "";
-            }
-            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
-                    new DisplayValuePacket(this.getBlockEntity().getBlockPos(), this.textValue, this.getSide(), this.spin, variables));
-        }
-        return TickRateModulation.IDLE;
     }
 
     @Override
@@ -137,6 +126,10 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
         if(extra.contains("spin")){
             this.spin = extra.getByte("spin");
         }
+        if(!isClientSide()){
+            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
+                    new DisplayValuePacket(this.getBlockEntity().getBlockPos(), this.textValue, this.getSide(), this.spin, ""));
+        }
     }
 
 
@@ -161,22 +154,35 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
         }
     }
 
-    public static String replaceVariables(String textValue, Map<String, Integer> variables) {
-        Pattern pattern = Pattern.compile("&(\\w+)");
+    public String replaceVariables(String textValue) {
+        Pattern pattern = Pattern.compile("&\\w+");
         Matcher matcher = pattern.matcher(textValue);
-        StringBuffer result = new StringBuffer();
-
+        StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
-            String key = matcher.group(1);
-            String replacement = variables.containsKey(key)
-                    ? String.valueOf(variables.get(key))
-                    : matcher.group(0);
-
-            matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
+            String key = matcher.group();
+            String value = this.variables.containsKey(key.replace("&", "")) ? String.valueOf(this.variables.get(key.replace("&", ""))) : key;
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(value));
         }
+        matcher.appendTail(sb);
+        return sb.toString();
+    }
 
-        matcher.appendTail(result);
-        return result.toString();
+    public void changeValue(String value) {
+        if (this.getGridNode() == null || this.getGridNode().getGrid() == null){
+            return;
+        }
+        MEDataControllerBE controller = this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
+        Pattern pattern = Pattern.compile("&\\w+");
+        Matcher matcher = pattern.matcher(value);
+        while (matcher.find()) {
+            String word = matcher.group();
+            controller.registerNotification(word.replace("&", ""), this);
+        }
+        this.textValue = value;
+        if(!isClientSide()){
+            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
+                    new DisplayValuePacket(this.getBlockEntity().getBlockPos(), this.textValue, this.getSide(), this.spin, ""));
+        }
     }
 
     @Override
@@ -269,7 +275,7 @@ public class DisplayPart extends AEBasePart implements IGridTickable, MenuProvid
         poseStack.translate(0, 0, 0.51);
         poseStack.scale(1.0f / 64.0f, -1.0f / 64.0f, 1.0f / 64.0f);
 
-        String valFormatted = replaceVariables(this.textValue, this.variables);
+        String valFormatted = replaceVariables(this.textValue);
         String[] lines = valFormatted.split("&nl");
         String longestLine = Arrays.stream(lines)
                 .max(Comparator.comparingInt(String::length))

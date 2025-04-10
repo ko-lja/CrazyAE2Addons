@@ -84,15 +84,15 @@
       "width": 75,
       "height": 16
     },
-    "outval": {
-      "left": 90,
-      "top": 35,
-      "width": 75,
-      "height": 16
-    },
     "save": {
       "left": 141,
       "top": 17,
+      "width": 30,
+      "height": 16
+    },
+    "clear": {
+      "left": 141,
+      "top": 32,
       "width": 30,
       "height": 16
     }

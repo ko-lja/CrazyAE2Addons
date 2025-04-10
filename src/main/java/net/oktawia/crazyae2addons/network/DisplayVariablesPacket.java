@@ -13,14 +13,14 @@ import net.oktawia.crazyae2addons.parts.DisplayPart;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-public class DisplayValuePacket {
+public class DisplayVariablesPacket {
     private final BlockPos pos;
     private final String textValue;
     private final Direction direction;
     private final byte spin;
     private final String variables;
 
-    public DisplayValuePacket(BlockPos blockPos, String textValue, Direction partsDirection, byte spin, String variables) {
+    public DisplayVariablesPacket(BlockPos blockPos, String textValue, Direction partsDirection, byte spin, String variables) {
         this.pos = blockPos;
         this.textValue = textValue;
         this.direction = partsDirection;
@@ -28,7 +28,7 @@ public class DisplayValuePacket {
         this.variables = variables;
     }
 
-    public static void encode(DisplayValuePacket packet, FriendlyByteBuf buf) {
+    public static void encode(DisplayVariablesPacket packet, FriendlyByteBuf buf) {
         buf.writeBlockPos(packet.pos);
         buf.writeUtf(packet.direction.toString());
         buf.writeUtf(packet.textValue);
@@ -36,7 +36,7 @@ public class DisplayValuePacket {
         buf.writeUtf(packet.variables);
     }
 
-    public static DisplayValuePacket decode(FriendlyByteBuf buf) {
+    public static DisplayVariablesPacket decode(FriendlyByteBuf buf) {
         BlockPos pos = buf.readBlockPos();
         String dir = buf.readUtf();
         String textValue = buf.readUtf();
@@ -51,10 +51,10 @@ public class DisplayValuePacket {
             case "south" -> partsDirection = Direction.SOUTH;
             case "east" -> partsDirection = Direction.EAST;
         }
-        return new DisplayValuePacket(pos, textValue, partsDirection, spin, variables);
+        return new DisplayVariablesPacket(pos, textValue, partsDirection, spin, variables);
     }
 
-    public static void handle(DisplayValuePacket packet, Supplier<NetworkEvent.Context> ctxSupplier) {
+    public static void handle(DisplayVariablesPacket packet, Supplier<NetworkEvent.Context> ctxSupplier) {
         NetworkEvent.Context ctx = ctxSupplier.get();
         ctx.enqueueWork(() -> {
              ClientLevel level = Minecraft.getInstance().level;

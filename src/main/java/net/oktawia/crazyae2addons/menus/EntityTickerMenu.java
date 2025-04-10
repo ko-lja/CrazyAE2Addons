@@ -7,7 +7,7 @@ import appeng.menu.slot.OptionalFakeSlot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.defs.Menus;
-import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
+import net.oktawia.crazyae2addons.parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.screens.EntityTickerScreen;
 
 public class EntityTickerMenu extends UpgradeableMenu<EntityTickerPart> {

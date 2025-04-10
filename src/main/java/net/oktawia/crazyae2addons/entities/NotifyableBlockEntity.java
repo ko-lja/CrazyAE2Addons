@@ -11,5 +11,5 @@ public abstract class NotifyableBlockEntity extends AENetworkInvBlockEntity {
         super(blockEntityType, pos, blockState);
     }
 
-    public abstract void doNotify(Integer value);
+    public abstract void doNotify(String name, Integer value);
 }

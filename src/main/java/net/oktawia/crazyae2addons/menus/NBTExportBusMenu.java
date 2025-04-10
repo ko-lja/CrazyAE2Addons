@@ -2,9 +2,8 @@ package net.oktawia.crazyae2addons.menus;
 
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
-import com.mojang.logging.LogUtils;
 import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.Parts.NBTExportBusPart;
+import net.oktawia.crazyae2addons.parts.NBTExportBusPart;
 import net.oktawia.crazyae2addons.defs.Menus;
 
 public class NBTExportBusMenu extends AEBaseMenu {

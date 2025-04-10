@@ -8,7 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
-import net.oktawia.crazyae2addons.Parts.DataExtractorPart;
+import net.oktawia.crazyae2addons.parts.DataExtractorPart;
 
 import java.util.Arrays;
 import java.util.List;

@@ -77,6 +77,12 @@
       "top": 30,
       "width": 16,
       "height": 16
+    },
+    "delay": {
+      "left": 135,
+      "top": 95,
+      "width": 30,
+      "height": 16
     }
   }
 }

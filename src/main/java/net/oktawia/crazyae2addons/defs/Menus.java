@@ -5,11 +5,11 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
-import net.oktawia.crazyae2addons.Parts.DataExtractorPart;
-import net.oktawia.crazyae2addons.Parts.DisplayPart;
-import net.oktawia.crazyae2addons.Parts.NBTExportBusPart;
+import net.oktawia.crazyae2addons.parts.DataExtractorPart;
+import net.oktawia.crazyae2addons.parts.DisplayPart;
+import net.oktawia.crazyae2addons.parts.NBTExportBusPart;
 import net.oktawia.crazyae2addons.entities.*;
-import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
+import net.oktawia.crazyae2addons.parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.menus.*;
 
 import java.util.Collections;

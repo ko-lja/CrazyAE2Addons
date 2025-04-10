@@ -1,4 +1,4 @@
-package net.oktawia.crazyae2addons.Parts;
+package net.oktawia.crazyae2addons.parts;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -64,6 +64,8 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
 
     public DataExtractorMenu menu;
     public String valueName = "";
+    public Integer ticksWaited = 0;
+    public Integer delay = 20;
 
     public DataExtractorPart(IPartItem<?> partItem) {
         super(partItem);
@@ -81,6 +83,9 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
         }
         if(extra.contains("identifier")){
             this.identifier = extra.getString("identifier");
+        }
+        if(extra.contains("delay")){
+            this.delay = extra.getInt("delay");
         }
         if(extra.contains("selected")){
             this.selected = extra.getInt("selected");
@@ -104,9 +109,11 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
         super.writeToNBT(extra);
         extra.putString("available", String.join("|", this.available));
         extra.putInt("selected", this.selected);
+        extra.putInt("delay", this.delay);
         extra.putLong("target", this.getBlockEntity().getBlockPos().relative(getSide()).asLong());
         extra.putString("identifier", this.identifier);
         extra.putString("valuename", this.valueName);
+
     }
 
     public static String randomHexId() {
@@ -312,23 +319,28 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(10, 10, false, true);
+        return new TickingRequest(1, 1, false, true);
     }
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        this.ticksWaited ++;
+        if (this.ticksWaited < this.delay){
+            return TickRateModulation.IDLE;
+        }
+        this.ticksWaited = 0;
         if (this.identifier == null){
             this.identifier = randomHexId();
         }
         if (this.target == null){
             this.target = getLevel().getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         }
-        Set<MEDataControllerBE> controllers = this.getGridNode().getGrid().getMachines(MEDataControllerBE.class);
-        if (controllers.size() == 1){
-            MEDataControllerBE controller = controllers.stream().toList().get(0);
-            if (!this.valueName.isEmpty()){
-                controller.addVariable(this.identifier, this.valueName, extractData());
-            }
+        if (this.getGridNode() == null || this.getGridNode().getGrid() == null){
+            return TickRateModulation.IDLE;
+        }
+        MEDataControllerBE controller = this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
+        if (!this.valueName.isEmpty()){
+            controller.addVariable(this.identifier, this.valueName.replace("&", ""), extractData());
         }
         return TickRateModulation.IDLE;
     }

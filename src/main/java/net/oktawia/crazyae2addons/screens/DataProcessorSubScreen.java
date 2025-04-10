@@ -3,14 +3,16 @@ package net.oktawia.crazyae2addons.screens;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.Utils;
 import net.oktawia.crazyae2addons.entities.DataProcessorBE;
-import net.oktawia.crazyae2addons.menus.DataProcessorMenu;
 import net.oktawia.crazyae2addons.menus.DataProcessorSubMenu;
-import net.oktawia.crazyae2addons.records.LogicSetting;
+import net.oktawia.crazyae2addons.misc.LogicSetting;
+import net.oktawia.crazyae2addons.misc.NBTContainer;
+import org.jline.utils.Log;
 
 import java.util.Map;
 
@@ -32,10 +34,10 @@ public class DataProcessorSubScreen<C extends DataProcessorSubMenu> extends Upgr
     protected void updateBeforeRender(){
         super.updateBeforeRender();
         if (!initialized){
-            Map<Integer, LogicSetting> settings = DataProcessorBE.loadSettings(getMenu().cardSettings);
-            in1.setValue(settings.get(getMenu().submenuNum).in1);
-            in2.setValue(settings.get(getMenu().submenuNum).in2);
-            out.setValue(settings.get(getMenu().submenuNum).out);
+            NBTContainer settings = NBTContainer.deserializeFromString(getMenu().cardSettings, getMenu().COMPRESSED);
+            in1.setValue(((LogicSetting)settings.get(String.valueOf(getMenu().submenuNum))).in1);
+            in2.setValue(((LogicSetting)settings.get(String.valueOf(getMenu().submenuNum))).in2);
+            out.setValue(((LogicSetting)settings.get(String.valueOf(getMenu().submenuNum))).out);
             this.initialized = true;
         }
     }
@@ -54,24 +56,40 @@ public class DataProcessorSubScreen<C extends DataProcessorSubMenu> extends Upgr
         out.setPlaceholder(Component.literal("Value OUT"));
         if(getMenu().submenuNum == 0){
             in1.setEditable(false);
+            in1.active = false;
         }
         this.widgets.add("in1", in1);
         this.widgets.add("in2", in2);
         this.widgets.add("out", out);
+        this.widgets.addButton("clear", Component.literal("clr"), (btn) -> {clr();});
+    }
+
+    public static boolean isAsciiNotNumber(String input) {
+        return input.chars().allMatch(c -> c <= 127 && !Character.isDigit(c));
     }
 
     public static boolean dataCheck(String input){
         if(input.isEmpty()) return false;
 
-        if (input.matches("-?\\d+(\\.\\d+)?")) return true;
+        if(input.startsWith("&&")){
+            return input.equals("&&0") || input.equals("&&1") || input.equals("&&2") || input.equals("&&3");
+        }
 
-        if (input.startsWith("&") && !input.contains(" ")) return true;
+        return (input.startsWith("&") || input.chars().allMatch(Character::isDigit)) && !input.contains(" ");
+    }
 
-        return input.equals("&&0") || input.equals("&&1") || input.equals("&&2") || input.equals("&&3");
+    public void clr(){
+        in1.setValue("");
+        in2.setValue("");
+        out.setValue("");
+        getMenu().setSetting("", "", "");
     }
 
     public void saveData(){
-        if (dataCheck(in1.getValue()) && dataCheck(in2.getValue()) && dataCheck(out.getValue())){
+        in1.setValue(in1.getValue().toUpperCase().strip());
+        in2.setValue(in2.getValue().toUpperCase().strip());
+        out.setValue(out.getValue().toUpperCase().strip());
+        if ((dataCheck(in1.getValue()) || !in1.isActive()) && dataCheck(in2.getValue()) && dataCheck(out.getValue())){
             in1.setTextColor(0x00FF00);
             in2.setTextColor(0x00FF00);
             out.setTextColor(0x00FF00);

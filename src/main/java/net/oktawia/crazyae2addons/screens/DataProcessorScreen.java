@@ -20,14 +20,12 @@ import java.util.Arrays;
 
 public class DataProcessorScreen<C extends DataProcessorMenu> extends UpgradeableScreen<C> {
     public AETextField inval;
-    public AETextField outval;
     public boolean initialized = false;
 
     public DataProcessorScreen(
             DataProcessorMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super((C) menu, playerInventory, title, style);
         this.inval = new AETextField(style, Minecraft.getInstance().font, 0, 0, 0, 0);
-        this.outval = new AETextField(style, Minecraft.getInstance().font, 0, 0, 0, 0);
         setupGui();
     }
 
@@ -36,7 +34,6 @@ public class DataProcessorScreen<C extends DataProcessorMenu> extends Upgradeabl
         super.updateBeforeRender();
         if (!initialized){
             this.inval.setValue(getMenu().in);
-            this.outval.setValue(getMenu().out);
             this.initialized = true;
         }
     }
@@ -54,12 +51,9 @@ public class DataProcessorScreen<C extends DataProcessorMenu> extends Upgradeabl
         this.inval.setBordered(false);
         this.inval.setMaxLength(999);
         this.inval.setPlaceholder(Component.literal("VARIABLE IN"));
-        this.outval.setBordered(false);
-        this.outval.setMaxLength(999);
-        this.outval.setPlaceholder(Component.literal("VARIABLE OUT"));
         this.widgets.add("inval", this.inval);
-        this.widgets.add("outval", this.outval);
         this.widgets.addButton("save", Component.literal("save"), (btn) -> {save();});
+        this.widgets.addButton("clear", Component.literal("clr"), (btn) -> {clr();});
     }
 
     public void settings(int index){
@@ -71,19 +65,20 @@ public class DataProcessorScreen<C extends DataProcessorMenu> extends Upgradeabl
     }
 
     public void save(){
-        if(!this.inval.getValue().isEmpty() && !this.outval.getValue().isEmpty()
-                && isAsciiNotNumber(this.inval.getValue()) && isAsciiNotNumber(this.outval.getValue())
-                && !this.inval.getValue().equals(this.outval.getValue())){
+        if(!this.inval.getValue().isEmpty() && isAsciiNotNumber(this.inval.getValue())
+                && this.inval.getValue().startsWith("&") && !this.inval.getValue().contains(" ")){
             this.inval.setTextColor(0x00FF00);
-            this.outval.setTextColor(0x00FF00);
             Utils.asyncDelay(() -> this.inval.setTextColor(0xFFFFFF), 1);
-            Utils.asyncDelay(() -> this.outval.setTextColor(0xFFFFFF), 1);
-            getMenu().save(this.inval.getValue().replace("&", "") + "|" + this.outval.getValue().replace("&", ""));
+            getMenu().save(this.inval.getValue().toUpperCase());
+            this.inval.setValue(this.inval.getValue().toUpperCase());
         } else {
             this.inval.setTextColor(0xFF0000);
-            this.outval.setTextColor(0xFF0000);
             Utils.asyncDelay(() -> this.inval.setTextColor(0xFFFFFF), 1);
-            Utils.asyncDelay(() -> this.outval.setTextColor(0xFFFFFF), 1);
         }
+    }
+
+    public void clr(){
+        this.inval.setValue("");
+        this.getMenu().save("");
     }
 }

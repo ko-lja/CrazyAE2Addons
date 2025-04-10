@@ -53,6 +53,12 @@
       "top": 21,
       "width": 30,
       "height": 16
+    },
+    "clear": {
+      "left": 141,
+      "top": 37,
+      "width": 30,
+      "height": 16
     }
   }
 }

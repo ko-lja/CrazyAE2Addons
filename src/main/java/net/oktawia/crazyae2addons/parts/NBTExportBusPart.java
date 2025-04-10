@@ -1,7 +1,6 @@
-package net.oktawia.crazyae2addons.Parts;
+package net.oktawia.crazyae2addons.parts;
 
 import appeng.api.behaviors.StackExportStrategy;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.storage.IStorageService;
@@ -15,16 +14,12 @@ import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.parts.automation.IOBusPart;
-import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.InternalInventoryHost;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.world.item.ItemStack;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.implementations.StackTransferContextImplementation;
 import appeng.parts.automation.StackWorldBehaviors;
@@ -35,8 +30,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.oktawia.crazyae2addons.menus.NBTExportBusMenu;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Instant;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class NBTExportBusPart extends IOBusPart {

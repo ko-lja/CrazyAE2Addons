@@ -1,9 +1,8 @@
-package net.oktawia.crazyae2addons.Parts;
+package net.oktawia.crazyae2addons.parts;
 
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKeyType;
-import com.mojang.logging.LogUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import appeng.core.AppEng;

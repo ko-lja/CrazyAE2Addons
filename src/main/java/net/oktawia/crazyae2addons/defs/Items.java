@@ -9,7 +9,7 @@ import appeng.items.parts.PartModelsHelper;
 import net.minecraft.Util;
 import net.minecraft.world.item.Item;
 import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.Parts.*;
+import net.oktawia.crazyae2addons.parts.*;
 import net.oktawia.crazyae2addons.items.*;
 
 import java.util.ArrayList;

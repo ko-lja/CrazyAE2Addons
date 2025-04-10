@@ -1,9 +1,8 @@
-package net.oktawia.crazyae2addons.Parts;
+package net.oktawia.crazyae2addons.parts;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -12,13 +11,10 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.upgrades.IUpgradeableObject;
-import appeng.core.AppEngBase;
 import appeng.core.definitions.AEItems;
 import appeng.items.parts.PartModels;
-import appeng.me.Grid;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
-import appeng.parts.PartModel;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.parts.p2p.P2PModels;
 import com.mojang.logging.LogUtils;

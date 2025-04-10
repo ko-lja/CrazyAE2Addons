@@ -5,7 +5,7 @@ import appeng.client.gui.style.ScreenStyle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.Utils;
-import net.oktawia.crazyae2addons.Parts.EntityTickerPart;
+import net.oktawia.crazyae2addons.parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.menus.EntityTickerMenu;
 
 import static java.lang.Math.pow;

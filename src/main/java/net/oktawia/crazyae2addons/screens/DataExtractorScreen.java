@@ -23,6 +23,7 @@ public class DataExtractorScreen<C extends DataExtractorMenu> extends Upgradeabl
     public AbstractWidget btn3;
     public AbstractWidget btn4;
     public AETextField input;
+    public AETextField delay;
 
     public DataExtractorScreen(
             DataExtractorMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
@@ -40,6 +41,7 @@ public class DataExtractorScreen<C extends DataExtractorMenu> extends Upgradeabl
         super.updateBeforeRender();
         if (!initialized2){
             this.input.setValue(this.getMenu().valueName);
+            this.delay.setValue(String.valueOf(this.getMenu().delay));
             initialized2 = true;
         }
         String selected;
@@ -80,7 +82,13 @@ public class DataExtractorScreen<C extends DataExtractorMenu> extends Upgradeabl
         this.input.setValue(getMenu().valueName);
         this.input.setMaxLength(999);
         this.input.setBordered(false);
+        this.delay = new AETextField(style, Minecraft.getInstance().font, 0, 0, 0, 0);
+        this.delay.setPlaceholder(Component.literal("Delay"));
+        this.delay.setValue(String.valueOf(getMenu().delay));
+        this.delay.setMaxLength(10);
+        this.delay.setBordered(false);
         this.widgets.add("input", this.input);
+        this.widgets.add("delay", this.delay);
     }
 
     public void renderPage(int start, int end){
@@ -134,12 +142,14 @@ public class DataExtractorScreen<C extends DataExtractorMenu> extends Upgradeabl
 
     public void updateVariableName(){
         String name = this.input.getValue();
-        if (isAscii(name) && !name.isEmpty()){
+        String delay = this.delay.getValue();
+        if (isAscii(name) && !name.isEmpty() && delay.chars().allMatch(Character::isDigit)){
             name = name.toUpperCase();
             this.input.setTextColor(0x00FF00);
             Runnable setColorFunction = () -> this.input.setTextColor(0xFFFFFF);
             Utils.asyncDelay(setColorFunction, 1);
             getMenu().saveName(name);
+            getMenu().saveDelay(Integer.parseInt(delay));
         }
     }
 

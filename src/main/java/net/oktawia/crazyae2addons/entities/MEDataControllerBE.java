@@ -11,17 +11,17 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.blockentity.AEBaseBlockEntity;
-import appeng.blockentity.grid.AENetworkPowerBlockEntity;
+import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
 import appeng.core.definitions.AEItems;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.parts.AEBasePart;
+import com.mojang.logging.LogUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -30,89 +30,31 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.oktawia.crazyae2addons.Parts.DataExtractorPart;
-import net.oktawia.crazyae2addons.blocks.MEDataControllerBlock;
+import net.oktawia.crazyae2addons.misc.DataVariable;
+import net.oktawia.crazyae2addons.misc.NBTContainer;
+import net.oktawia.crazyae2addons.misc.NotificationData;
+import net.oktawia.crazyae2addons.parts.DataExtractorPart;
+import net.oktawia.crazyae2addons.parts.NotifyablePart;
 import net.oktawia.crazyae2addons.defs.Blocks;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.menus.MEDataControllerMenu;
-import net.oktawia.crazyae2addons.misc.BlockEntityDescription;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.*;
-import java.util.function.Function;
 
-public class MEDataControllerBE extends NotifyableBlockEntity implements IGridTickable, MenuProvider, IUpgradeableObject {
+public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGridTickable, MenuProvider, IUpgradeableObject {
 
     public AppEngCellInventory inv = new AppEngCellInventory(this, 6);
     public MEDataControllerMenu menu;
-    public HashMap<String, Map<String, Integer>> variables = new HashMap<>();
     public IUpgradeInventory upgrades = UpgradeInventories.forMachine(Blocks.ME_DATA_CONTROLLER_BLOCK, 0, this::saveChanges);
-    public Map<String, List<BlockEntityDescription>> toNotify = Collections.emptyMap();
-
-    private ListTag serializeVariables() {
-        ListTag list = new ListTag();
-        for (var outerEntry : variables.entrySet()) {
-            String outerKey = outerEntry.getKey();
-            for (var innerEntry : outerEntry.getValue().entrySet()) {
-                CompoundTag tag = new CompoundTag();
-                tag.putString("outerKey", outerKey);
-                tag.putString("innerKey", innerEntry.getKey());
-                tag.putInt("value", innerEntry.getValue());
-                list.add(tag);
-            }
-        }
-        return list;
-    }
-
-    private void deserializeVariables(ListTag list) {
-        variables.clear();
-        for (Tag t : list) {
-            CompoundTag tag = (CompoundTag) t;
-            String outer = tag.getString("outerKey");
-            String inner = tag.getString("innerKey");
-            int value = tag.getInt("value");
-            variables.computeIfAbsent(outer, k -> new HashMap<>()).put(inner, value);
-        }
-    }
-
-    private ListTag serializeToNotify() {
-        ListTag list = new ListTag();
-        for (var entry : toNotify.entrySet()) {
-            String var = entry.getKey();
-            for (BlockEntityDescription desc : entry.getValue()) {
-                CompoundTag tag = new CompoundTag();
-                tag.putString("variable", var);
-                tag.putString("desc", desc.serialize());
-                list.add(tag);
-            }
-        }
-        return list;
-    }
-
-    private void deserializeToNotify(ListTag list, Function<String, Level> levelResolver) {
-        Map<String, List<BlockEntityDescription>> map = new HashMap<>();
-        for (Tag t : list) {
-            CompoundTag tag = (CompoundTag) t;
-            String var = tag.getString("variable");
-            String descStr = tag.getString("desc");
-            BlockEntityDescription desc = BlockEntityDescription.deserialize(descStr, levelResolver);
-            map.computeIfAbsent(var, k -> new ArrayList<>()).add(desc);
-        }
-        toNotify = map;
-    }
+    public NBTContainer variables = new NBTContainer();
+    public NBTContainer toNotify = new NBTContainer();
 
     public MEDataControllerBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL).setIdlePowerUsage(4).addService(IGridTickable.class, this);
-    }
-
-    @Override
-    public void doNotify(Integer value) {
-
     }
 
     @Override
@@ -143,27 +85,19 @@ public class MEDataControllerBE extends NotifyableBlockEntity implements IGridTi
     @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
-        data.put("variables", serializeVariables());
-        data.put("toNotify", serializeToNotify());
+        data.putByteArray("variables", variables.serialize(true));
+        data.putByteArray("tonotify", toNotify.serialize(true));
     }
 
     @Override
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
         if (data.contains("variables")) {
-            deserializeVariables(data.getList("variables", Tag.TAG_COMPOUND));
+            variables.deserialize(data.getByteArray("variables"));
         }
-        if (data.contains("toNotify")) {
-            deserializeToNotify(data.getList("toNotify", Tag.TAG_COMPOUND), this::resolveLevelFromId);
+        if (data.contains("tonotify")) {
+                toNotify.deserialize(data.getByteArray("tonotify"));
         }
-    }
-
-    private Level resolveLevelFromId(String id) {
-        if (this.level == null || this.level.getServer() == null) return null;
-        ResourceLocation dimensionId = ResourceLocation.tryParse(id);
-        if (dimensionId == null) return null;
-
-        return this.level.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, dimensionId));
     }
 
     @Override
@@ -213,31 +147,48 @@ public class MEDataControllerBE extends NotifyableBlockEntity implements IGridTi
     }
 
     public void addVariable(String id, String name, Integer value){
-        if (this.variables.containsKey(id) || (this.variables.size() < this.getMaxVariables() && this.variables.values().stream().noneMatch(map -> map.containsKey(name)))) {
-            this.variables.put(id, Map.of(name, value));
-            if (toNotify.containsKey(name)){
-                toNotify.get(name).forEach(def -> {
-                    ((NotifyableBlockEntity) def.get()).doNotify(value);
-                });
+        this.markForUpdate();
+        this.saveChanges();
+        if (this.variables.get(id) != null || this.variables.size() < this.getMaxVariables()) {
+            this.variables.set(id, new DataVariable(name, value));
+            if (toNotify.get(name) != null){
+                var list = ((NotificationData) toNotify.get(name)).requesters;
+                var iterator = list.iterator();
+                while (iterator.hasNext()) {
+                    var def = iterator.next();
+                    var requester = NotificationData.get(def, this.getLevel().getServer());
+                    if (requester instanceof BlockEntity) {
+                        ((NotifyableBlockEntity) requester).doNotify(name, value);
+                    } else if (requester instanceof AEBasePart) {
+                        ((NotifyablePart) requester).doNotify(name, value);
+                    } else if (requester == null) {
+                        iterator.remove();
+                    }
+                }
             }
         }
     }
 
     public Integer getVariable(String key) {
-        for (Map<String, Integer> nestedMap : variables.values()) {
-            if (nestedMap.containsKey(key)) {
-                return nestedMap.get(key);
-            }
-        }
-        return null;
+        return this.variables.toStream()
+                .filter(nd -> Objects.equals(((Map.Entry<String, DataVariable>) nd).getValue().name, key))
+                .map(nd -> ((Map.Entry<String, DataVariable>) nd).getValue().value)
+                .findFirst()
+                .orElse(0);
     }
 
     public void registerNotification(String variable, AEBaseBlockEntity target){
-        this.toNotify.computeIfAbsent(variable, k -> new ArrayList<>()).add(new BlockEntityDescription(target));
+        if (this.toNotify.get(variable) == null){
+            this.toNotify.set(variable, new NotificationData());
+        }
+        ((NotificationData) this.toNotify.get(variable)).addRequester(target);
     }
 
     public void registerNotification(String variable, AEBasePart target){
-        this.toNotify.computeIfAbsent(variable, k -> new ArrayList<>()).add(new BlockEntityDescription(target));
+        if (this.toNotify.get(variable) == null){
+            this.toNotify.set(variable, new NotificationData());
+        }
+        ((NotificationData) this.toNotify.get(variable)).addRequester(target);
     }
 
     @Override
@@ -248,17 +199,18 @@ public class MEDataControllerBE extends NotifyableBlockEntity implements IGridTi
                 getLevel().destroyBlock(getBlockPos(), true);
             }
         }
-        if (getMainNode().getGrid() != null){
+        if (getMainNode().getGrid() != null) {
             Set<String> existingMachines = new HashSet<>();
             for (DataExtractorPart extractor : getMainNode().getGrid().getMachines(DataExtractorPart.class)) {
                 existingMachines.add(extractor.identifier);
             }
 
-            Iterator<Map.Entry<String, Map<String, Integer>>> iterator = this.variables.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, Map<String, Integer>> entry = iterator.next();
-                if (!existingMachines.contains(entry.getKey())) {
-                    iterator.remove();
+            List<DataVariable> variablesCopy = this.variables.toStream()
+                    .map(nd -> ((Map.Entry<String, DataVariable>) nd).getValue())
+                    .toList();
+            for (DataVariable dv : variablesCopy) {
+                if (!existingMachines.contains(dv.name)) {
+                    this.variables.del(dv.name);
                 }
             }
         }
