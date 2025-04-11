@@ -46,7 +46,7 @@ import appeng.api.util.AECableType;
 import appeng.items.parts.PartModels;
 import org.jline.utils.Log;
 
-public class DisplayPart extends NotifyablePart implements MenuProvider {
+public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTickable {
 
     private static final PlaneModels MODELS = new PlaneModels("part/display_mon_off",
             "part/display_mon_on");
@@ -54,6 +54,7 @@ public class DisplayPart extends NotifyablePart implements MenuProvider {
     public byte spin = 0; // 0-3
     public String textValue = "";
     public HashMap<String, Integer> variables = new HashMap<>();
+    public boolean reRegister = true;
 
     @PartModels
     public static List<IPartModel> getModels() {
@@ -64,11 +65,12 @@ public class DisplayPart extends NotifyablePart implements MenuProvider {
         super(partItem);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
-                .setIdlePowerUsage(1);
+                .setIdlePowerUsage(1)
+                .addService(IGridTickable.class, this);
     }
 
     @Override
-    public void doNotify(String name, Integer value) {
+    public void doNotify(String name, Integer value, Integer depth) {
         this.variables.put(name, value);
         if (!getLevel().isClientSide()) {
             String variables;
@@ -168,10 +170,16 @@ public class DisplayPart extends NotifyablePart implements MenuProvider {
     }
 
     public void changeValue(String value) {
-        if (this.getGridNode() == null || this.getGridNode().getGrid() == null){
+        if (this.getGridNode() == null || this.getGridNode().getGrid() == null || this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()){
+            this.reRegister = true;
             return;
         }
         MEDataControllerBE controller = this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
+        if (controller.getMaxVariables() <= 0){
+            this.reRegister = true;
+            return;
+        }
+        controller.unRegisterNotification(this);
         Pattern pattern = Pattern.compile("&\\w+");
         Matcher matcher = pattern.matcher(value);
         while (matcher.find()) {
@@ -309,6 +317,29 @@ public class DisplayPart extends NotifyablePart implements MenuProvider {
                 15728880);
         }
         poseStack.popPose();
+    }
+
+    @Override
+    public TickingRequest getTickingRequest(IGridNode node) {
+        return new TickingRequest(20, 20, false, false);
+    }
+
+    @Override
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (this.getGridNode() == null || this.getGridNode().getGrid() == null || this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()){
+            this.reRegister = true;
+        } else {
+            MEDataControllerBE controller = getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
+            if (controller.getMaxVariables() <= 0){
+                this.reRegister = true;
+            } else {
+                if (this.reRegister){
+                    this.reRegister = false;
+                    changeValue(this.textValue);
+                }
+            }
+        }
+        return TickRateModulation.IDLE;
     }
 }
 

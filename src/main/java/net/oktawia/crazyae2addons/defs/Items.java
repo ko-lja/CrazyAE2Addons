@@ -46,9 +46,15 @@ public class Items {
         return item("Data Extractor", "data_extractor", DataExtractorPartItem::new);
     });
 
+    public static final ItemDefinition<ChunkyFluidP2PTunnelPartItem> CHUNKY_FLUID_P2P_TUNNEL_PART = Util.make(() -> {
+        PartModels.registerModels(PartModelsHelper.createModels(ChunkyFluidP2PTunnelPart.class));
+        return item("Chunky Fluid P2P Tunnel", "chunky_fluid_p2p_tunnel", ChunkyFluidP2PTunnelPartItem::new);
+    });
+
     public static final ItemDefinition<XpShardItem> XP_SHARD_ITEM = Util.make(() -> item("XP Shard", "xp_shard", XpShardItem::new));
 
     private static final List<ItemDefinition<?>> CARDS = new ArrayList<>();
+    public static final ItemDefinition<LogicCard> LOGIC_CARD = Util.make(() -> item("Logic Card", "logic_card", LogicCard::new));
     public static final ItemDefinition<AddCard> ADD_CARD = Util.make(() -> item("ADD Logic Card", "add_card", AddCard::new));
     public static final ItemDefinition<SubCard> SUB_CARD = Util.make(() -> item("SUB Logic Card", "sub_card", SubCard::new));
     public static final ItemDefinition<MulCard> MUL_CARD = Util.make(() -> item("MUL Logic Card", "mul_card", MulCard::new));

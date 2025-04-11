@@ -18,6 +18,7 @@ import appeng.parts.PartModel;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -42,6 +43,7 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.regex.Pattern;
 
 public class DataExtractorPart extends AEBasePart implements IGridTickable, MenuProvider, IUpgradeableObject {
 
@@ -144,7 +146,7 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
             this.target = level.getBlockEntity(neighbor);
             extractPossibleData();
             if (this.getMenu() != null){
-                this.getMenu().available = String.join("\\|", this.available);
+                this.getMenu().available = String.join("|", this.available);
             }
         }
     }
@@ -158,7 +160,7 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
             if (gtMachine == null) return;
             var machineClass = gtMachine.getClass();
             boolean useLogic = false;
-            Field field = null;
+            Field field;
             RecipeLogic recLogic = null;
 
             try {
@@ -184,6 +186,7 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
             }
         } else {
             this.resolveTarget = this.target;
+            this.available = extractNumericInfo(this.target);
         }
         if (!getLevel().isClientSide()) {
             NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
@@ -335,12 +338,12 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
         if (this.target == null){
             this.target = getLevel().getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         }
-        if (this.getGridNode() == null || this.getGridNode().getGrid() == null){
+        if (this.getGridNode() == null || this.getGridNode().getGrid() == null || this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()){
             return TickRateModulation.IDLE;
         }
         MEDataControllerBE controller = this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
         if (!this.valueName.isEmpty()){
-            controller.addVariable(this.identifier, this.valueName.replace("&", ""), extractData());
+            controller.addVariable(this.identifier, this.valueName.replace("&", ""), extractData(), 0);
         }
         return TickRateModulation.IDLE;
     }

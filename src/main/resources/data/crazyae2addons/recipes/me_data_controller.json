@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": {
+      "item": "ae2:sky_dust"
+    },
+    "L": {
+      "item": "crazyae2addons:logic_card"
+    },
+    "C": {
+      "item": "ae2:controller"
+    }
+  },
+  "pattern": [
+    "SLS",
+    "LCL",
+    "SLS"
+  ],
+  "result": {
+    "item": "crazyae2addons:me_data_controller_block"
+  }
+}

@@ -19,7 +19,6 @@ public class MEDataControllerMenu extends UpgradeableMenu<MEDataControllerBE> {
     public int variableNum = 0;
     @GuiSync(875)
     public int maxVariables = 0;
-
     public MEDataControllerMenu(int id, Inventory ip, MEDataControllerBE host) {
         super(Menus.ME_DATA_CONTROLLER_MENU, id, ip, host);
         this.getHost().setMenu(this);

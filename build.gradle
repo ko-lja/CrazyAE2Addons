@@ -175,6 +175,7 @@ dependencies {
     implementation fg.deobf("curse.maven:gregtechceu-modern-890405:6254458")
     implementation fg.deobf("curse.maven:ldlib-626676:6337779")
     implementation fg.deobf("curse.maven:configuration-444699:5840405")
+    implementation fg.deobf("curse.maven:jei-238222:6075247")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

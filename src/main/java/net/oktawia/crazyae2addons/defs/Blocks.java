@@ -46,6 +46,12 @@ public class Blocks {
             DataProcessorBlock::new,
             DataProcessorBlockItem::new
     );
+    public static final BlockDefinition<DataTrackerBlock> DATA_TRACKER_BLOCK = block(
+            "Data Tracker",
+            "data_tracker_block",
+            DataTrackerBlock::new,
+            DataTrackerBlockItem::new
+    );
 
     public static List<BlockDefinition<?>> getBlocks() {
         return Collections.unmodifiableList(BLOCKS);

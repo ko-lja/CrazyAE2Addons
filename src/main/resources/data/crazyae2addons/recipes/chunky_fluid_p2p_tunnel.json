@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ae2:fluid_p2p_tunnel"
+    },
+    {
+      "item": "ae2:capacity_card"
+    }
+  ],
+  "result": {
+    "item": "crazyae2addons:chunky_fluid_p2p_tunnel"
+  }
+}

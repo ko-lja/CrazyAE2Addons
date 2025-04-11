@@ -146,10 +146,12 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
         return new TickingRequest(20, 20, false, true);
     }
 
-    public void addVariable(String id, String name, Integer value){
-        this.markForUpdate();
+    public void addVariable(String id, String name, Integer value, Integer depth){
         this.saveChanges();
         if (this.variables.get(id) != null || this.variables.size() < this.getMaxVariables()) {
+            if (this.variables.get(id) != null && !Objects.equals(((DataVariable) this.variables.get(id)).name, name)){
+                addVariable(id, ((DataVariable) this.variables.get(id)).name, 0, 0);
+            }
             this.variables.set(id, new DataVariable(name, value));
             if (toNotify.get(name) != null){
                 var list = ((NotificationData) toNotify.get(name)).requesters;
@@ -158,9 +160,9 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
                     var def = iterator.next();
                     var requester = NotificationData.get(def, this.getLevel().getServer());
                     if (requester instanceof BlockEntity) {
-                        ((NotifyableBlockEntity) requester).doNotify(name, value);
+                        ((NotifyableBlockEntity) requester).doNotify(name, value, depth);
                     } else if (requester instanceof AEBasePart) {
-                        ((NotifyablePart) requester).doNotify(name, value);
+                        ((NotifyablePart) requester).doNotify(name, value, depth);
                     } else if (requester == null) {
                         iterator.remove();
                     }
@@ -191,6 +193,18 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
         ((NotificationData) this.toNotify.get(variable)).addRequester(target);
     }
 
+    public void unRegisterNotification(AEBaseBlockEntity target){
+        this.toNotify.toStream().forEach(entry -> {
+            ((Map.Entry<String, NotificationData>) entry).getValue().removeRequester(target);
+        });
+    }
+
+    public void unRegisterNotification(AEBasePart target){
+        this.toNotify.toStream().forEach(entry -> {
+            ((Map.Entry<String, NotificationData>) entry).getValue().removeRequester(target);
+        });
+    }
+
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         Set<MEDataControllerBE> controllers = getMainNode().getGrid().getMachines(MEDataControllerBE.class);
@@ -214,7 +228,6 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
                 }
             }
         }
-
         return TickRateModulation.IDLE;
     }
 }

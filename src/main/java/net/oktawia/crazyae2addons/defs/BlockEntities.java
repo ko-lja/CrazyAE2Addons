@@ -46,6 +46,12 @@ public class BlockEntities {
             DataProcessorBE::new,
             Blocks.DATA_PROCESSOR_BLOCK);
 
+    public static final BlockEntityType<DataTrackerBE> DATA_TRACKER_BE = create(
+            "data_tracker_be",
+            DataTrackerBE.class,
+            DataTrackerBE::new,
+            Blocks.DATA_TRACKER_BLOCK);
+
     public static Map<ResourceLocation, BlockEntityType<?>> getBlockEntityTypes() {
         return Collections.unmodifiableMap(BLOCK_ENTITY_TYPES);
     }

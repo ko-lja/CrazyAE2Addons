@@ -86,13 +86,13 @@
     },
     "save": {
       "left": 141,
-      "top": 17,
+      "top": 22,
       "width": 30,
       "height": 16
     },
     "clear": {
       "left": 141,
-      "top": 32,
+      "top": 38,
       "width": 30,
       "height": 16
     }

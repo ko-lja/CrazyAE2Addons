@@ -12,9 +12,9 @@
     }
   },
   "pattern": [
-    "SCS",
-    "CNC",
-    "SCS"
+    "CS ",
+    "SN ",
+    "   "
   ],
   "result": {
     "item": "crazyae2addons:nbt_export_bus"

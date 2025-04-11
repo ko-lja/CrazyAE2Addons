@@ -1,6 +1,5 @@
 package net.oktawia.crazyae2addons.misc;
 
-import com.mojang.logging.LogUtils;
 import net.oktawia.crazyae2addons.interfaces.ICustomNBTSerializable;
 
 import java.io.ByteArrayOutputStream;
@@ -39,6 +38,14 @@ public class NBTContainer {
 
     public Stream<?> toStream(){
         return data.entrySet().stream();
+    }
+
+    public Set<String> keySet(){
+        return data.keySet();
+    }
+
+    public Set<Map.Entry<String, Object>> entrySet(){
+        return data.entrySet();
     }
 
     public static String serializeToString(NBTContainer container, boolean compressed) {
@@ -100,7 +107,7 @@ public class NBTContainer {
                 ((ICustomNBTSerializable) instance).deserialize(payload);
                 data.put(key, instance);
             } catch (Exception ex) {
-                throw new RuntimeException("Deserialization failed for key: " + key, ex);
+                throw new RuntimeException("Deserialization failed for key: " + key + "\n" + ex.getMessage(), ex);
             }
             start = end + 1;
         }

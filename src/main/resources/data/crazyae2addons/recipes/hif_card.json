@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "ae2:certus_quartz_dust"
+    },
+    "L": {
+      "item": "crazyae2addons:logic_card"
+    }
+  },
+  "pattern": [
+    "  D",
+    " L ",
+    "D  "
+  ],
+  "result": {
+    "item": "crazyae2addons:hif_card"
+  }
+}

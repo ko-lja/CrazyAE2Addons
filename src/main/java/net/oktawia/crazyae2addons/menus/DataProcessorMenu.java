@@ -23,10 +23,14 @@ public class DataProcessorMenu extends UpgradeableMenu<DataProcessorBE> implemen
 
     @GuiSync(564)
     public String in;
+    @GuiSync(832)
+    public boolean looped = false;
+
 
     public DataProcessorMenu(int id, Inventory ip, DataProcessorBE host) {
         super(Menus.DATA_PROCESSOR_MENU, id, ip, host);
         this.in = getHost().in;
+        this.looped = host.looped;
         getHost().setMenu(this);
         List<ItemStack> allowedItems = Items.getCards().stream().map(ItemDefinition::stack).toList();
         for (int i = 0; i < getHost().getInternalInventory().size(); i ++){
@@ -37,6 +41,8 @@ public class DataProcessorMenu extends UpgradeableMenu<DataProcessorBE> implemen
     }
 
     public void save(String data){
+        this.looped = false;
+        this.getHost().looped = false;
         this.getHost().in = data;
         this.in = data;
         this.getHost().markForUpdate();
@@ -49,6 +55,7 @@ public class DataProcessorMenu extends UpgradeableMenu<DataProcessorBE> implemen
 
     public void openSubMenu(Integer index) {
         getHost().submenuNum = index;
+        getHost().in = this.in;
         if(isClientSide()){
             sendClientAction(OPEN_SUB, index);
         } else {

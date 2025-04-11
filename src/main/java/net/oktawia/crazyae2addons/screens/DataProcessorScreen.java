@@ -7,6 +7,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.menu.locator.MenuLocators;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -80,5 +81,13 @@ public class DataProcessorScreen<C extends DataProcessorMenu> extends Upgradeabl
     public void clr(){
         this.inval.setValue("");
         this.getMenu().save("");
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        if (this.getMenu().looped){
+            guiGraphics.drawCenteredString(Minecraft.getInstance().font, "LOOP DETECTED", this.getGuiLeft() + 88, this.getGuiTop() + 30, 0xFF0000);
+        }
     }
 }

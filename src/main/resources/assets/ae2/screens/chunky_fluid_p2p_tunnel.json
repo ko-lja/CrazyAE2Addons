@@ -1,0 +1,43 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json"],
+  "background": {
+    "texture": "guis/blank_background_no_inv.png",
+    "srcRect": [0, 0, 176, 205]
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.crazyae2addons.chunky_p2p"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "info1": {
+      "text": {
+        "translate": "gui.crazyae2addons.chunky_p2p_info1"
+      },
+      "position": {
+        "top": 30,
+        "left": 88
+      },
+      "align": "CENTER"
+    }
+  },
+  "widgets": {
+    "value": {
+      "left": 15,
+      "top": 77,
+      "width": 110,
+      "height": 16
+    },
+    "confirm": {
+      "left": 135,
+      "top": 77,
+      "width": 30,
+      "height": 16
+    }
+  }
+}

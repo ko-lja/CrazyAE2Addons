@@ -3,6 +3,10 @@ package net.oktawia.crazyae2addons.entities;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
@@ -20,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.oktawia.crazyae2addons.Utils;
 import net.oktawia.crazyae2addons.defs.Blocks;
 import net.oktawia.crazyae2addons.defs.Items;
 import net.oktawia.crazyae2addons.defs.Menus;
@@ -35,7 +40,7 @@ import java.util.HashMap;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvider, IUpgradeableObject {
+public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvider, IUpgradeableObject, IGridTickable {
 
     public AppEngInternalInventory inv = new AppEngInternalInventory(this, 9);
     public DataProcessorMenu menu;
@@ -44,10 +49,15 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
     public String identifier;
     public NBTContainer settings = new NBTContainer();
     public String in = "";
+    public boolean looped = false;
+    public boolean reRegister = false;
 
     public DataProcessorBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
-        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL).setIdlePowerUsage(4);
+        this.getMainNode()
+                .setFlags(GridFlags.REQUIRE_CHANNEL)
+                .setIdlePowerUsage(4)
+                .addService(IGridTickable.class, this);
         for(int i = 0; i < inv.size(); i ++){
             this.inv.setMaxStackSize(i, 1);
             settings.set(String.valueOf(i), new LogicSetting());
@@ -55,12 +65,13 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
     }
 
     @Override
-    public void doNotify(String name, Integer value) {
-        if (getMainNode().getGrid() == null){
+    public void doNotify(String name, Integer value, Integer depth) {
+        if (depth > 128 || getMainNode().getGrid() == null){
+            this.looped = true;
             return;
         }
         MEDataControllerBE database = getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
-        compute(database);
+        compute(database, depth);
     }
 
     @Override
@@ -144,7 +155,7 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
         return this.menu;
     }
 
-    public void compute(MEDataControllerBE database){
+    public void compute(MEDataControllerBE database, Integer depth){
         int l0 = 0;
         int l1 = 0;
         int l2 = 0;
@@ -154,7 +165,12 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
         String out;
         int temp = 0;
         int i = 0;
+        int count = 0;
         while(i < this.getInternalInventory().size()){
+            count ++;
+            if(count > 128){
+                break;
+            }
             if(i == 0){
                 in1 = this.in;
             } else {
@@ -195,6 +211,9 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
                 } catch (Exception ignored){}
             }
             var itemStack = getInternalInventory().getStackInSlot(i);
+            if(itemStack.isEmpty()){
+                continue;
+            }
             if(itemStack.is(Items.ADD_CARD.asItem())){
                 temp = x + y;
             }
@@ -239,17 +258,49 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
                     case "&&3" -> l3 = temp;
                 }
             } else if (out.startsWith("&")) {
-                database.addVariable(this.identifier, out.replace("&", ""), temp);
+                database.addVariable(this.identifier, out.replace("&", ""), temp, depth + 1);
+                break;
             }
             i ++;
         }
     }
 
     public void notifyDatabase() {
-        if (getMainNode().getGrid() == null){
+        if (this.getGridNode() == null || this.getGridNode().getGrid() == null || this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()){
+            this.reRegister = true;
             return;
         }
-        MEDataControllerBE dataBase = getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
-        dataBase.registerNotification(this.in.replace("&", ""), this);
+        MEDataControllerBE controller = getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
+        if (controller.getMaxVariables() <= 0){
+            this.reRegister = true;
+            return;
+        }
+        controller.unRegisterNotification(this);
+        if (!this.in.isEmpty()){
+            controller.registerNotification(this.in.replace("&", ""), this);
+        }
+    }
+
+    @Override
+    public TickingRequest getTickingRequest(IGridNode node) {
+        return new TickingRequest(20, 20, false, false);
+    }
+
+    @Override
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (this.getGridNode() == null || this.getGridNode().getGrid() == null || this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()){
+            this.reRegister = true;
+        } else {
+            MEDataControllerBE controller = getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
+            if (controller.getMaxVariables() <= 0){
+                this.reRegister = true;
+            } else {
+                if (this.reRegister){
+                    this.reRegister = false;
+                    notifyDatabase();
+                }
+            }
+        }
+        return TickRateModulation.IDLE;
     }
 }

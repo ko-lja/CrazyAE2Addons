@@ -5,11 +5,8 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
-import net.oktawia.crazyae2addons.parts.DataExtractorPart;
-import net.oktawia.crazyae2addons.parts.DisplayPart;
-import net.oktawia.crazyae2addons.parts.NBTExportBusPart;
+import net.oktawia.crazyae2addons.parts.*;
 import net.oktawia.crazyae2addons.entities.*;
-import net.oktawia.crazyae2addons.parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.menus.*;
 
 import java.util.Collections;
@@ -74,6 +71,16 @@ public class Menus {
             "data_processor_sub",
             DataProcessorSubMenu::new,
             DataProcessorBE.class
+    );
+    public static final MenuType<DataTrackerMenu> DATA_TRACKER_MENU = create(
+            "data_tracker",
+            DataTrackerMenu::new,
+            DataTrackerBE.class
+    );
+    public static final MenuType<ChunkyFluidP2PTunnelMenu> CHUNKY_FLUID_P2P_TUNNEL_MENU = create(
+            "chunky_p2p",
+            ChunkyFluidP2PTunnelMenu::new,
+            ChunkyFluidP2PTunnelPart.class
     );
 
 

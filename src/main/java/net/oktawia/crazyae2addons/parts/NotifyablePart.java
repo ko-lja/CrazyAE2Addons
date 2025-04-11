@@ -9,5 +9,5 @@ public abstract class NotifyablePart extends AEBasePart {
         super(partItem);
     }
 
-    public abstract void doNotify(String name, Integer value);
+    public abstract void doNotify(String name, Integer value, Integer depth);
 }

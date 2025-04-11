@@ -21,6 +21,8 @@ public class DataProcessorSubMenu extends UpgradeableMenu<DataProcessorBE> imple
     public Integer submenuNum;
     @GuiSync(831)
     public String cardSettings;
+    @GuiSync(891)
+    public String valueIn;
     public final String SYNC_SETTINGS = "actionSyncSettings";
     public String CLOSE_SUBSCREEN = "actionCloseSubScreen";
     public boolean COMPRESSED = true;
@@ -34,6 +36,7 @@ public class DataProcessorSubMenu extends UpgradeableMenu<DataProcessorBE> imple
         registerClientAction(CLOSE_SUBSCREEN, this::closeSubScreen);
         registerClientAction(SYNC_SETTINGS, String.class, this::syncSettings);
         this.cardSettings = NBTContainer.serializeToString(getHost().settings, COMPRESSED);
+        this.valueIn = getHost().in;
     }
 
     public void setSetting(String in1, String in2, String out){

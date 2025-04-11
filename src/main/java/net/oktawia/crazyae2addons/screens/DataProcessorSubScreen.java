@@ -3,11 +3,15 @@ package net.oktawia.crazyae2addons.screens;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
+import appeng.menu.SlotSemantics;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.oktawia.crazyae2addons.Utils;
+import net.oktawia.crazyae2addons.defs.Items;
 import net.oktawia.crazyae2addons.entities.DataProcessorBE;
 import net.oktawia.crazyae2addons.menus.DataProcessorSubMenu;
 import net.oktawia.crazyae2addons.misc.LogicSetting;
@@ -55,17 +59,29 @@ public class DataProcessorSubScreen<C extends DataProcessorSubMenu> extends Upgr
         out.setMaxLength(999);
         out.setPlaceholder(Component.literal("Value OUT"));
         if(getMenu().submenuNum == 0){
+            in1.setPlaceholder(Component.literal(getMenu().valueIn));
             in1.setEditable(false);
             in1.active = false;
+        }
+        ItemStack itemStack = getMenu().getSlots(SlotSemantics.STORAGE).get(0).getItem();
+        if (itemStack.isEmpty()){
+            in1.setEditable(false);
+            in1.active = false;
+            in2.setEditable(false);
+            in2.active = false;
+            out.setEditable(false);
+            out.active = false;
+        } else if(itemStack.is(Items.HIT_CARD.asItem()) || itemStack.is(Items.HIF_CARD.asItem())){
+            in1.setPlaceholder(Component.literal("Value"));
+            in2.setPlaceholder(Component.literal("Target"));
+            out.setPlaceholder(Component.literal(""));
+            out.setEditable(false);
+            out.active = false;
         }
         this.widgets.add("in1", in1);
         this.widgets.add("in2", in2);
         this.widgets.add("out", out);
         this.widgets.addButton("clear", Component.literal("clr"), (btn) -> {clr();});
-    }
-
-    public static boolean isAsciiNotNumber(String input) {
-        return input.chars().allMatch(c -> c <= 127 && !Character.isDigit(c));
     }
 
     public static boolean dataCheck(String input){
@@ -89,7 +105,9 @@ public class DataProcessorSubScreen<C extends DataProcessorSubMenu> extends Upgr
         in1.setValue(in1.getValue().toUpperCase().strip());
         in2.setValue(in2.getValue().toUpperCase().strip());
         out.setValue(out.getValue().toUpperCase().strip());
-        if ((dataCheck(in1.getValue()) || !in1.isActive()) && dataCheck(in2.getValue()) && dataCheck(out.getValue())){
+        if (((dataCheck(in1.getValue()) || !in1.isActive()) && dataCheck(in2.getValue()) && dataCheck(out.getValue()))
+                || (!in1.isActive() && !in2.isActive() && !out.isActive())
+                || (!out.isActive())){
             in1.setTextColor(0x00FF00);
             in2.setTextColor(0x00FF00);
             out.setTextColor(0x00FF00);
