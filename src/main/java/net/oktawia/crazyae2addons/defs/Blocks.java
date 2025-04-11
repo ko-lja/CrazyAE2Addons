@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.oktawia.crazyae2addons.blocks.*;
 import net.oktawia.crazyae2addons.items.*;
 import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.menus.CircuitedPatternProviderMenu;
 
 public class Blocks {
 
@@ -51,6 +52,12 @@ public class Blocks {
             "data_tracker_block",
             DataTrackerBlock::new,
             DataTrackerBlockItem::new
+    );
+    public static final BlockDefinition<CircuitedPatternProviderBlock> CIRCUITED_PATTERN_PROVIDER_BLOCK = block(
+            "Circuited Pattern Provider",
+            "circuited_pp",
+            CircuitedPatternProviderBlock::new,
+            CircuitedPatternProviderBlockItem::new
     );
 
     public static List<BlockDefinition<?>> getBlocks() {

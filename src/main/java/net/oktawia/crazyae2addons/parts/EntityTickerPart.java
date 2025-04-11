@@ -90,7 +90,9 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
 
     @Override
     public void upgradesChanged() {
-        menu.sendUpgradeNum(this.getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD));
+        if (this.menu != null){
+            this.menu.sendUpgradeNum(this.getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD));
+        }
     }
 
     @Override

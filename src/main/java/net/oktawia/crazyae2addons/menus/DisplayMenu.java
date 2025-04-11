@@ -24,7 +24,7 @@ public class DisplayMenu extends AEBaseMenu {
 
     public void syncValue(String value) {
         this.displayValue = value;
-        host.changeValue(value);
+        host.updateController(value);
         if (isClientSide()){
             sendClientAction(ACTION_SYNC_DISPLAY_VALUE, value);
         }

@@ -105,9 +105,9 @@ public class DataProcessorSubScreen<C extends DataProcessorSubMenu> extends Upgr
         in1.setValue(in1.getValue().toUpperCase().strip());
         in2.setValue(in2.getValue().toUpperCase().strip());
         out.setValue(out.getValue().toUpperCase().strip());
-        if (((dataCheck(in1.getValue()) || !in1.isActive()) && dataCheck(in2.getValue()) && dataCheck(out.getValue()))
+        if ((((dataCheck(in1.getValue()) || !in1.isActive()) && dataCheck(in2.getValue()) && dataCheck(out.getValue()))
                 || (!in1.isActive() && !in2.isActive() && !out.isActive())
-                || (!out.isActive())){
+                || (!out.isActive())) && !out.getValue().equals(getMenu().valueIn)){
             in1.setTextColor(0x00FF00);
             in2.setTextColor(0x00FF00);
             out.setTextColor(0x00FF00);

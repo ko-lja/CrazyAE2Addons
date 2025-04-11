@@ -9,7 +9,6 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.automation.PlaneModels;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.logging.LogUtils;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -44,7 +43,6 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.items.parts.PartModels;
-import org.jline.utils.Log;
 
 public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTickable {
 
@@ -169,7 +167,8 @@ public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTi
         return sb.toString();
     }
 
-    public void changeValue(String value) {
+    public void updateController(String value) {
+        this.textValue = value;
         if (this.getGridNode() == null || this.getGridNode().getGrid() == null || this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()){
             this.reRegister = true;
             return;
@@ -185,11 +184,6 @@ public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTi
         while (matcher.find()) {
             String word = matcher.group();
             controller.registerNotification(word.replace("&", ""), this);
-        }
-        this.textValue = value;
-        if(!isClientSide()){
-            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
-                    new DisplayValuePacket(this.getBlockEntity().getBlockPos(), this.textValue, this.getSide(), this.spin, ""));
         }
     }
 
@@ -335,9 +329,13 @@ public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTi
             } else {
                 if (this.reRegister){
                     this.reRegister = false;
-                    changeValue(this.textValue);
+                    updateController(this.textValue);
                 }
             }
+        }
+        if(!isClientSide()){
+            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
+                    new DisplayValuePacket(this.getBlockEntity().getBlockPos(), this.textValue, this.getSide(), this.spin, ""));
         }
         return TickRateModulation.IDLE;
     }

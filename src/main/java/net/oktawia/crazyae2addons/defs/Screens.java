@@ -2,6 +2,7 @@ package net.oktawia.crazyae2addons.defs;
 
 import appeng.init.client.InitScreens;
 import net.oktawia.crazyae2addons.menus.*;
+import net.oktawia.crazyae2addons.parts.CircuitedPatternProviderPart;
 import net.oktawia.crazyae2addons.screens.*;
 
 public class Screens {
@@ -24,7 +25,7 @@ public class Screens {
         InitScreens.register(
                 Menus.PATTERN_MODIFIER_MENU,
                 PatternModifierScreen<PatternModifierMenu>::new,
-                "/screens/pattern_modifier.json"
+                "/screens/crazy_pattern_modifier.json"
         );
         InitScreens.register(
                 Menus.AUTO_ENCHANTER_MENU,
@@ -65,6 +66,16 @@ public class Screens {
                 Menus.CHUNKY_FLUID_P2P_TUNNEL_MENU,
                 ChunkyFluidP2PTunnelScreen<ChunkyFluidP2PTunnelMenu>::new,
                 "/screens/chunky_fluid_p2p_tunnel.json"
+        );
+        InitScreens.register(
+                Menus.CIRCUITED_PATTERN_PROVIDER_MENU,
+                CircuitedPatternProviderScreen<CircuitedPatternProviderMenu>::new,
+                "/screens/circuited_pp.json"
+        );
+        InitScreens.register(
+                Menus.CIRCUITED_PATTERN_PROVIDER_PART_MENU,
+                CircuitedPatternProviderPartScreen<CircuitedPatternProviderPartMenu>::new,
+                "/screens/circuited_pp.json"
         );
     }
 }

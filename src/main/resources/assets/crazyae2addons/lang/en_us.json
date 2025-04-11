@@ -18,8 +18,8 @@
   "gui.crazyae2addons.nbt_export_bus": "NBT Export Bus",
   "group.entity_ticker.name": "Entity Ticker",
   "item.crazyae2addons.nbt_export_bus": "NBT Export Bus",
-  "gui.crazyae2addons.pattern_modifier": "Ignore NBT Pattern Modifier",
-  "block.crazyae2addons.pattern_modifier_block": "Ignore NBT Pattern Modifier",
+  "gui.crazyae2addons.pattern_modifier": "NBT Pattern Modifier",
+  "block.crazyae2addons.pattern_modifier_block": "NBT Pattern Modifier",
   "gui.crazyae2addons.auto_enchanter": "Auto Enchanter",
   "group.auto_enchanter.name": "Auto Enchanter",
   "block.crazyae2addons.auto_enchanter_block": "Auto Enchanter",
@@ -50,5 +50,8 @@
   "item.crazyae2addons.hif_card": "Hop If False Logic Card",
   "item.crazyae2addons.chunky_fluid_p2p_tunnel": "Chunky Fluid P2P Tunnel",
   "gui.crazyae2addons.chunky_p2p": "Chunky Fluid P2P Tunnel",
-  "gui.crazyae2addons.chunky_p2p_info1": "Set chunk size in mB"
+  "gui.crazyae2addons.chunky_p2p_info1": "Set chunk size in mB",
+  "gui.crazyae2addons.circuited_pp": "Circuited Pattern Provider",
+  "block.crazyae2addons.circuited_pp": "Circuited Pattern Provider",
+  "item.crazyae2addons.circuited_pp_part": "Circuited Pattern Provider"
 }

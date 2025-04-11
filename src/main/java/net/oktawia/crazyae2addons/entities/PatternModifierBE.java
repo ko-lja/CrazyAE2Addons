@@ -40,7 +40,9 @@ public class PatternModifierBE extends AEBaseInvBlockEntity implements MenuProvi
 
     @Override
     public void onChangeInventory(InternalInventory inv, int slot) {
-        getMenu().updateText(inv.getStackInSlot(slot));
+        if (this.getMenu() != null){
+            getMenu().updateText(inv.getStackInSlot(slot));
+        }
     }
 
     public void setMenu(PatternModifierMenu menu){

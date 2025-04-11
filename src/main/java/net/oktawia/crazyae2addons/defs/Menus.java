@@ -38,7 +38,7 @@ public class Menus {
             NBTExportBusPart.class
     );
     public static final MenuType<PatternModifierMenu> PATTERN_MODIFIER_MENU = create(
-            "nbt_pattern_modifier",
+            "crazy_pattern_modifier",
             PatternModifierMenu::new,
             PatternModifierBE.class
     );
@@ -81,6 +81,16 @@ public class Menus {
             "chunky_p2p",
             ChunkyFluidP2PTunnelMenu::new,
             ChunkyFluidP2PTunnelPart.class
+    );
+    public static final MenuType<CircuitedPatternProviderMenu> CIRCUITED_PATTERN_PROVIDER_MENU = create(
+            "circuited_pp",
+            CircuitedPatternProviderMenu::new,
+            CircuitedPatternProviderBE.class
+    );
+    public static final MenuType<CircuitedPatternProviderPartMenu> CIRCUITED_PATTERN_PROVIDER_PART_MENU = create(
+            "circuited_pp_part",
+            CircuitedPatternProviderPartMenu::new,
+            CircuitedPatternProviderPart.class
     );
 
 

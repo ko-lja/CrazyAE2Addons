@@ -8,7 +8,7 @@
   "slots": {
     "STORAGE": {
       "left": 80,
-      "top": 49,
+      "top": 42,
       "grid": "HORIZONTAL"
     }
   },
@@ -26,7 +26,19 @@
   "widgets": {
     "confirm": {
       "left": 135,
+      "top": 87,
+      "width": 30,
+      "height": 16
+    },
+    "value": {
+      "left": 15,
       "top": 85,
+      "width": 30,
+      "height": 16
+    },
+    "confirmcirc": {
+      "left": 50,
+      "top": 87,
       "width": 30,
       "height": 16
     }

@@ -51,6 +51,11 @@ public class Items {
         return item("Chunky Fluid P2P Tunnel", "chunky_fluid_p2p_tunnel", ChunkyFluidP2PTunnelPartItem::new);
     });
 
+    public static final ItemDefinition<CircuitedPatternProviderPartItem> CIRCUITED_PATTERN_PROVIDER_PART = Util.make(() -> {
+        PartModels.registerModels(PartModelsHelper.createModels(CircuitedPatternProviderPart.class));
+        return item("Circuited Pattern Provider", "circuited_pp_part", CircuitedPatternProviderPartItem::new);
+    });
+
     public static final ItemDefinition<XpShardItem> XP_SHARD_ITEM = Util.make(() -> item("XP Shard", "xp_shard", XpShardItem::new));
 
     private static final List<ItemDefinition<?>> CARDS = new ArrayList<>();
