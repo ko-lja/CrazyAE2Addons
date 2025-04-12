@@ -97,6 +97,11 @@ public class Menus {
             EnergyExporterMenu::new,
             EnergyExporterPart.class
     );
+    public static final MenuType<RightClickProviderMenu> RIGHT_CLICK_PROVIDER_MENU = create(
+            "rc_provider",
+            RightClickProviderMenu::new,
+            RightClickProviderPart.class
+    );
 
 
     public static <C extends AEBaseMenu, I> MenuType<C> create(

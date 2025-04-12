@@ -61,6 +61,11 @@ public class Items {
         return item("Energy Exporter", "energy_exporter", EnergyExporterPartItem::new);
     });
 
+    public static final ItemDefinition<RightClickProviderPartItem> RIGHT_CLICK_PROVIDER_PART_ITEM = Util.make(() -> {
+        PartModels.registerModels(PartModelsHelper.createModels(RightClickProviderPart.class));
+        return item("Right Click Provider", "rc_provider", RightClickProviderPartItem::new);
+    });
+
     public static final ItemDefinition<XpShardItem> XP_SHARD_ITEM = Util.make(() -> item("XP Shard", "xp_shard", XpShardItem::new));
 
     private static final List<ItemDefinition<?>> CARDS = new ArrayList<>();

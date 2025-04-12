@@ -10,6 +10,7 @@ public class UpgradeCards {
             Upgrades.add(AEItems.SPEED_CARD, Items.ENTITY_TICKER_PART_ITEM, 8, "group.entity_ticker.name");
             Upgrades.add(AEItems.SPEED_CARD, Blocks.AUTO_ENCHANTER_BLOCK, 4, "group.auto_enchanter.name");
             Upgrades.add(AEItems.SPEED_CARD, Items.ENERGY_EXPORTER_PART_ITEM, 4, "group.energy_exporter.name");
+            Upgrades.add(AEItems.SPEED_CARD, Items.RIGHT_CLICK_PROVIDER_PART_ITEM, 4, "group.right_click_provider.name");
         });
     }
 }

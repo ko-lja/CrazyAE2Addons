@@ -1,0 +1,26 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/energy_exporter_background.png",
+    "srcRect": [0, 0, 176, 205]
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.crazyae2addons.rc_provider"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  },
+  "slots": {
+    "STORAGE": {
+      "left": 80,
+      "top": 42,
+      "grid": "HORIZONTAL"
+    }
+  }
+}

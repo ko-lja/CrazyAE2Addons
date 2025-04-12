@@ -167,6 +167,7 @@ public class EnergyExporterPart extends UpgradeablePart implements
         if (this.getMenu() != null){
             this.getMenu().maxAmps = this.maxAmps;
         }
+        getHost().markForSave();
     }
 
     @Override
@@ -239,18 +240,18 @@ public class EnergyExporterPart extends UpgradeablePart implements
                     if (((availablePower - powerRequired) * 100 / maxPower) > 33){
                         double ext = getGridNode().getGrid().getEnergyService().extractAEPower(powerRequired / 2, Actionable.MODULATE, PowerMultiplier.CONFIG);
                         storage.acceptEnergyFromNetwork(getSide().getOpposite(), voltage, maxAmps);
-                        transfered = Utils.shortenNumber(ext);
+                        transfered = Utils.shortenNumber(ext * 2);
                     }
                 });
             } else {
                 neighbor.getCapability(ForgeCapabilities.ENERGY, getSide().getOpposite()).ifPresent(storage -> {
-                    double powerRequired = Math.min(Math.pow(64, getInstalledUpgrades(AEItems.SPEED_CARD)), storage.getMaxEnergyStored() - storage.getEnergyStored());
+                    double powerRequired = Math.min(Math.pow(64, getInstalledUpgrades(AEItems.SPEED_CARD)), storage.getMaxEnergyStored() - storage.getEnergyStored()) - 1;
                     double availablePower = getGridNode().getGrid().getEnergyService().getStoredPower() * 2;
                     double maxPower = getGridNode().getGrid().getEnergyService().getMaxStoredPower() * 2;
                     if (((availablePower - powerRequired) * 100 / maxPower) > 33){
                         double ext = getGridNode().getGrid().getEnergyService().extractAEPower(powerRequired / 2, Actionable.MODULATE, PowerMultiplier.CONFIG);
                         storage.receiveEnergy((int) powerRequired, false);
-                        transfered = Utils.shortenNumber(ext);
+                        transfered = Utils.shortenNumber(ext * 2);
                     }
                 });
             }
@@ -263,6 +264,7 @@ public class EnergyExporterPart extends UpgradeablePart implements
 
     @Override
     public void saveChanges() {
+        getHost().markForSave();
     }
 
     @Override

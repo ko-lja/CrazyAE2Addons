@@ -82,5 +82,10 @@ public class Screens {
                 EnergyExporterScreen<EnergyExporterMenu>::new,
                 "/screens/energy_exporter.json"
         );
+        InitScreens.register(
+                Menus.RIGHT_CLICK_PROVIDER_MENU,
+                RightClickProviderScreen<RightClickProviderMenu>::new,
+                "/screens/rc_provider.json"
+        );
     }
 }
