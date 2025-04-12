@@ -92,6 +92,11 @@ public class Menus {
             CircuitedPatternProviderPartMenu::new,
             CircuitedPatternProviderPart.class
     );
+    public static final MenuType<EnergyExporterMenu> ENERGY_EXPORTER_MENU = create(
+            "energy_exporter",
+            EnergyExporterMenu::new,
+            EnergyExporterPart.class
+    );
 
 
     public static <C extends AEBaseMenu, I> MenuType<C> create(

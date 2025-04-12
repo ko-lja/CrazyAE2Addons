@@ -52,7 +52,6 @@ public class BlockEntities {
             DataTrackerBE::new,
             Blocks.DATA_TRACKER_BLOCK);
 
-
     public static final BlockEntityType<CircuitedPatternProviderBE> CIRCUITED_PATTERN_PROVIDER_BE = create(
             "circuited_pp_be",
             CircuitedPatternProviderBE.class,

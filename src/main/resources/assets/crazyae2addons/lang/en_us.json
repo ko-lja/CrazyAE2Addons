@@ -53,5 +53,7 @@
   "gui.crazyae2addons.chunky_p2p_info1": "Set chunk size in mB",
   "gui.crazyae2addons.circuited_pp": "Circuited Pattern Provider",
   "block.crazyae2addons.circuited_pp": "Circuited Pattern Provider",
-  "item.crazyae2addons.circuited_pp_part": "Circuited Pattern Provider"
+  "item.crazyae2addons.circuited_pp_part": "Circuited Pattern Provider",
+  "item.crazyae2addons.energy_exporter": "Energy Exporter",
+  "gui.crazyae2addons.energy_exporter": "Energy Exporter"
 }

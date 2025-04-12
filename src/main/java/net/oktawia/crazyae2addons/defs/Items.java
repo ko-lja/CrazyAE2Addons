@@ -56,6 +56,11 @@ public class Items {
         return item("Circuited Pattern Provider", "circuited_pp_part", CircuitedPatternProviderPartItem::new);
     });
 
+    public static final ItemDefinition<EnergyExporterPartItem> ENERGY_EXPORTER_PART_ITEM = Util.make(() -> {
+        PartModels.registerModels(PartModelsHelper.createModels(EnergyExporterPart.class));
+        return item("Energy Exporter", "energy_exporter", EnergyExporterPartItem::new);
+    });
+
     public static final ItemDefinition<XpShardItem> XP_SHARD_ITEM = Util.make(() -> item("XP Shard", "xp_shard", XpShardItem::new));
 
     private static final List<ItemDefinition<?>> CARDS = new ArrayList<>();

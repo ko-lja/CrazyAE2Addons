@@ -77,5 +77,10 @@ public class Screens {
                 CircuitedPatternProviderPartScreen<CircuitedPatternProviderPartMenu>::new,
                 "/screens/circuited_pp.json"
         );
+        InitScreens.register(
+                Menus.ENERGY_EXPORTER_MENU,
+                EnergyExporterScreen<EnergyExporterMenu>::new,
+                "/screens/energy_exporter.json"
+        );
     }
 }
