@@ -2,12 +2,12 @@
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
-    "texture": "guis/pattern_modifier_background.png",
+    "texture": "guis/crazy_pattern_modifier_background.png",
     "srcRect": [0, 0, 176, 205]
   },
   "slots": {
     "STORAGE": {
-      "left": 80,
+      "left": 75,
       "top": 42,
       "grid": "HORIZONTAL"
     }
@@ -21,25 +21,39 @@
         "left": 8,
         "top": 6
       }
+    },
+    "info1": {
+      "position": {
+        "left": 88,
+        "top": 20
+      },
+      "align": "CENTER"
+    },
+    "info2": {
+      "position": {
+        "left": 88,
+        "top": 65
+      },
+      "align": "CENTER"
     }
   },
   "widgets": {
-    "confirm": {
-      "left": 135,
-      "top": 87,
-      "width": 30,
+    "nbt": {
+      "left": 95,
+      "top": 42,
+      "width": 16,
       "height": 16
     },
-    "value": {
-      "left": 15,
-      "top": 85,
+    "circ": {
+      "left": 63,
+      "top": 87,
       "width": 30,
       "height": 16
     },
     "confirmcirc": {
-      "left": 50,
-      "top": 87,
-      "width": 30,
+      "left": 98,
+      "top": 85,
+      "width": 16,
       "height": 16
     }
   }

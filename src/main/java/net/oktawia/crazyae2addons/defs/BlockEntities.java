@@ -22,11 +22,6 @@ public class BlockEntities {
             CraftingCancelerBE.class,
             CraftingCancelerBE::new,
             Blocks.CRAFTING_CANCELER_BLOCK);
-    public static final BlockEntityType<PatternModifierBE> PATTERN_MODIFIER_BE = create(
-            "pattern_modifier_be",
-            PatternModifierBE.class,
-            PatternModifierBE::new,
-            Blocks.PATTERN_MODIFIER_BLOCK);
 
     public static final BlockEntityType<AutoEnchanterBE> AUTO_ENCHANTER_BE = create(
             "auto_enchanter_be",
@@ -57,6 +52,18 @@ public class BlockEntities {
             CircuitedPatternProviderBE.class,
             CircuitedPatternProviderBE::new,
             Blocks.CIRCUITED_PATTERN_PROVIDER_BLOCK);
+
+    public static final BlockEntityType<AmpereMeterBE> AMPERE_METER_BE = create(
+            "ampere_meter_be",
+            AmpereMeterBE.class,
+            AmpereMeterBE::new,
+            Blocks.AMPERE_METER_BLOCK);
+
+    public static final BlockEntityType<IsolatedDataProcessorBE> ISOLATED_DATA_PROCESSOR_BE = create(
+            "isolated_data_processor_be",
+            IsolatedDataProcessorBE.class,
+            IsolatedDataProcessorBE::new,
+            Blocks.ISOLATED_DATA_PROCESSOR_BLOCK);
 
     public static Map<ResourceLocation, BlockEntityType<?>> getBlockEntityTypes() {
         return Collections.unmodifiableMap(BLOCK_ENTITY_TYPES);

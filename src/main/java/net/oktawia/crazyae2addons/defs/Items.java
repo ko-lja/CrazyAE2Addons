@@ -66,6 +66,11 @@ public class Items {
         return item("Right Click Provider", "rc_provider", RightClickProviderPartItem::new);
     });
 
+    public static final ItemDefinition<CrazyPatternModifierItem> CRAZY_PATTERN_MODIFIER_ITEM = Util.make(() -> item(
+            "Crazy Pattern Modifier", "crazy_pattern_modifier", CrazyPatternModifierItem::new));
+    public static final ItemDefinition<CrazyPatternMultiplierItem> CRAZY_PATTERN_MULTIPLIER_ITEM = Util.make(() -> item(
+            "Crazy Pattern Multiplier", "crazy_pattern_multiplier", CrazyPatternMultiplierItem::new));
+
     public static final ItemDefinition<XpShardItem> XP_SHARD_ITEM = Util.make(() -> item("XP Shard", "xp_shard", XpShardItem::new));
 
     private static final List<ItemDefinition<?>> CARDS = new ArrayList<>();

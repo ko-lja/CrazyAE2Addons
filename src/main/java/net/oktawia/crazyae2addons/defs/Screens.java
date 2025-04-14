@@ -1,8 +1,8 @@
 package net.oktawia.crazyae2addons.defs;
 
 import appeng.init.client.InitScreens;
+import net.oktawia.crazyae2addons.blocks.IsolatedDataProcessorBlock;
 import net.oktawia.crazyae2addons.menus.*;
-import net.oktawia.crazyae2addons.parts.CircuitedPatternProviderPart;
 import net.oktawia.crazyae2addons.screens.*;
 
 public class Screens {
@@ -23,8 +23,8 @@ public class Screens {
                 "/screens/nbt_export_bus.json"
         );
         InitScreens.register(
-                Menus.PATTERN_MODIFIER_MENU,
-                PatternModifierScreen<PatternModifierMenu>::new,
+                Menus.CRAZY_PATTERN_MODIFIER_MENU,
+                CrazyPatternModifierScreen<CrazyPatternModifierMenu>::new,
                 "/screens/crazy_pattern_modifier.json"
         );
         InitScreens.register(
@@ -86,6 +86,26 @@ public class Screens {
                 Menus.RIGHT_CLICK_PROVIDER_MENU,
                 RightClickProviderScreen<RightClickProviderMenu>::new,
                 "/screens/rc_provider.json"
+        );
+        InitScreens.register(
+                Menus.AMPERE_METER_MENU,
+                AmpereMeterScreen<AmpereMeterMenu>::new,
+                "/screens/ampere_meter.json"
+        );
+        InitScreens.register(
+                Menus.ISOLATED_DATA_PROCESSOR_MENU,
+                IsolatedDataProcessorScreen<IsolatedDataProcessorMenu>::new,
+                "/screens/data_processor.json"
+        );
+        InitScreens.register(
+                Menus.ISOLATED_DATA_PROCESSOR_SUBMENU,
+                IsolatedDataProcessorSubScreen<IsolatedDataProcessorSubMenu>::new,
+                "/screens/data_processor_sub.json"
+        );
+        InitScreens.register(
+                Menus.CRAZY_PATTERN_MULTIPLIER_MENU,
+                CrazyPatternMultiplierScreen<CrazyPatternMultiplierMenu>::new,
+                "/screens/crazy_pattern_multiplier.json"
         );
     }
 }

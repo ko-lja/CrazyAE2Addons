@@ -5,6 +5,8 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
+import net.oktawia.crazyae2addons.logic.CrazyPatternModifierHost;
+import net.oktawia.crazyae2addons.logic.CrazyPatternMultiplierHost;
 import net.oktawia.crazyae2addons.parts.*;
 import net.oktawia.crazyae2addons.entities.*;
 import net.oktawia.crazyae2addons.menus.*;
@@ -37,10 +39,10 @@ public class Menus {
             NBTExportBusMenu::new,
             NBTExportBusPart.class
     );
-    public static final MenuType<PatternModifierMenu> PATTERN_MODIFIER_MENU = create(
+    public static final MenuType<CrazyPatternModifierMenu> CRAZY_PATTERN_MODIFIER_MENU = create(
             "crazy_pattern_modifier",
-            PatternModifierMenu::new,
-            PatternModifierBE.class
+            CrazyPatternModifierMenu::new,
+            CrazyPatternModifierHost.class
     );
     public static final MenuType<AutoEnchanterMenu> AUTO_ENCHANTER_MENU = create(
             "auto_enchanter",
@@ -101,6 +103,26 @@ public class Menus {
             "rc_provider",
             RightClickProviderMenu::new,
             RightClickProviderPart.class
+    );
+    public static final MenuType<AmpereMeterMenu> AMPERE_METER_MENU = create(
+            "ampere_meter",
+            AmpereMeterMenu::new,
+            AmpereMeterBE.class
+    );
+    public static final MenuType<IsolatedDataProcessorMenu> ISOLATED_DATA_PROCESSOR_MENU = create(
+            "isolated_data_processor",
+            IsolatedDataProcessorMenu::new,
+            IsolatedDataProcessorBE.class
+    );
+    public static final MenuType<IsolatedDataProcessorSubMenu> ISOLATED_DATA_PROCESSOR_SUBMENU = create(
+            "isolated_data_processor_sub",
+            IsolatedDataProcessorSubMenu::new,
+            IsolatedDataProcessorBE.class
+    );
+    public static final MenuType<CrazyPatternMultiplierMenu> CRAZY_PATTERN_MULTIPLIER_MENU = create(
+            "crazy_pattern_multiplier",
+            CrazyPatternMultiplierMenu::new,
+            CrazyPatternMultiplierHost.class
     );
 
 

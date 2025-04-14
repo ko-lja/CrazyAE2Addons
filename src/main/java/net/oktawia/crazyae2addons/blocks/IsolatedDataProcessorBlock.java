@@ -15,19 +15,19 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.oktawia.crazyae2addons.defs.BlockEntities;
-import net.oktawia.crazyae2addons.entities.PatternModifierBE;
+import net.oktawia.crazyae2addons.entities.DataProcessorBE;
+import net.oktawia.crazyae2addons.entities.IsolatedDataProcessorBE;
 import org.jetbrains.annotations.Nullable;
 
-
-public class PatternModifierBlock extends AEBaseEntityBlock<PatternModifierBE> implements IUpgradeableObject {
-    public PatternModifierBlock() {
+public class IsolatedDataProcessorBlock extends AEBaseEntityBlock<IsolatedDataProcessorBE> implements IUpgradeableObject {
+    public IsolatedDataProcessorBlock() {
         super(AEBaseBlock.metalProps());
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new PatternModifierBE(BlockEntities.PATTERN_MODIFIER_BE, pos, state);
+        return new IsolatedDataProcessorBE(BlockEntities.ISOLATED_DATA_PROCESSOR_BE, pos, state);
     }
 
     @Override

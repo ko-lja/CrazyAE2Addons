@@ -18,7 +18,7 @@
   "gui.crazyae2addons.nbt_export_bus": "NBT Export Bus",
   "group.entity_ticker.name": "Entity Ticker",
   "item.crazyae2addons.nbt_export_bus": "NBT Export Bus",
-  "gui.crazyae2addons.pattern_modifier": "NBT Pattern Modifier",
+  "gui.crazyae2addons.pattern_modifier": "Pattern Modifier",
   "block.crazyae2addons.pattern_modifier_block": "NBT Pattern Modifier",
   "gui.crazyae2addons.auto_enchanter": "Auto Enchanter",
   "group.auto_enchanter.name": "Auto Enchanter",
@@ -55,5 +55,11 @@
   "block.crazyae2addons.circuited_pp": "Circuited Pattern Provider",
   "item.crazyae2addons.circuited_pp_part": "Circuited Pattern Provider",
   "item.crazyae2addons.energy_exporter": "Energy Exporter",
-  "gui.crazyae2addons.energy_exporter": "Energy Exporter"
+  "gui.crazyae2addons.energy_exporter": "Energy Exporter",
+  "gui.crazyae2addons.ampere_meter": "Ampere Meter",
+  "block.crazyae2addons.ampere_meter": "Ampere Meter",
+  "gui.crazyae2addons.crazy_pattern_multiplier": "Pattern Multiplier",
+  "item.crazyae2addons.crazy_pattern_multiplier": "Pattern Multiplier",
+  "item.crazyae2addons.crazy_pattern_modifier": "Pattern Modifier",
+  "block.crazyae2addons.isolated_data_processor": "Isolated Data Processor"
 }

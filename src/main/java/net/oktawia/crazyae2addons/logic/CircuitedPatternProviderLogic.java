@@ -313,15 +313,16 @@ public class CircuitedPatternProviderLogic extends PatternProviderLogic implemen
 
             if (this.adapterAcceptsAll(adapter, inputHolder)) {
                 var tag = patternDetails.getDefinition().getTag();
+                int circ = 0;
                 if (tag != null && tag.contains("circuit")){
-                    int circ = tag.getInt("circuit");
-                    SimpleTieredMachine machine = (SimpleTieredMachine) SimpleTieredMachine.getMachine(host.getBlockEntity().getLevel(), host.getBlockEntity().getBlockPos().relative(direction));
-                    if (machine != null){
-                        var inv = machine.getCircuitInventory();
-                        var machineStack = GTItems.PROGRAMMED_CIRCUIT.asStack();
-                        IntCircuitBehaviour.setCircuitConfiguration(machineStack, circ);
-                        inv.setStackInSlot(0, machineStack);
-                    }
+                    circ = tag.getInt("circuit");
+                }
+                SimpleTieredMachine machine = (SimpleTieredMachine) SimpleTieredMachine.getMachine(host.getBlockEntity().getLevel(), host.getBlockEntity().getBlockPos().relative(direction));
+                if (machine != null){
+                    var inv = machine.getCircuitInventory();
+                    var machineStack = GTItems.PROGRAMMED_CIRCUIT.asStack();
+                    IntCircuitBehaviour.setCircuitConfiguration(machineStack, circ);
+                    inv.setStackInSlot(0, machineStack);
                 }
                 patternDetails.pushInputsToExternalInventory(inputHolder, (what, amount) -> {
                     var inserted = adapter.insert(what, amount, Actionable.MODULATE);

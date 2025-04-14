@@ -23,12 +23,6 @@ public class Blocks {
             CraftingCancelerBlock::new,
             CraftingCancelerBlockItem::new
     );
-    public static final BlockDefinition<PatternModifierBlock> PATTERN_MODIFIER_BLOCK = block(
-            "Pattern Modifier",
-            "pattern_modifier_block",
-            PatternModifierBlock::new,
-            PatternModifierBlockItem::new
-    );
     public static final BlockDefinition<AutoEnchanterBlock> AUTO_ENCHANTER_BLOCK = block(
             "Auto Enchanter",
             "auto_enchanter_block",
@@ -58,6 +52,18 @@ public class Blocks {
             "circuited_pp",
             CircuitedPatternProviderBlock::new,
             CircuitedPatternProviderBlockItem::new
+    );
+    public static final BlockDefinition<AmpereMeterBlock> AMPERE_METER_BLOCK = block(
+            "Ampere Meter",
+            "ampere_meter",
+            AmpereMeterBlock::new,
+            AmpereMeterBlockItem::new
+    );
+    public static final BlockDefinition<IsolatedDataProcessorBlock> ISOLATED_DATA_PROCESSOR_BLOCK = block(
+            "Isolated Data Processor",
+            "isolated_data_processor",
+            IsolatedDataProcessorBlock::new,
+            IsolatedDataProcessorBlockItem::new
     );
 
     public static List<BlockDefinition<?>> getBlocks() {

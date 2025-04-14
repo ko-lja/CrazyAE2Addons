@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "W": {
+      "item": "minecraft:wool"
+    },
+    "P": {
+      "item": "crazyae2addons:data_processor_block"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WPW",
+    "WWW"
+  ],
+  "result": {
+    "item": "crazyae2addons:isolated_data_processor_block"
+  }
+}
