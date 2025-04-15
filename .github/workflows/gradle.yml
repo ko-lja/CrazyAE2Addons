@@ -36,35 +36,45 @@ jobs:
 
 
   release:
-    needs: build 
+    needs: build
     runs-on: ubuntu-latest
-    
     permissions:
       contents: write
-      
+  
     steps:
     - uses: actions/checkout@v4
+    
     - name: Download JAR artifact
       uses: actions/download-artifact@v4
       with:
         name: CrazyAE2Adoons
         path: build/libs/
-        
+  
+    - name: Set VERSION
+      shell: bash
+      run: |
+        if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+          echo "VERSION=${GITHUB_REF:10}" >> $GITHUB_ENV
+        else
+          echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+        fi
+  
     - name: Create Release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref_name }} 
+        tag_name: ${{ github.ref_name }}
         release_name: ${{ github.ref_name }}
         draft: false
         prerelease: ${{ github.ref_name != 'refs/heads/main' && !startsWith(github.ref_name, 'refs/tags/v') }}
-        
+  
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/CrazyAE2Adoons-v${{ startsWith(github.ref_name, 'refs/tags/v') && substring(github.ref_name, 10) || github.ref_name }}.jar
-        asset_name: CrazyAE2Adoons-v${{ startsWith(github.ref_name, 'refs/tags/v') && substring(github.ref_name, 10) || github.ref_name }}.jar
+        asset_path: build/libs/CrazyAE2Adoons-v${{ env.VERSION }}.jar
+        asset_name: CrazyAE2Adoons-v${{ env.VERSION }}.jar
+  
