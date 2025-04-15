@@ -34,7 +34,6 @@ jobs:
         name: CrazyAE2Adoons
         path: build/libs/*[!all].jar
 
-
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -43,7 +42,7 @@ jobs:
   
     steps:
     - uses: actions/checkout@v4
-    
+  
     - name: Download JAR artifact
       uses: actions/download-artifact@v4
       with:
@@ -60,6 +59,7 @@ jobs:
         fi
   
     - name: Create Release
+      id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -77,4 +77,3 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: build/libs/CrazyAE2Adoons-v${{ env.VERSION }}.jar
         asset_name: CrazyAE2Adoons-v${{ env.VERSION }}.jar
-  
