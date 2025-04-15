@@ -38,8 +38,10 @@ jobs:
   release:
     needs: build 
     runs-on: ubuntu-latest
+    
     permissions:
       contents: write
+      
     steps:
     - uses: actions/checkout@v4
     - name: Download JAR artifact
@@ -47,6 +49,7 @@ jobs:
       with:
         name: CrazyAE2Adoons
         path: build/libs/
+        
     - name: Create Release
       uses: actions/create-release@v1
       env:
@@ -56,12 +59,12 @@ jobs:
         release_name: ${{ github.ref_name }}
         draft: false
         prerelease: ${{ github.ref_name != 'refs/heads/main' && !startsWith(github.ref_name, 'refs/tags/v') }}
+        
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/${{ (github.event.inputs.jar_name || (github.event_name == 'push' && github.ref_name) || 'CrazyAE2Adoons').replace('.jar', '') }}-${{ github.ref_name.replace('refs/tags/v', '') }}.jar # Dostosuj nazwę pliku
-        asset_name: ${{ (github.event.inputs.jar_name || (github.event_name == 'push' && github.ref_name) || 'CrazyAE2Adoons').replace('.jar', '') }}-${{ github.ref_name.replace('refs/tags/v', '') }}.jar # Dostosuj nazwę pliku
-
+        asset_path: build/libs/CrazyAE2Adoons-v${{ github.ref_name.replace('refs/tags/v', '') }}.jar
+        asset_name: CrazyAE2Adoons-v${{ github.ref_name.replace('refs/tags/v', '') }}.jar
