@@ -1,11 +1,10 @@
 
-name: build jar
+name: build jar and create release
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    tags:
+      - 'v*'
 
 jobs:
   build:
