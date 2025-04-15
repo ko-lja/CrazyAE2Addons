@@ -66,5 +66,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/CrazyAE2Adoons-v${{ github.ref_name.replace('refs/tags/v', '') }}.jar
-        asset_name: CrazyAE2Adoons-v${{ github.ref_name.replace('refs/tags/v', '') }}.jar
+        asset_path: build/libs/CrazyAE2Adoons-v${{ startsWith(github.ref_name, 'refs/tags/v') && substring(github.ref_name, 10) || github.ref_name }}.jar
+        asset_name: CrazyAE2Adoons-v${{ startsWith(github.ref_name, 'refs/tags/v') && substring(github.ref_name, 10) || github.ref_name }}.jar
