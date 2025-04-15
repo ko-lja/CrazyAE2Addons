@@ -1,4 +1,4 @@
-package net.oktawia.crazyae2addons.logic;
+package net.oktawia.crazyae2addons.logic.Circuited;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.config.LockCraftingMode;
@@ -14,18 +14,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.oktawia.crazyae2addons.screens.CircuitedPatternProviderPartScreen;
 import net.oktawia.crazyae2addons.screens.CircuitedPatternProviderScreen;
 import org.jetbrains.annotations.Nullable;
 
-public class CircuitedPatternProviderPartLockReason implements ICompositeWidget {
+public class CircuitedPatternProviderLockReason implements ICompositeWidget {
     protected boolean visible = false;
     protected int x;
     protected int y;
 
-    private final CircuitedPatternProviderPartScreen<?> screen;
+    private final CircuitedPatternProviderScreen<?> screen;
 
-    public CircuitedPatternProviderPartLockReason(CircuitedPatternProviderPartScreen<?> screen) {
+    public CircuitedPatternProviderLockReason(CircuitedPatternProviderScreen<?> screen) {
         this.screen = screen;
     }
 

@@ -29,8 +29,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.oktawia.crazyae2addons.defs.Blocks;
 import net.oktawia.crazyae2addons.defs.Menus;
-import net.oktawia.crazyae2addons.logic.Circuited.CircuitedPatternProviderLogic;
-import net.oktawia.crazyae2addons.logic.Circuited.CircuitedPatternProviderLogicHost;
+import net.oktawia.crazyae2addons.logic.Impulsed.ImpulsedPatternProviderLogic;
+import net.oktawia.crazyae2addons.logic.Impulsed.ImpulsedPatternProviderLogicHost;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -38,18 +38,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-public class CircuitedPatternProviderBE extends PatternProviderBlockEntity implements CircuitedPatternProviderLogicHost {
-    protected final CircuitedPatternProviderLogic logic = createLogic();
+public class ImpulsedPatternProviderBE extends PatternProviderBlockEntity implements ImpulsedPatternProviderLogicHost {
+    protected final ImpulsedPatternProviderLogic logic = createLogic();
 
     @Nullable
     private PushDirection pendingPushDirectionChange;
 
-    public CircuitedPatternProviderBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+    public ImpulsedPatternProviderBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
     }
 
-    protected CircuitedPatternProviderLogic createLogic() {
-        return new CircuitedPatternProviderLogic(this.getMainNode(), this, 36);
+    protected ImpulsedPatternProviderLogic createLogic() {
+        return new ImpulsedPatternProviderLogic(this.getMainNode(), this, 36);
     }
 
     @Override
@@ -63,13 +63,11 @@ public class CircuitedPatternProviderBE extends PatternProviderBlockEntity imple
 
     @Override
     public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
-        // In omnidirectional mode, every side is grid-connectable
         var pushDirection = getPushDirection().getDirection();
         if (pushDirection == null) {
             return EnumSet.allOf(Direction.class);
         }
 
-        // Otherwise all sides *except* the target side are connectable
         return EnumSet.complementOf(EnumSet.of(pushDirection));
     }
 
@@ -128,7 +126,7 @@ public class CircuitedPatternProviderBE extends PatternProviderBlockEntity imple
     }
 
     @Override
-    public CircuitedPatternProviderLogic getLogic() {
+    public ImpulsedPatternProviderLogic getLogic() {
         return logic;
     }
 
@@ -158,12 +156,12 @@ public class CircuitedPatternProviderBE extends PatternProviderBlockEntity imple
     }
 
     public void openMenu(Player player, MenuLocator locator) {
-        MenuOpener.open(Menus.CIRCUITED_PATTERN_PROVIDER_MENU, player, locator);
+        MenuOpener.open(Menus.IMPULSED_PATTERN_PROVIDER_MENU, player, locator);
     }
 
     @Override
     public void returnToMainMenu(Player player, ISubMenu subMenu) {
-        MenuOpener.returnTo(Menus.CIRCUITED_PATTERN_PROVIDER_MENU, player, MenuLocators.forBlockEntity(this));
+        MenuOpener.returnTo(Menus.IMPULSED_PATTERN_PROVIDER_MENU, player, MenuLocators.forBlockEntity(this));
     }
 
     @Override
@@ -173,7 +171,7 @@ public class CircuitedPatternProviderBE extends PatternProviderBlockEntity imple
 
     @Override
     public AEItemKey getTerminalIcon() {
-        return AEItemKey.of(Blocks.CIRCUITED_PATTERN_PROVIDER_BLOCK.asItem());
+        return AEItemKey.of(Blocks.IMPULSED_PATTERN_PROVIDER_BLOCK.asItem());
     }
 
     @Override
@@ -198,7 +196,7 @@ public class CircuitedPatternProviderBE extends PatternProviderBlockEntity imple
 
     @Override
     public void exportSettings(SettingsFrom mode, CompoundTag output,
-                               @org.jetbrains.annotations.Nullable Player player) {
+                               @Nullable Player player) {
         super.exportSettings(mode, output, player);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
@@ -211,13 +209,12 @@ public class CircuitedPatternProviderBE extends PatternProviderBlockEntity imple
 
     @Override
     public void importSettings(SettingsFrom mode, CompoundTag input,
-                               @org.jetbrains.annotations.Nullable Player player) {
+                               @Nullable Player player) {
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             logic.importSettings(input, player);
 
-            // Restore push direction blockstate
             if (input.contains(PatternProviderBlock.PUSH_DIRECTION.getName(), Tag.TAG_BYTE)) {
                 var pushDirection = input.getByte(PatternProviderBlock.PUSH_DIRECTION.getName());
                 if (pushDirection >= 0 && pushDirection < PushDirection.values().length) {
@@ -243,7 +240,7 @@ public class CircuitedPatternProviderBE extends PatternProviderBlockEntity imple
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return Blocks.CIRCUITED_PATTERN_PROVIDER_BLOCK.stack();
+        return Blocks.IMPULSED_PATTERN_PROVIDER_BLOCK.stack();
     }
 
     @Override

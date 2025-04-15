@@ -4,22 +4,18 @@ import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.stacks.GenericStack;
+import appeng.core.definitions.AEItems;
 import appeng.helpers.externalstorage.GenericStackInv;
-import appeng.helpers.patternprovider.PatternProviderLogic;
-import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.helpers.patternprovider.PatternProviderReturnInventory;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.slot.AppEngSlot;
-import appeng.menu.slot.RestrictedInputSlot;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
 import net.oktawia.crazyae2addons.defs.Menus;
-import net.oktawia.crazyae2addons.logic.CircuitedPatternProviderLogic;
-import net.oktawia.crazyae2addons.logic.CircuitedPatternProviderLogicHost;
+import net.oktawia.crazyae2addons.logic.Circuited.CircuitedPatternProviderLogic;
+import net.oktawia.crazyae2addons.logic.Circuited.CircuitedPatternProviderLogicHost;
+import net.oktawia.crazyae2addons.misc.AppEngFilteredSlot;
 
 public class CircuitedPatternProviderMenu extends AEBaseMenu {
 
@@ -42,9 +38,7 @@ public class CircuitedPatternProviderMenu extends AEBaseMenu {
         this.logic = host.getLogic();
         var patternInv = logic.getPatternInv();
         for (int x = 0; x < patternInv.size(); x++) {
-            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
-                            patternInv, x),
-                    SlotSemantics.ENCODED_PATTERN);
+            this.addSlot(new AppEngFilteredSlot(patternInv, x, AEItems.PROCESSING_PATTERN.stack()), SlotSemantics.ENCODED_PATTERN);
         }
 
         var returnInv = logic.getReturnInv().createMenuWrapper();
@@ -58,8 +52,16 @@ public class CircuitedPatternProviderMenu extends AEBaseMenu {
 
     @Override
     public void broadcastChanges() {
+        if (isServerSide()) {
+            blockingMode = logic.getConfigManager().getSetting(Settings.BLOCKING_MODE);
+            showInAccessTerminal = logic.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL);
+            lockCraftingMode = logic.getConfigManager().getSetting(Settings.LOCK_CRAFTING_MODE);
+            craftingLockedReason = logic.getCraftingLockedReason();
+            unlockStack = logic.getUnlockStack();
+        }
         super.broadcastChanges();
     }
+
 
     public GenericStackInv getReturnInv() {
         return logic.getReturnInv();

@@ -1,7 +1,6 @@
 package net.oktawia.crazyae2addons.defs;
 
 import appeng.init.client.InitScreens;
-import net.oktawia.crazyae2addons.blocks.IsolatedDataProcessorBlock;
 import net.oktawia.crazyae2addons.menus.*;
 import net.oktawia.crazyae2addons.screens.*;
 
@@ -73,11 +72,6 @@ public class Screens {
                 "/screens/circuited_pp.json"
         );
         InitScreens.register(
-                Menus.CIRCUITED_PATTERN_PROVIDER_PART_MENU,
-                CircuitedPatternProviderPartScreen<CircuitedPatternProviderPartMenu>::new,
-                "/screens/circuited_pp.json"
-        );
-        InitScreens.register(
                 Menus.ENERGY_EXPORTER_MENU,
                 EnergyExporterScreen<EnergyExporterMenu>::new,
                 "/screens/energy_exporter.json"
@@ -106,6 +100,21 @@ public class Screens {
                 Menus.CRAZY_PATTERN_MULTIPLIER_MENU,
                 CrazyPatternMultiplierScreen<CrazyPatternMultiplierMenu>::new,
                 "/screens/crazy_pattern_multiplier.json"
+        );
+        InitScreens.register(
+                Menus.IMPULSED_PATTERN_PROVIDER_MENU,
+                ImpulsedPatternProviderScreen<ImpulsedPatternProviderMenu>::new,
+                "/screens/impulsed_pp.json"
+        );
+        InitScreens.register(
+                Menus.SIGNALLING_INTERFACE_MENU,
+                SignallingInterfaceScreen<SignallingInterfaceMenu>::new,
+                "/screens/signalling_interface.json"
+        );
+        InitScreens.register(
+                Menus.SET_STOCK_AMOUNT_MENU,
+                SetStockAmountScreen<SetStockAmountMenu>::new,
+                "/screens/set_stock_amount.json"
         );
     }
 }

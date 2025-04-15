@@ -1,4 +1,4 @@
-package net.oktawia.crazyae2addons.logic;
+package net.oktawia.crazyae2addons.logic.Circuited;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -7,14 +7,9 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
-import appeng.helpers.IPriorityHost;
-import appeng.helpers.patternprovider.PatternContainer;
-import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
-import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.locator.MenuLocator;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -27,9 +22,6 @@ import java.util.EnumSet;
 public interface CircuitedPatternProviderLogicHost extends PatternProviderLogicHost {
     CircuitedPatternProviderLogic getLogic();
 
-    /**
-     * @return The block entity that is in-world and hosts the interface.
-     */
     BlockEntity getBlockEntity();
 
     EnumSet<Direction> getTargets();

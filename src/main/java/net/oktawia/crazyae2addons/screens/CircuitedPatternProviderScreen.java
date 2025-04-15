@@ -5,7 +5,6 @@ import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
-import appeng.client.gui.implementations.PatternProviderScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -15,7 +14,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigButtonPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.logic.CircuitedPatternProviderLockReason;
+import net.oktawia.crazyae2addons.logic.Circuited.CircuitedPatternProviderLockReason;
 import net.oktawia.crazyae2addons.menus.CircuitedPatternProviderMenu;
 
 public class CircuitedPatternProviderScreen<C extends CircuitedPatternProviderMenu> extends AEBaseScreen<C> {
@@ -51,10 +50,10 @@ public class CircuitedPatternProviderScreen<C extends CircuitedPatternProviderMe
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.lockReason.setVisible(menu.getLockCraftingMode() != LockCraftingMode.NONE);
-        this.blockingModeButton.set(this.menu.getBlockingMode());
-        this.lockCraftingModeButton.set(this.menu.getLockCraftingMode());
-        this.showInPatternAccessTerminalButton.setState(this.menu.getShowInAccessTerminal() == YesNo.YES);
+        this.lockReason.setVisible(this.getMenu().getLockCraftingMode() != LockCraftingMode.NONE);
+        this.blockingModeButton.set(this.getMenu().getBlockingMode());
+        this.lockCraftingModeButton.set(this.getMenu().getLockCraftingMode());
+        this.showInPatternAccessTerminalButton.setState(this.getMenu().getShowInAccessTerminal() == YesNo.YES);
     }
 
     private void selectNextPatternProviderMode() {

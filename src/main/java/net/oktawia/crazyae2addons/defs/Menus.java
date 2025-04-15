@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.oktawia.crazyae2addons.logic.CrazyPatternModifierHost;
 import net.oktawia.crazyae2addons.logic.CrazyPatternMultiplierHost;
+import net.oktawia.crazyae2addons.logic.Impulsed.ImpulsedPatternProviderLogicHost;
 import net.oktawia.crazyae2addons.parts.*;
 import net.oktawia.crazyae2addons.entities.*;
 import net.oktawia.crazyae2addons.menus.*;
@@ -89,11 +90,6 @@ public class Menus {
             CircuitedPatternProviderMenu::new,
             CircuitedPatternProviderBE.class
     );
-    public static final MenuType<CircuitedPatternProviderPartMenu> CIRCUITED_PATTERN_PROVIDER_PART_MENU = create(
-            "circuited_pp_part",
-            CircuitedPatternProviderPartMenu::new,
-            CircuitedPatternProviderPart.class
-    );
     public static final MenuType<EnergyExporterMenu> ENERGY_EXPORTER_MENU = create(
             "energy_exporter",
             EnergyExporterMenu::new,
@@ -123,6 +119,21 @@ public class Menus {
             "crazy_pattern_multiplier",
             CrazyPatternMultiplierMenu::new,
             CrazyPatternMultiplierHost.class
+    );
+    public static final MenuType<ImpulsedPatternProviderMenu> IMPULSED_PATTERN_PROVIDER_MENU = create(
+            "impulsed_pp",
+            ImpulsedPatternProviderMenu::new,
+            ImpulsedPatternProviderBE.class
+    );
+    public static final MenuType<SignallingInterfaceMenu> SIGNALLING_INTERFACE_MENU = create(
+            "signalling_interface",
+            SignallingInterfaceMenu::new,
+            SignallingInterfaceBE.class
+    );
+    public static final MenuType<SetStockAmountMenu> SET_STOCK_AMOUNT_MENU = create(
+            "stock_amount_menu",
+            SetStockAmountMenu::new,
+            SignallingInterfaceBE.class
     );
 
 

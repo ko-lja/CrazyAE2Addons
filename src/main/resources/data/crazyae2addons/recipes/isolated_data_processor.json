@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "W": {
-      "item": "minecraft:wool"
+      "item": "minecraft:white_wool"
     },
     "P": {
       "item": "crazyae2addons:data_processor_block"

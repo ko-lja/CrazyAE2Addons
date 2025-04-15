@@ -65,6 +65,18 @@ public class BlockEntities {
             IsolatedDataProcessorBE::new,
             Blocks.ISOLATED_DATA_PROCESSOR_BLOCK);
 
+    public static final BlockEntityType<ImpulsedPatternProviderBE> IMPULSED_PATTERN_PROVIDER_BE = create(
+            "impulsed_pp_be",
+            ImpulsedPatternProviderBE.class,
+            ImpulsedPatternProviderBE::new,
+            Blocks.IMPULSED_PATTERN_PROVIDER_BLOCK);
+
+    public static final BlockEntityType<SignallingInterfaceBE> SIGNALLING_INTERFACE_BE = create(
+            "signalling_interface_be",
+            SignallingInterfaceBE.class,
+            SignallingInterfaceBE::new,
+            Blocks.SIGNALLING_INTERFACE_BLOCK);
+
     public static Map<ResourceLocation, BlockEntityType<?>> getBlockEntityTypes() {
         return Collections.unmodifiableMap(BLOCK_ENTITY_TYPES);
     }

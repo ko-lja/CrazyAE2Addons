@@ -1,16 +1,26 @@
-package net.oktawia.crazyae2addons.logic;
+package net.oktawia.crazyae2addons.logic.Circuited;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import appeng.api.parts.IPart;
+import appeng.api.stacks.*;
+import appeng.api.storage.MEStorage;
+import appeng.blockentity.networking.CableBusBlockEntity;
+import appeng.capabilities.Capabilities;
 import appeng.helpers.patternprovider.*;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import appeng.parts.automation.StackWorldBehaviors;
+import appeng.parts.misc.InterfacePart;
+import appeng.parts.storagebus.StorageBusPart;
+import com.google.common.util.concurrent.Runnables;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
+import net.minecraft.core.BlockPos;
+import net.oktawia.crazyae2addons.Utils;
+import net.oktawia.crazyae2addons.defs.Items;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -34,7 +44,6 @@ import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
@@ -46,9 +55,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
-import appeng.api.stacks.KeyCounter;
 import appeng.api.util.IConfigManager;
 import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
@@ -61,6 +67,7 @@ import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.PlayerInternalInventory;
+import stone.mae2.parts.p2p.PatternP2PTunnelPart;
 
 public class CircuitedPatternProviderLogic extends PatternProviderLogic implements InternalInventoryHost, ICraftingProvider {
 
@@ -105,7 +112,7 @@ public class CircuitedPatternProviderLogic extends PatternProviderLogic implemen
         this.host = host;
         this.mainNode = mainNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
-                .addService(IGridTickable.class, new CircuitedPatternProviderLogic.Ticker())
+                .addService(IGridTickable.class, new Ticker())
                 .addService(ICraftingProvider.class, this);
         this.actionSource = new MachineSource(mainNode::getNode);
 
@@ -242,16 +249,44 @@ public class CircuitedPatternProviderLogic extends PatternProviderLogic implemen
         return this.priority;
     }
 
-    private <T> void rearrangeRoundRobin(List<T> list) {
-        if (list.isEmpty()) {
+    public static void setCirc(int circ, BlockPos pos, Level lvl){
+        var machine = SimpleTieredMachine.getMachine(lvl, pos);
+        NotifiableItemStackHandler inv;
+        if (machine instanceof SimpleTieredMachine STM){
+            inv = STM.getCircuitInventory();
+        } else if (machine instanceof ItemBusPartMachine IBPM) {
+            inv = IBPM.getCircuitInventory();
+        } else if (machine instanceof FluidHatchPartMachine FHPM) {
+            inv = FHPM.getCircuitInventory();
+        } else {
             return;
         }
-
-        roundRobinIndex %= list.size();
-        for (int i = 0; i < roundRobinIndex; ++i) {
-            list.add(list.get(i));
+        if (circ == 0){
+            inv.setStackInSlot(0, ItemStack.EMPTY);
+        } else {
+            var machineStack = GTItems.PROGRAMMED_CIRCUIT.asStack();
+            IntCircuitBehaviour.setCircuitConfiguration(machineStack, circ);
+            inv.setStackInSlot(0, machineStack);
         }
-        list.subList(0, roundRobinIndex).clear();
+    }
+
+    public ICircuitedPatternProviderTarget getAdapter(Level lvl, BlockPos pos, Direction dir){
+        return new CircuitedPatternProviderTargetCache(lvl.getServer().getLevel(lvl.dimension()), pos, dir, actionSource).find();
+    }
+
+    @Nullable
+    private ICircuitedPatternProviderTarget findAdapter(Direction side) {
+        if (side == null) return null;
+        if (targetCaches[side.get3DDataValue()] == null) {
+            var thisBe = host.getBlockEntity();
+            targetCaches[side.get3DDataValue()] = new CircuitedPatternProviderTargetCache(
+                    (ServerLevel) thisBe.getLevel(),
+                    thisBe.getBlockPos().relative(side),
+                    side.getOpposite(),
+                    actionSource);
+        }
+
+        return targetCaches[side.get3DDataValue()].find();
     }
 
     @Override
@@ -267,63 +302,173 @@ public class CircuitedPatternProviderLogic extends PatternProviderLogic implemen
             return false;
         }
 
-        record PushTarget(Direction direction, PatternProviderTarget target) {
-        }
+        record PushTarget(Direction direction, ICircuitedPatternProviderTarget target) {}
+
         var possibleTargets = new ArrayList<PushTarget>();
 
-        // Push to crafting machines first
         for (var direction : getActiveSides()) {
-            var adjPos = be.getBlockPos().relative(direction);
-            var adjBe = level.getBlockEntity(adjPos);
-            var adjBeSide = direction.getOpposite();
-
-            var craftingMachine = ICraftingMachine.of(level, adjPos, adjBeSide, adjBe);
-            if (craftingMachine != null && craftingMachine.acceptsPlans()) {
-                if (craftingMachine.pushPattern(patternDetails, inputHolder, adjBeSide)) {
-                    onPushPatternSuccess(patternDetails);
-                    return true;
-                }
-                continue;
-            }
-
             var adapter = findAdapter(direction);
-            if (adapter == null)
-                continue;
-
-            possibleTargets.add(new PushTarget(direction, adapter));
+            var adapterBE = level.getBlockEntity(host.getBlockEntity().getBlockPos().relative(direction));
+            IPart adapterPart;
+            if (adapterBE instanceof CableBusBlockEntity cbus) {
+                adapterPart = cbus.getPart(direction.getOpposite());
+            } else {
+                adapterPart = null;
+            }
+            if (adapter == null || adapterPart instanceof PatternP2PTunnelPart){
+                var target = level.getBlockEntity(host.getBlockEntity().getBlockPos().relative(direction));
+                if (target instanceof CableBusBlockEntity cbus){
+                    var part = cbus.getPart(direction.getOpposite());
+                    if (part instanceof PatternP2PTunnelPart pp2p){
+                        pp2p.getOutputs().forEach(out -> {
+                            var tg = out.getLevel().getBlockEntity(out.getBlockEntity().getBlockPos().relative(out.getSide()));
+                            if (tg != null){
+                                if (tg instanceof CableBusBlockEntity cbus1){
+                                    var part1 = cbus1.getPart(out.getSide().getOpposite());
+                                    if (part1 instanceof InterfacePart ipart) {
+                                        var adapter2 = getAdapter(ipart.getLevel(), ipart.getBlockEntity().getBlockPos(), ipart.getSide());
+                                        if (adapter2 != null){
+                                            possibleTargets.add(new PushTarget(direction, adapter2));
+                                        }
+                                    }
+                                } else {
+                                    var adapter1 = getAdapter(out.getLevel(), tg.getBlockPos(), out.getSide());
+                                    if (adapter1 != null){
+                                        possibleTargets.add(new PushTarget(direction, adapter1));
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            } else {
+                possibleTargets.add(new PushTarget(direction, adapter));
+            }
         }
 
-        // If no dedicated crafting machine could be found, and the pattern does not support
-        // generic external inventories, stop here.
-        if (!patternDetails.supportsPushInputsToExternalInventory()) {
-            return false;
-        }
+        List<PushTarget> rotated = Utils.rotate(possibleTargets, roundRobinIndex);
+        possibleTargets.clear();
+        possibleTargets.addAll(rotated);
 
-        // Rearrange for round-robin
-        rearrangeRoundRobin(possibleTargets);
-
-        // Push to other kinds of blocks
         for (var target : possibleTargets) {
             var direction = target.direction();
             var adapter = target.target();
 
-            if (this.isBlocking() && adapter.containsPatternInput(this.patternInputs)) {
-                continue;
+            if (this.isBlocking()) {
+                if (adapter.containsPatternInput(this.patternInputs)){
+                    continue;
+                } else {
+                    var externalStorages = new IdentityHashMap<AEKeyType, MEStorage>(2);
+                    ArrayList<AEKey> frozenInvContents = new ArrayList<>();
+                    var targetedInvHost = adapter.parent().level.getBlockEntity(adapter.parent().pos);
+                    MEStorage storage = null;
+                    boolean doSkip = false;
+                    if (targetedInvHost != null){
+                        if (targetedInvHost instanceof CableBusBlockEntity cbus){
+                            if (cbus.getPart(adapter.parent().direction) instanceof InterfacePart IP){
+                                IP.getGridNode()
+                                .getGrid()
+                                .getMachines(StorageBusPart.class)
+                                .stream()
+                                .filter(
+                                    sbp ->
+                                        SimpleTieredMachine.getMachine(sbp.getLevel(), sbp.getHost().getBlockEntity().getBlockPos().relative(sbp.getSide())) != null &&
+                                        sbp.isUpgradedWith(Items.CIRCUIT_UPGRADE_CARD_ITEM))
+                                .forEach(sbp -> {
+                                    var realTarget = sbp.getLevel().getBlockEntity(sbp.getBlockEntity().getBlockPos().relative(sbp.getSide()));
+                                    if (realTarget != null){
+                                        for (var entry : StackWorldBehaviors.createExternalStorageStrategies(
+                                                realTarget.getLevel().getServer().getLevel(realTarget.getLevel().dimension()),
+                                                realTarget.getBlockPos(),
+                                                adapter.parent().direction).entrySet()) {
+                                            var wrapper = entry.getValue().createWrapper(false, Runnables.doNothing());
+                                            if (wrapper != null) {
+                                                externalStorages.put(entry.getKey(), wrapper);
+                                                wrapper.getAvailableStacks().forEach(stack -> {
+                                                    frozenInvContents.add(stack.getKey());
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                        else {
+                            storage = targetedInvHost.getCapability(Capabilities.STORAGE, adapter.parent().direction).orElse(null);
+                        }
+                        if (storage == null) {
+                            if (frozenInvContents.isEmpty()){
+                                var strategies = StackWorldBehaviors.createExternalStorageStrategies(adapter.parent().level, adapter.parent().pos, adapter.parent().direction);
+                                for (var entry : strategies.entrySet()) {
+                                    var wrapper = entry.getValue().createWrapper(false, Runnables.doNothing());
+                                    if (wrapper != null) {
+                                        externalStorages.put(entry.getKey(), wrapper);
+                                        wrapper.getAvailableStacks().forEach(stack -> {
+                                            frozenInvContents.add(stack.getKey());
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                        for (AEKey key : frozenInvContents) {
+                            if (patternInputs.contains(key.dropSecondary())) {
+                                doSkip = true;
+                            }
+                        }
+                    }
+                    if (doSkip) {
+                        continue;
+                    }
+                }
             }
 
+            if (adapter == null) continue;
             if (this.adapterAcceptsAll(adapter, inputHolder)) {
                 var tag = patternDetails.getDefinition().getTag();
-                int circ = 0;
+                int circ;
                 if (tag != null && tag.contains("circuit")){
                     circ = tag.getInt("circuit");
+                } else {
+                    circ = 0;
                 }
-                SimpleTieredMachine machine = (SimpleTieredMachine) SimpleTieredMachine.getMachine(host.getBlockEntity().getLevel(), host.getBlockEntity().getBlockPos().relative(direction));
-                if (machine != null){
-                    var inv = machine.getCircuitInventory();
-                    var machineStack = GTItems.PROGRAMMED_CIRCUIT.asStack();
-                    IntCircuitBehaviour.setCircuitConfiguration(machineStack, circ);
-                    inv.setStackInSlot(0, machineStack);
+
+                boolean canWork = false;
+                var machine = SimpleTieredMachine.getMachine(adapter.parent().level, adapter.parent().pos);
+                if (machine == null){
+                    var mLvl = adapter.parent().level;
+                    if (mLvl.getBlockEntity(adapter.parent().pos) instanceof CableBusBlockEntity CBBE){
+                        var f = CBBE.getPart(adapter.parent().direction);
+                        if (CBBE.getPart(adapter.parent().direction) instanceof InterfacePart IP){
+                            if (IP.getGridNode().getGrid().getMachines(StorageBusPart.class)
+                                .stream()
+                                .allMatch(
+                                bus -> SimpleTieredMachine.getMachine(bus.getLevel(),
+                                        bus.getBlockEntity().getBlockPos().relative(bus.getSide())) != null &&
+                                        bus.isUpgradedWith(Items.CIRCUIT_UPGRADE_CARD_ITEM))){
+                                canWork = true;
+                            };
+                        }
+                    }
+                } else {
+                    canWork = true;
                 }
+
+                if (!canWork){
+                    continue;
+                }
+
+                setCirc(circ, adapter.parent().pos, adapter.parent().level);
+
+                if (adapter.parent().level.getBlockEntity(adapter.parent().pos) instanceof CableBusBlockEntity CBBE){
+                    if (CBBE.getPart(adapter.parent().direction) instanceof InterfacePart IP){
+                        IP.getGridNode().getGrid().getMachines(StorageBusPart.class).forEach(bus -> {
+                            if (bus.isUpgradedWith(Items.CIRCUIT_UPGRADE_CARD_ITEM)){
+                                setCirc(circ, bus.getBlockEntity().getBlockPos().relative(bus.getSide()), bus.getLevel());
+                            }
+                        });
+                    }
+                }
+
                 patternDetails.pushInputsToExternalInventory(inputHolder, (what, amount) -> {
                     var inserted = adapter.insert(what, amount, Actionable.MODULATE);
                     if (inserted < amount) {
@@ -332,7 +477,7 @@ public class CircuitedPatternProviderLogic extends PatternProviderLogic implemen
                 });
                 onPushPatternSuccess(patternDetails);
                 this.sendDirection = direction;
-                this.sendStacksOut();
+                this.sendStacksOut(adapter);
                 ++roundRobinIndex;
                 return true;
             }
@@ -422,19 +567,6 @@ public class CircuitedPatternProviderLogic extends PatternProviderLogic implemen
         return this.configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
     }
 
-    @Nullable
-    private PatternProviderTarget findAdapter(Direction side) {
-        if (targetCaches[side.get3DDataValue()] == null) {
-            var thisBe = host.getBlockEntity();
-            targetCaches[side.get3DDataValue()] = new CircuitedPatternProviderTargetCache(
-                    (ServerLevel) thisBe.getLevel(),
-                    thisBe.getBlockPos().relative(side),
-                    side.getOpposite(),
-                    actionSource);
-        }
-
-        return targetCaches[side.get3DDataValue()].find();
-    }
 
     private boolean adapterAcceptsAll(PatternProviderTarget target, KeyCounter[] inputHolder) {
         for (var inputList : inputHolder) {
@@ -456,7 +588,7 @@ public class CircuitedPatternProviderLogic extends PatternProviderLogic implemen
         }
     }
 
-    private boolean sendStacksOut() {
+    private boolean sendStacksOut(PatternProviderTarget where) {
         if (sendDirection == null) {
             if (!sendList.isEmpty()) {
                 throw new IllegalStateException("Invalid pattern provider state, this is a bug.");
@@ -464,8 +596,7 @@ public class CircuitedPatternProviderLogic extends PatternProviderLogic implemen
             return false;
         }
 
-        var adapter = findAdapter(sendDirection);
-        if (adapter == null) {
+        if (where == null) {
             return false;
         }
 
@@ -476,7 +607,7 @@ public class CircuitedPatternProviderLogic extends PatternProviderLogic implemen
             var what = stack.what();
             long amount = stack.amount();
 
-            var inserted = adapter.insert(what, amount, Actionable.MODULATE);
+            var inserted = where.insert(what, amount, Actionable.MODULATE);
             if (inserted >= amount) {
                 it.remove();
                 didSomething = true;
@@ -506,7 +637,7 @@ public class CircuitedPatternProviderLogic extends PatternProviderLogic implemen
         // Note: bitwise OR to avoid short-circuiting.
         return returnInv.injectIntoNetwork(
                 mainNode.getGrid().getStorageService().getInventory(), actionSource, this::onStackReturnedToNetwork)
-                | sendStacksOut();
+                | sendStacksOut(findAdapter(sendDirection));
     }
 
     public InternalInventory getPatternInv() {

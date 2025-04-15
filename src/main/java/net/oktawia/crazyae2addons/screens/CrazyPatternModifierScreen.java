@@ -51,7 +51,9 @@ public class CrazyPatternModifierScreen<C extends CrazyPatternModifierMenu> exte
     }
 
     public void modifyCirc(Button btn){
-        if (circ.getValue().chars().allMatch(Character::isDigit) && !circ.getValue().isEmpty() && Integer.parseInt(circ.getValue()) <= 32){
+        if (circ.getValue().isEmpty()){
+            this.getMenu().changeCircuit(0);
+        } else if ((circ.getValue().chars().allMatch(Character::isDigit) && !circ.getValue().isEmpty() && Integer.parseInt(circ.getValue()) <= 32)){
             this.getMenu().changeCircuit(Integer.parseInt(circ.getValue()));
         }
     }

@@ -5,7 +5,7 @@
       "item": "ae2:blank_pattern"
     },
     "B": {
-      "item": "ae2:logic_processor"
+      "item": "ae2:calculation_processor"
     }
   },
   "pattern": [
@@ -13,6 +13,6 @@
     "BA"
   ],
   "result": {
-    "item": "crazyae2addons:crazy_pattern_modifier"
+    "item": "crazyae2addons:crazy_pattern_multiplier"
   }
 }

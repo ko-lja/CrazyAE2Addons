@@ -92,12 +92,16 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
     @Override
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
-        if (data.contains("variables")) {
-            variables.deserialize(data.getByteArray("variables"));
-        }
-        if (data.contains("tonotify")) {
+        try{
+            if (data.contains("variables")) {
+                variables.deserialize(data.getByteArray("variables"));
+            }
+        } catch (Exception ignored) {}
+        try {
+            if (data.contains("tonotify")) {
                 toNotify.deserialize(data.getByteArray("tonotify"));
-        }
+            }
+        } catch (Exception ignored) {}
     }
 
     @Override
@@ -150,7 +154,7 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
         this.saveChanges();
         if (this.variables.get(id) != null || this.variables.size() < this.getMaxVariables()) {
             if (this.variables.get(id) != null && !Objects.equals(((DataVariable) this.variables.get(id)).name, name)){
-                addVariable(id, ((DataVariable) this.variables.get(id)).name, 0, 0);
+                addVariable(id, ((DataVariable) this.variables.get(id)).name, 0, depth);
             }
             this.variables.set(id, new DataVariable(name, value));
             if (toNotify.get(name) != null){

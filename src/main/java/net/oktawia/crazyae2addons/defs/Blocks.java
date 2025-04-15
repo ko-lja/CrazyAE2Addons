@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.Block;
 import net.oktawia.crazyae2addons.blocks.*;
 import net.oktawia.crazyae2addons.items.*;
 import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.menus.CircuitedPatternProviderMenu;
 
 public class Blocks {
 
@@ -61,9 +60,21 @@ public class Blocks {
     );
     public static final BlockDefinition<IsolatedDataProcessorBlock> ISOLATED_DATA_PROCESSOR_BLOCK = block(
             "Isolated Data Processor",
-            "isolated_data_processor",
+            "isolated_data_processor_block",
             IsolatedDataProcessorBlock::new,
             IsolatedDataProcessorBlockItem::new
+    );
+    public static final BlockDefinition<ImpulsedPatternProviderBlock> IMPULSED_PATTERN_PROVIDER_BLOCK = block(
+            "Impulsed Pattern Provider",
+            "impulsed_pp",
+            ImpulsedPatternProviderBlock::new,
+            ImpulsedPatternProviderBlockItem::new
+    );
+    public static final BlockDefinition<SignallingInterfaceBlock> SIGNALLING_INTERFACE_BLOCK = block(
+            "Signalling Interface",
+            "signalling_interface_block",
+            SignallingInterfaceBlock::new,
+            SignallingInterfaceBlockItem::new
     );
 
     public static List<BlockDefinition<?>> getBlocks() {

@@ -54,7 +54,6 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
     public int i = 0;
     public int x = 0;
     public int y = 0;
-    public int z = 0;
     public int l0 = 0;
     public int l1 = 0;
     public int l2 = 0;
@@ -142,6 +141,10 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (i >= getInternalInventory().size()) {
+            i = 0;
+            return TickRateModulation.IDLE;
+        }
         var itemStack = getInternalInventory().getStackInSlot(i);
         if (itemStack.isEmpty()) {
             i = 0;
@@ -163,12 +166,11 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
                 case "&&3" -> x = l3;
             }
         } else if (in1.startsWith("&")) {
-            if (this.getGridNode() == null || this.getGridNode().getGrid() == null || this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()) {
-                i = 0;
-                return TickRateModulation.IDLE;
-            } else {
+            if (this.getGridNode() != null && this.getGridNode().getGrid() != null && !this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()) {
                 MEDataControllerBE controller = getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
                 x = controller.getVariable(in1.replace("&", ""));
+            } else {
+                x = 0;
             }
         } else {
             try {
@@ -185,12 +187,11 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
                 case "&&3" -> y = l3;
             }
         } else if (in2.startsWith("&")) {
-            if (this.getGridNode() == null || this.getGridNode().getGrid() == null || this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()) {
-                i = 0;
-                return TickRateModulation.IDLE;
-            } else {
+            if (this.getGridNode() != null && this.getGridNode().getGrid() != null && !this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()) {
                 MEDataControllerBE controller = getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
                 y = controller.getVariable(in2.replace("&", ""));
+            } else {
+                y = 0;
             }
         } else {
             try {
@@ -239,17 +240,13 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
                 case "&&2" -> l2 = temp;
                 case "&&3" -> l3 = temp;
             }
-            i++;
         } else if (out.startsWith("&")) {
-            if (this.getGridNode() == null || this.getGridNode().getGrid() == null || this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()) {
-                return TickRateModulation.IDLE;
-            } else {
+            if (this.getGridNode() != null && this.getGridNode().getGrid() != null && !this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()) {
                 MEDataControllerBE controller = getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
                 controller.addVariable(this.identifier, out.replace("&", ""), temp, 0);
             }
-            i++;
-
         }
+        i++;
         return TickRateModulation.IDLE;
     }
 
