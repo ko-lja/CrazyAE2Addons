@@ -41,11 +41,16 @@ jobs:
   
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Checkout
+      uses: actions/checkout@main
+      with:
+        fetch-depth: 0
   
     - name: Download JAR artifact
       uses: actions/download-artifact@v4
       with:
-        name: CrazyAE2Adoons
+        name: CrazyAE2Addons
         path: build/libs/
   
     - name: Set VERSION
@@ -69,10 +74,10 @@ jobs:
         prerelease: ${{ github.ref_name != 'refs/heads/main' && !startsWith(github.ref_name, 'refs/tags/v') }}
   
     - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
+      uses: yakuhzi/github-release@4.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/CrazyAE2Adoons-v${{ env.VERSION }}.jar
-        asset_name: CrazyAE2Adoons-v${{ env.VERSION }}.jar
+        file: build/libs/CrazyAE2Addons-v${{ env.VERSION }}.jar
+        asset-name: CrazyAE2Adoons-v${{ env.VERSION }}.jar
+        app-name: CrazyAE2Adoons-v${{ env.VERSION }}.jar
