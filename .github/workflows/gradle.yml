@@ -57,11 +57,17 @@ jobs:
           echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
         fi
 
+    - name: Download JAR artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: CrazyAE2Addons
+        path: release
+
     - name: Upload Release Asset
       uses: yakuhzi/github-release@4.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        file: build/libs/CrazyAE2Addons.zip
-        asset-name: CrazyAE2Adoons-v${{ env.VERSION }}.zip
-        app-name: CrazyAE2Adoons-v${{ env.VERSION }}.zip
+        file: release/CrazyAE2Addons/build/libs/*[!all].jar
+        asset-name: CrazyAE2Adoons-v${{ env.VERSION }}.jar
+        app-name: CrazyAE2Adoons-v${{ env.VERSION }}.jar
