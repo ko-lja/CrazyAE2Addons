@@ -61,5 +61,13 @@ jobs:
       id: create_release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: CrazyAE2Adoons-v${{ env.VERSION }}.jar
         generateReleaseNotes: true
+
+    - name: Upload Release Asset
+      uses: yakuhzi/github-release@4.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        file: build/libs/CrazyAE2Addons.zip
+        asset-name: CrazyAE2Adoons-v${{ env.VERSION }}.zip
+        app-name: CrazyAE2Adoons-v${{ env.VERSION }}.zip
