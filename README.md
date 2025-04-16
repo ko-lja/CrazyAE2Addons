@@ -53,6 +53,4 @@ Crazy AE2 Addons is licensed under the MIT License.
 
 ---
 
-### Documentation
-
-Imagine that this is a link to the wiki page containing all the documentation.
+### [Documentation](https://github.com/GilbertzRivi/CrazyAE2Addons/wiki)
