@@ -36,14 +36,6 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew build --no-daemon --build-cache
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-
       - name: Set VERSION
         shell: bash
         run: |
