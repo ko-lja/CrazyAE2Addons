@@ -1,5 +1,4 @@
-
-name: build jar and create release
+name: Build Jar && Release
 
 on:
   push:
@@ -9,69 +8,60 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-      
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+      - uses: actions/checkout@v4
 
-    - name: Build with Gradle Wrapper
-      run: ./gradlew build
-      
-    - name: Upload JAR artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: CrazyAE2Addons
-        path: build/libs/*[!all].jar
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
+
+      - name: Build with Gradle Wrapper
+        run: ./gradlew build --no-daemon --build-cache
 
   release:
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
-  
     steps:
-    - uses: actions/checkout@v4
-    - name: Download JAR artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: CrazyAE2Addons
-        path: build/libs/
-  
-    - name: Set VERSION
-      shell: bash
-      run: |
-        if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
-          echo "VERSION=${GITHUB_REF:10}" >> $GITHUB_ENV
-        else
-          echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
-        fi
+      - uses: actions/checkout@v4
 
-    - name: Download JAR artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: CrazyAE2Addons
-        path: release
+      - name: Set VERSION
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            echo "VERSION=${GITHUB_REF:10}" >> $GITHUB_ENV
+          else
+            echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+          fi
 
-    - name: ls
-      shell: bash
-      run: ls -Rl
+      - name: ls
+        shell: bash
+        run: ls -Rl
 
-    - name: Upload Release Asset
-      uses: yakuhzi/github-release@4.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        file: /home/runner/work/CrazyAE2Addons/CrazyAE2Addons/release/CrazyAE2Addons/build/libs/*[!all].jar
-        asset-name: CrazyAE2Adoons-v${{ env.VERSION }}.jar
-        app-name: CrazyAE2Adoons-v${{ env.VERSION }}.jar
+      - name: Upload Release Asset
+        uses: yakuhzi/github-release@4.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: build/libs/*[!all].jar
+          asset-name: CrazyAE2Addons-${{ env.VERSION }}.jar
+          app-name: CrazyAE2Addons-${{ env.VERSION }}.jar
