@@ -45,15 +45,21 @@ jobs:
             echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
           fi
 
-      - name: ls
-        shell: bash
-        run: ls -Rl
+      - name: Find Jar file
+        id: find_jar
+        run: |
+          FILE=$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*all.jar')
+          if [ -z "$FILE" ]; then
+            echo "No jar file found" >&2
+            exit 1
+          fi
+          echo "FILE_NAME=${FILE}" >> $GITHUB_ENV
 
       - name: Upload Release Asset
         uses: yakuhzi/github-release@4.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: build/libs/*[!all].jar
+          file: ${{ env.FILE_NAME }}
           asset-name: CrazyAE2Addons-${{ env.VERSION }}.jar
           app-name: CrazyAE2Addons-${{ env.VERSION }}.jar
