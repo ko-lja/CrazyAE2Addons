@@ -6,6 +6,9 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      tag:
+        required: true
 
 jobs:
   build:
