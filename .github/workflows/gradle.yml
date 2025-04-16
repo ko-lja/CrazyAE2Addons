@@ -65,7 +65,7 @@ jobs:
 
     - name: ls
       shell: bash
-      run: ls -rl
+      run: ls -Rl
 
     - name: Upload Release Asset
       uses: yakuhzi/github-release@4.0.1
