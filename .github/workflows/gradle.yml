@@ -63,11 +63,15 @@ jobs:
         name: CrazyAE2Addons
         path: release
 
+    - name: ls
+      shell: bash
+      run: ls -rl
+
     - name: Upload Release Asset
       uses: yakuhzi/github-release@4.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        file: release/CrazyAE2Addons/build/libs/*[!all].jar
+        file: /home/runner/work/CrazyAE2Addons/CrazyAE2Addons/release/CrazyAE2Addons/build/libs/*[!all].jar
         asset-name: CrazyAE2Adoons-v${{ env.VERSION }}.jar
         app-name: CrazyAE2Adoons-v${{ env.VERSION }}.jar
