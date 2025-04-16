@@ -56,12 +56,6 @@ jobs:
         else
           echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
         fi
-  
-    - name: Create Release && Upload
-      id: create_release
-      uses: ncipollo/release-action@v1
-      with:
-        generateReleaseNotes: true
 
     - name: Upload Release Asset
       uses: yakuhzi/github-release@4.0.1
