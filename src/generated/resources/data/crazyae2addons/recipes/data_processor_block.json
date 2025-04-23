@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": {
+      "item": "crazyae2addons:logic_card"
+    },
+    "S": {
+      "item": "ae2:controller"
+    },
+    "T": {
+      "item": "ae2:engineering_processor"
+    }
+  },
+  "pattern": [
+    " L ",
+    "TST",
+    " L "
+  ],
+  "result": {
+    "item": "crazyae2addons:data_processor_block"
+  },
+  "show_notification": true
+}

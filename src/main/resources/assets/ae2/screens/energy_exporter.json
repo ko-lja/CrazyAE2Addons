@@ -8,7 +8,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.crazyae2addons.energy_exporter"
+        "translate": "item.crazyae2addons.energy_exporter"
       },
       "position": {
         "left": 8,

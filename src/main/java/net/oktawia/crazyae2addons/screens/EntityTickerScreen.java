@@ -23,6 +23,12 @@ public class EntityTickerScreen<C extends EntityTickerMenu> extends UpgradeableS
     public EntityTickerScreen(
             EntityTickerMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super((C) menu, playerInventory, title, style);
+        this.setupGui();
+    }
+
+    public void setupGui(){
+        this.setTextContent("info1", Component.literal("Each card multiplies"));
+        this.setTextContent("info2", Component.literal("machines speed by 4"));
     }
 
     public void refreshGui(){

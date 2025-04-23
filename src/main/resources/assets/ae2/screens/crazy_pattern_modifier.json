@@ -15,7 +15,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.crazyae2addons.pattern_modifier"
+        "translate": "item.crazyae2addons.crazy_pattern_modifier"
       },
       "position": {
         "left": 8,

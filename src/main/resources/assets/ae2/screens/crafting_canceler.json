@@ -8,7 +8,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.crazyae2addons.crafting_canceler"
+        "translate": "block.crazyae2addons.crafting_canceler_block"
       },
       "position": {
         "left": 8,
@@ -16,9 +16,6 @@
       }
     },
     "labelstate": {
-      "text": {
-        "translate": "gui.crazyae2addons.crafting_canceler_state"
-      },
       "position": {
         "top": 62,
         "left": 88
@@ -26,9 +23,6 @@
       "align": "CENTER"
     },
     "labelinput": {
-      "text": {
-        "translate": "gui.crazyae2addons.crafting_canceler_inputlabel"
-      },
       "position": {
         "top": 92,
         "left": 88
@@ -36,9 +30,6 @@
       "align": "CENTER"
     },
     "infol1": {
-      "text": {
-        "translate": "gui.crazyae2addons.crafting_canceler_infol1"
-      },
       "position": {
         "top": 20,
         "left": 88
@@ -46,9 +37,6 @@
       "align": "CENTER"
     },
     "infol2": {
-      "text": {
-        "translate": "gui.crazyae2addons.crafting_canceler_infol2"
-      },
       "position": {
         "top": 32,
         "left": 88

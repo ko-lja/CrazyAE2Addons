@@ -35,6 +35,7 @@ public class ChunkyFluidP2PTunnelScreen<C extends ChunkyFluidP2PTunnelMenu> exte
     }
 
     private void setupGui(){
+        this.setTextContent("info1", Component.literal("Set chunk size in mB"));
         value = new AETextField(
                 style, Minecraft.getInstance().font, 0, 0, 0, 0
         );

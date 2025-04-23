@@ -34,6 +34,8 @@ public class DataTrackerScreen<C extends DataTrackerMenu> extends AEBaseScreen<C
     }
 
     private void setupGui(){
+        this.setTextContent("info1", Component.literal("Enter &VARIABLE"));
+        this.setTextContent("info2", Component.literal("to track its state"));
         value = new AETextField(
                 style, Minecraft.getInstance().font, 0, 0, 0, 0
         );

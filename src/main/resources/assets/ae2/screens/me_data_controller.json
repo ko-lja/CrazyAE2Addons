@@ -8,7 +8,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.crazyae2addons.me_data_controller"
+        "translate": "block.crazyae2addons.me_data_controller_block"
       },
       "position": {
         "left": 8,

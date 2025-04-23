@@ -8,7 +8,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.crazyae2addons.data_tracker"
+        "translate": "block.crazyae2addons.data_tracker_block"
       },
       "position": {
         "left": 8,
@@ -16,9 +16,6 @@
       }
     },
     "info1": {
-      "text": {
-        "translate": "gui.crazyae2addons.data_tracker_info1"
-      },
       "position": {
         "top": 30,
         "left": 88
@@ -26,9 +23,6 @@
       "align": "CENTER"
     },
     "info2": {
-      "text": {
-        "translate": "gui.crazyae2addons.data_tracker_info2"
-      },
       "position": {
         "top": 45,
         "left": 88

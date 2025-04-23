@@ -41,6 +41,8 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
     }
 
     private void setupGui(){
+        this.setTextContent("info1", Component.literal("Use \"&nl\" for new lines"));
+        this.setTextContent("info2", Component.literal("or \"&NAME for variables"));
         value = new AETextField(
                 style, Minecraft.getInstance().font, 0, 0, 0, 0
         );

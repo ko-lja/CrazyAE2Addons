@@ -8,7 +8,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.crazyae2addons.auto_enchanter"
+        "translate": "block.crazyae2addons.auto_enchanter"
       },
       "position": {
         "left": 8,

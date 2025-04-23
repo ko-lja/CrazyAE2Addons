@@ -20,7 +20,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.crazyae2addons.signalling_interface"
+        "translate": "block.crazyae2addons.signalling_interface_block"
       },
       "position": {
         "left": 8,

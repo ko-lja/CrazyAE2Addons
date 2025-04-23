@@ -38,6 +38,10 @@ public class CraftingCancelerScreen<C extends CraftingCancelerMenu> extends AEBa
     }
 
     private void setupGui(){
+        this.setTextContent("labelstate", Component.literal("Enabled"));
+        this.setTextContent("labelinput", Component.literal("Max duration (s)"));
+        this.setTextContent("infol1", Component.literal("Set max frozen craft time"));
+        this.setTextContent("infol2", Component.literal("before reschedule [15-360s]"));
         onoffbutton = new AECheckbox(
                 0, 0, 300, 10, style, Component.empty()
         );

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": {
+      "item": "crazyae2addons:logic_card"
+    },
+    "S": {
+      "item": "ae2:sky_stone_block"
+    },
+    "T": {
+      "item": "minecraft:redstone_torch"
+    }
+  },
+  "pattern": [
+    "TSL"
+  ],
+  "result": {
+    "item": "crazyae2addons:data_tracker_block"
+  },
+  "show_notification": true
+}

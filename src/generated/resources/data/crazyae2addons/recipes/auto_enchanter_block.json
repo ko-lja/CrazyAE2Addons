@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "E": {
+      "item": "ae2:export_bus"
+    },
+    "I": {
+      "item": "ae2:import_bus"
+    },
+    "M": {
+      "item": "minecraft:obsidian"
+    },
+    "U": {
+      "item": "minecraft:enchanting_table"
+    }
+  },
+  "pattern": [
+    " D ",
+    "EUI",
+    "MMM"
+  ],
+  "result": {
+    "item": "crazyae2addons:auto_enchanter_block"
+  },
+  "show_notification": true
+}
