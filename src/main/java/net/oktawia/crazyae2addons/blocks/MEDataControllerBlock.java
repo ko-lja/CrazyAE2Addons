@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.oktawia.crazyae2addons.defs.BlockEntities;
-import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
 import net.oktawia.crazyae2addons.entities.MEDataControllerBE;
 import org.jetbrains.annotations.Nullable;
 

@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class SignallingMultiCraftingTracker {
+public class SignallingInterfaceMultiCraftingTracker {
 
     private final int size;
     private final ICraftingRequester owner;
@@ -20,7 +20,7 @@ public class SignallingMultiCraftingTracker {
     private Future<ICraftingPlan>[] jobs = null;
     private ICraftingLink[] links = null;
     
-    public SignallingMultiCraftingTracker(ICraftingRequester o, int size) {
+    public SignallingInterfaceMultiCraftingTracker(ICraftingRequester o, int size) {
         this.owner = o;
         this.size = size;
     }

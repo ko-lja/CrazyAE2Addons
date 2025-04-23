@@ -13,7 +13,6 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.util.inv.AppEngInternalInventory;
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -24,7 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.oktawia.crazyae2addons.Utils;
 import net.oktawia.crazyae2addons.defs.Blocks;
 import net.oktawia.crazyae2addons.defs.Items;
 import net.oktawia.crazyae2addons.defs.Menus;
@@ -32,10 +30,8 @@ import net.oktawia.crazyae2addons.menus.DataProcessorMenu;
 import net.oktawia.crazyae2addons.misc.NBTContainer;
 import net.oktawia.crazyae2addons.misc.LogicSetting;
 import org.jetbrains.annotations.Nullable;
-import org.jline.utils.Log;
 
 import java.security.SecureRandom;
-import java.util.HashMap;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -154,129 +150,117 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
     public DataProcessorMenu getMenu(){
         return this.menu;
     }
-
-    public void compute(MEDataControllerBE database, Integer depth){
-        int l0 = 0;
-        int l1 = 0;
-        int l2 = 0;
-        int l3 = 0;
-        String in1;
-        String in2;
-        String out;
-        int temp = 0;
-        int i = 0;
-        int count = 0;
-        while(i < this.getInternalInventory().size()){
-            count ++;
-            if(count > 128){
-                break;
-            }
-            if(i == 0){
+    public void compute(MEDataControllerBE database, Integer depth) {
+        int[] registers = new int[4];
+        int i = 0, count = 0, temp = 0;
+        while (i < this.getInternalInventory().size()) {
+            if (++count > 128) break;
+            String in1, in2 = "", out = "";
+            if (i == 0) {
                 in1 = this.in;
             } else {
-                in1 = ((LogicSetting) this.settings.get(String.valueOf(i))).in1;
+                LogicSetting setting = (LogicSetting) this.settings.get(String.valueOf(i));
+                in1 = setting.in1;
+                in2 = setting.in2;
+                out = setting.out;
             }
-            in2 = ((LogicSetting) this.settings.get(String.valueOf(i))).in2;
-            out = ((LogicSetting) this.settings.get(String.valueOf(i))).out;
-            int x = 0;
-            int y = 0;
+            if (i == 0) {
+                LogicSetting setting = (LogicSetting) this.settings.get(String.valueOf(i));
+                in2 = setting.in2;
+                out = setting.out;
+            }
+            int x = resolveOperand(in1, registers, database);
+            int y = resolveOperand(in2, registers, database);
 
-            if (in1.startsWith("&&")) {
-                switch (in1){
-                    case "&&0" -> x = l0;
-                    case "&&1" -> x = l1;
-                    case "&&2" -> x = l2;
-                    case "&&3" -> x = l3;
-                }
-            } else if (in1.startsWith("&")) {
-                x = database.getVariable(in1.replace("&", ""));
-            } else {
-                try {
-                    x = Integer.parseInt(in1);
-                } catch (Exception ignored){}
-            }
-
-            if (in2.startsWith("&&")) {
-                switch (in2){
-                    case "&&0" -> y = l0;
-                    case "&&1" -> y = l1;
-                    case "&&2" -> y = l2;
-                    case "&&3" -> y = l3;
-                }
-            } else if (in2.startsWith("&")) {
-                y = database.getVariable(in2.replace("&", ""));
-            } else {
-                try {
-                    y = Integer.parseInt(in2);
-                } catch (Exception ignored){}
-            }
             var itemStack = getInternalInventory().getStackInSlot(i);
-            if(itemStack.isEmpty()){
+            if (itemStack.isEmpty()) {
+                i++;
                 continue;
             }
-            if(itemStack.is(Items.ADD_CARD.asItem())){
+            if (itemStack.is(Items.ADD_CARD.asItem())) {
                 temp = x + y;
-            }
-            if(itemStack.is(Items.SUB_CARD.asItem())){
+            } else if (itemStack.is(Items.SUB_CARD.asItem())) {
                 temp = x - y;
-            }
-            if(itemStack.is(Items.MUL_CARD.asItem())){
+            } else if (itemStack.is(Items.MUL_CARD.asItem())) {
                 temp = x * y;
-            }
-            if(itemStack.is(Items.DIV_CARD.asItem()) && y != 0){
+            } else if (itemStack.is(Items.DIV_CARD.asItem()) && y != 0) {
                 temp = x / y;
-            }
-            if(itemStack.is(Items.MIN_CARD.asItem())){
+            } else if (itemStack.is(Items.MIN_CARD.asItem())) {
                 temp = min(x, y);
-            }
-            if(itemStack.is(Items.MAX_CARD.asItem())){
+            } else if (itemStack.is(Items.MAX_CARD.asItem())) {
                 temp = max(x, y);
-            }
-            if(itemStack.is(Items.BSR_CARD.asItem())){
+            } else if (itemStack.is(Items.BSR_CARD.asItem())) {
                 temp = x >> y;
-            }
-            if(itemStack.is(Items.BSL_CARD.asItem())){
+            } else if (itemStack.is(Items.BSL_CARD.asItem())) {
                 temp = x << y;
-            }
-            if(itemStack.is(Items.HIT_CARD.asItem())){
-                if (x > 0){
+            } else if (itemStack.is(Items.HIT_CARD.asItem())) {
+                if (x > 0) {
+                    i = y;
+                    continue;
+                }
+            } else if (itemStack.is(Items.HIF_CARD.asItem())) {
+                if (x <= 0) {
                     i = y;
                     continue;
                 }
             }
-            if(itemStack.is(Items.HIF_CARD.asItem())){
-                if (x <= 0){
-                    i = y;
-                    continue;
-                }
-            }
-            if (out.startsWith("&&")) {
-                switch (out){
-                    case "&&0" -> l0 = temp;
-                    case "&&1" -> l1 = temp;
-                    case "&&2" -> l2 = temp;
-                    case "&&3" -> l3 = temp;
-                }
-            } else if (out.startsWith("&")) {
-                database.addVariable(this.identifier, out.replace("&", ""), temp, depth + 1);
+
+            if (!assignOutput(out, temp, registers, database, depth)) {
                 break;
             }
-            i ++;
+            i++;
+        }
+    }
+
+    private int resolveOperand(String input, int[] registers, MEDataControllerBE database) {
+        if (input.startsWith("&&")) {
+            int index = parseRegisterIndex(input);
+            return registers[index];
+        } else if (input.startsWith("&")) {
+            return database.getVariable(input.replace("&", ""));
+        }
+        try {
+            return Integer.parseInt(input);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private boolean assignOutput(String output, int value, int[] registers, MEDataControllerBE database, int depth) {
+        if (output.startsWith("&&")) {
+            int index = parseRegisterIndex(output);
+            registers[index] = value;
+            return true;
+        } else if (output.startsWith("&")) {
+            database.addVariable(this.identifier, output.replace("&", ""), value, depth + 1);
+            return false;
+        }
+        return true;
+    }
+
+    private int parseRegisterIndex(String reg) {
+        try {
+            return Integer.parseInt(reg.replace("&", ""));
+        } catch (Exception e) {
+            return 0;
         }
     }
 
     public void notifyDatabase() {
-        if (this.getGridNode() == null || this.getGridNode().getGrid() == null || this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()){
+        if (this.getGridNode() == null ||
+                this.getGridNode().getGrid() == null ||
+                this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()) {
             this.reRegister = true;
             return;
         }
-        MEDataControllerBE controller = getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
-        if (controller.getMaxVariables() <= 0){
+        MEDataControllerBE controller = getMainNode().getGrid()
+                .getMachines(MEDataControllerBE.class).stream().findFirst().orElse(null);
+        if (controller == null || controller.getMaxVariables() <= 0) {
             this.reRegister = true;
             return;
         }
         controller.unRegisterNotification(this);
-        if (!this.in.isEmpty()){
+        if (!this.in.isEmpty()) {
             controller.registerNotification(this.in.replace("&", ""), this);
         }
     }

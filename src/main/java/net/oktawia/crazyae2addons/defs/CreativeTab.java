@@ -28,7 +28,6 @@ public class CreativeTab {
         for (var itemDef : itemDefs) {
             var item = itemDef.asItem();
 
-            // For block items, the block controls the creative tab
             if (item instanceof AEBaseBlockItem baseItem && baseItem.getBlock() instanceof AEBaseBlock baseBlock) {
                 baseBlock.addToMainCreativeTab(output);
             } else if (item instanceof AEBaseItem baseItem) {

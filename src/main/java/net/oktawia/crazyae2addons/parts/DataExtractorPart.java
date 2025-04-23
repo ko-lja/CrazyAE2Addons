@@ -43,7 +43,6 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.regex.Pattern;
 
 public class DataExtractorPart extends AEBasePart implements IGridTickable, MenuProvider, IUpgradeableObject {
 
@@ -238,60 +237,68 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
     public List<String> extractNumericInfo(Object blockEntity) {
         return extractNumericInfoFromObject(blockEntity, "");
     }
-
     private List<String> extractNumericInfoFromObject(Object obj, String prefix) {
+        if (obj == null) return new ArrayList<>();
         List<String> info = new ArrayList<>();
-        if (obj == null) return info;
-        Class<?> clazz = obj.getClass();
-        Class<?> currentClass = clazz;
+        info.addAll(extractFields(obj, prefix));
+        info.addAll(extractMethods(obj, prefix));
+        return info;
+    }
+
+    private List<String> extractFields(Object obj, String prefix) {
+        List<String> info = new ArrayList<>();
+        Class<?> currentClass = obj.getClass();
         while (currentClass != null) {
-            Field[] fields = currentClass.getDeclaredFields();
-            for (Field field : fields) {
+            for (Field field : currentClass.getDeclaredFields()) {
                 field.setAccessible(true);
                 try {
                     Object value = field.get(obj);
                     if (value instanceof Number) {
                         info.add(prefix + field.getName());
                     } else if (value != null && isInventoryType(value)) {
-                        extractNumericInfoFromObject(value, prefix + "  ").forEach((extractedInfo) -> {
-                            info.add(prefix + field.getName() + "." + extractedInfo);
-                        });
+                        extractNumericInfoFromObject(value, prefix + "  ")
+                                .forEach(extracted -> info.add(prefix + field.getName() + "." + extracted));
                     }
-                } catch (IllegalAccessException e) {}
+                } catch (IllegalAccessException e) {
+                }
             }
             currentClass = currentClass.getSuperclass();
         }
-        Method[] methods = clazz.getDeclaredMethods();
+        return info;
+    }
+
+    private List<String> extractMethods(Object obj, String prefix) {
+        List<String> info = new ArrayList<>();
+        Method[] methods = obj.getClass().getDeclaredMethods();
         String[] bannedMethods = {"saveAdditional", "loadTag", "writeToNBT", "readFromNBT"};
         for (Method method : methods) {
-            String methodNameLower = method.getName().toLowerCase();
-            boolean banned = false;
-            for (String bannedMethod : bannedMethods) {
-                if (methodNameLower.equals(bannedMethod.toLowerCase()) || methodNameLower.contains("onready")) {
-                    banned = true;
-                    break;
-                }
-            }
-            if (banned || method.getParameterCount() > 0) {
-                continue;
-            }
-            if (!(method.getName().startsWith("get") || method.getName().startsWith("is"))) {
-                continue;
-            }
+            if (shouldSkipMethod(method, bannedMethods)) continue;
             method.setAccessible(true);
             try {
                 Object result = method.invoke(obj);
                 if (result instanceof Number) {
                     info.add(prefix + method.getName() + "()");
                 } else if (result != null && isInventoryType(result)) {
-                    extractNumericInfoFromObject(result, prefix + "  ").forEach((extractedInfo) -> {
-                        info.add(prefix + method.getName() + "()." + extractedInfo);
-                    });
+                    extractNumericInfoFromObject(result, prefix + "  ")
+                            .forEach(extracted -> info.add(prefix + method.getName() + "()." + extracted));
                 }
             } catch (Exception ignored) {}
         }
         return info;
     }
+
+    private boolean shouldSkipMethod(Method method, String[] bannedMethods) {
+        if (method.getParameterCount() > 0) return true;
+        String name = method.getName();
+        if (!(name.startsWith("get") || name.startsWith("is"))) return true;
+        String lowerName = name.toLowerCase();
+        for (String banned : bannedMethods) {
+            if (lowerName.equals(banned.toLowerCase()) || lowerName.contains("onready"))
+                return true;
+        }
+        return false;
+    }
+
 
     private static boolean isInventoryType(Object obj) {
         try {

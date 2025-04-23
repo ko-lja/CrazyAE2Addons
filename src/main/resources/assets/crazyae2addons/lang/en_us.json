@@ -61,5 +61,10 @@
   "gui.crazyae2addons.crazy_pattern_multiplier": "Pattern Multiplier",
   "item.crazyae2addons.crazy_pattern_multiplier": "Pattern Multiplier",
   "item.crazyae2addons.crazy_pattern_modifier": "Pattern Modifier",
-  "block.crazyae2addons.isolated_data_processor_block": "Isolated Data Processor"
+  "block.crazyae2addons.isolated_data_processor_block": "Isolated Data Processor",
+  "item.crazyae2addons.circuit_upgrade_card": "Circuit Upgrade Card",
+  "block.crazyae2addons.impulsed_pp": "Impulsed Pattern Provider",
+  "gui.crazyae2addons.impulsed_pp": "Impulsed Pattern Provider",
+  "block.crazyae2addons.signalling_interface_block": "Signalling Interface",
+  "gui.crazyae2addons.signalling_interface_block": "Signalling Interface"
 }

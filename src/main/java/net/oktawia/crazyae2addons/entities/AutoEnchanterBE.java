@@ -291,80 +291,81 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements IGridTic
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         BlockPos target = getBlockEntity().getBlockPos().relative(getTop());
-        BlockState targetState = null;
-        try {
-            targetState = getLevel().getBlockState(target);
-        } catch (Exception ignored) {
+        BlockState targetState = fetchTargetState(target);
+        if (!isValidTarget(targetState)) {
+            waitingFor++;
             return TickRateModulation.IDLE;
         }
 
-        if (targetState.is(Blocks.ENCHANTING_TABLE) && this.waitingFor >= 5) {
-            double extractedPower;
-            try {
-                 extractedPower = getMainNode().getGrid().getEnergyService().extractAEPower(128, Actionable.MODULATE, PowerMultiplier.CONFIG);
-            } catch (Exception ignored) {
-                return TickRateModulation.IDLE;
-            }
+        double extractedPower = extractGridPower();
+        if (extractedPower < 128) return TickRateModulation.IDLE;
 
-            if (extractedPower < 128){
-                return TickRateModulation.IDLE;
-            }
+        EnchantingStatRegistry.Stats stats = gatherStats(getLevel(), target, 3);
+        ItemStack book = new ItemStack(Items.BOOK);
+        int enchantLevel = computeEnchantLevel(stats, selectedLevel);
 
-            EnchantingStatRegistry.Stats stats = gatherStats(getLevel(), target, 3);
+        EnchantCost cost = calculateEnchantCost(selectedLevel, book, stats);
+        if (!isInventoryValid(cost)) return TickRateModulation.IDLE;
 
-            ItemStack book = new ItemStack(Items.BOOK);
+        if (holdedXp < cost.xpLevels) return TickRateModulation.IDLE;
 
-            int enchantLevel = Math.min((int)stats.eterna(), (int)stats.maxEterna());
-            enchantLevel = Math.min(enchantLevel, 100);
+        holdedXp -= cost.xpLevels;
+        inv.extractItem(0, 1, false);
+        inv.extractItem(1, cost.lapis, false);
 
-            if (selectedLevel == 1){
-                enchantLevel = enchantLevel / 3;
-            } else if (selectedLevel == 2) {
-                enchantLevel = enchantLevel * 2 / 3;
-            }
+        book = enchantWithApotheosis(book, enchantLevel, stats, (ServerLevel) getLevel());
+        outputInv.setItemDirect(0, book);
 
-            EnchantCost cost = calculateEnchantCost(selectedLevel, book, stats);
+        waitingFor = 0;
+        updateMenuXp(holdedXp);
 
-            if (!outputInv.isEmpty()){
-                return TickRateModulation.IDLE;
-            }
-
-            if (inv.getStackInSlot(0).isEmpty() || inv.getStackInSlot(0).getItem() != Items.BOOK)
-                return TickRateModulation.IDLE;
-
-            if (inv.getStackInSlot(1).getCount() < cost.lapis || inv.getStackInSlot(1).getItem() != Items.LAPIS_LAZULI)
-                return TickRateModulation.IDLE;
-
-            int requiredXpFluid = cost.xpLevels;
-
-            if (this.holdedXp < requiredXpFluid)
-                return TickRateModulation.IDLE;
-
-            this.holdedXp = this.holdedXp - cost.xpLevels;
-            inv.extractItem(0, 1, false);
-            inv.extractItem(1, cost.lapis, false);
-
-            book = enchantWithApotheosis(
-                    book,
-                    enchantLevel,
-                    stats,
-                    (ServerLevel) getLevel()
-            );
-
-            outputInv.setItemDirect(0, book);
-
-            this.waitingFor = 0;
-
-            if (getMenu() != null){
-                this.getMenu().holdedXp = this.holdedXp;
-
-            CompoundTag tag = this.getPersistentData();
-            tag.putInt("xp", this.holdedXp);
-            }
-        } else {
-            this.waitingFor = this.waitingFor + 1;
-        }
         return TickRateModulation.IDLE;
+    }
+
+    private BlockState fetchTargetState(BlockPos target) {
+        try {
+            return getLevel().getBlockState(target);
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    private boolean isValidTarget(BlockState state) {
+        return state != null && state.is(Blocks.ENCHANTING_TABLE) && waitingFor >= 5;
+    }
+
+    private double extractGridPower() {
+        try {
+            return getMainNode().getGrid().getEnergyService().extractAEPower(128, Actionable.MODULATE, PowerMultiplier.CONFIG);
+        } catch (Exception ignored) {
+            return 0;
+        }
+    }
+
+    private int computeEnchantLevel(EnchantingStatRegistry.Stats stats, int selectedLevel) {
+        int level = Math.min((int) stats.eterna(), (int) stats.maxEterna());
+        level = Math.min(level, 100);
+        if (selectedLevel == 1) {
+            level = level / 3;
+        } else if (selectedLevel == 2) {
+            level = level * 2 / 3;
+        }
+        return level;
+    }
+
+    private boolean isInventoryValid(EnchantCost cost) {
+        if (!outputInv.isEmpty()) return false;
+        if (inv.getStackInSlot(0).isEmpty() || inv.getStackInSlot(0).getItem() != Items.BOOK)
+            return false;
+        return inv.getStackInSlot(1).getCount() >= cost.lapis && inv.getStackInSlot(1).getItem() == Items.LAPIS_LAZULI;
+    }
+
+    private void updateMenuXp(int xp) {
+        if (getMenu() != null) {
+            getMenu().holdedXp = xp;
+            CompoundTag tag = getPersistentData();
+            tag.putInt("xp", xp);
+        }
     }
 
     @Override

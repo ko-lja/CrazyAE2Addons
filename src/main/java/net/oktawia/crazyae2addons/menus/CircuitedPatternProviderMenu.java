@@ -49,7 +49,6 @@ public class CircuitedPatternProviderMenu extends AEBaseMenu {
         }
     }
 
-
     @Override
     public void broadcastChanges() {
         if (isServerSide()) {
@@ -60,11 +59,6 @@ public class CircuitedPatternProviderMenu extends AEBaseMenu {
             unlockStack = logic.getUnlockStack();
         }
         super.broadcastChanges();
-    }
-
-
-    public GenericStackInv getReturnInv() {
-        return logic.getReturnInv();
     }
 
     public YesNo getBlockingMode() {

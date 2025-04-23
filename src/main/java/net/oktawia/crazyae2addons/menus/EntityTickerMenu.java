@@ -46,7 +46,6 @@ public class EntityTickerMenu extends UpgradeableMenu<EntityTickerPart> {
                 }
             }
         }
-
         this.standardDetectAndSendChanges();
     }
 }

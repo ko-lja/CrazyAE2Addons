@@ -2,7 +2,6 @@ package net.oktawia.crazyae2addons.logic.Signalling;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -17,7 +16,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.upgrades.IUpgradeInventory;
@@ -36,8 +34,6 @@ import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
 import com.google.common.collect.ImmutableSet;
-import com.ibm.icu.impl.ICUResourceBundle;
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -55,7 +51,6 @@ import net.oktawia.crazyae2addons.menus.SignallingInterfaceMenu;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SignallingInterfaceLogic implements ICraftingRequester, IUpgradeableObject, IConfigurableObject {
     @Nullable
@@ -70,7 +65,7 @@ public class SignallingInterfaceLogic implements ICraftingRequester, IUpgradeabl
     protected final IManagedGridNode mainNode;
     protected final IActionSource actionSource;
     protected final IActionSource interfaceRequestSource;
-    private final SignallingMultiCraftingTracker craftingTracker;
+    private final SignallingInterfaceMultiCraftingTracker craftingTracker;
     private final IUpgradeInventory upgrades;
     private final ConfigManager cm = new ConfigManager(this::onConfigChanged);
 
@@ -96,7 +91,7 @@ public class SignallingInterfaceLogic implements ICraftingRequester, IUpgradeabl
 
         gridNode.addService(ICraftingRequester.class, this);
         this.upgrades = UpgradeInventories.forMachine(is, 3, this::onUpgradesChanged);
-        this.craftingTracker = new SignallingMultiCraftingTracker(this, slots);
+        this.craftingTracker = new SignallingInterfaceMultiCraftingTracker(this, slots);
         this.cm.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.plannedWork = new GenericStack[slots];
 
@@ -480,127 +475,145 @@ public class SignallingInterfaceLogic implements ICraftingRequester, IUpgradeabl
         this.readConfig();
     }
 
-
     public DiffResult compare(Map<AEKey, Long> newStacks) {
-        DiffResult result = new DiffResult(null, 0L, null);
+        Set<AEKey> allKeys = getAllKeys(newStacks);
+        boolean hasFuzzyUpgrade = isUpgradedWith(AEItems.FUZZY_CARD);
+        FuzzyMode effectiveFuzzyMode = hasFuzzyUpgrade
+                ? getConfigManager().getSetting(Settings.FUZZY_MODE)
+                : FuzzyMode.IGNORE_ALL;
+
+        return hasFuzzyUpgrade
+                ? compareFuzzy(allKeys, newStacks, effectiveFuzzyMode)
+                : compareStandard(allKeys, newStacks);
+    }
+
+    private Set<AEKey> getAllKeys(Map<AEKey, Long> newStacks) {
         Set<AEKey> allKeys = new HashSet<>(beforeInv.keySet());
         allKeys.addAll(newStacks.keySet());
+        return allKeys;
+    }
 
-        boolean hasFuzzyUpgrade = this.isUpgradedWith(AEItems.FUZZY_CARD);
-        FuzzyMode effectiveFuzzyMode = FuzzyMode.IGNORE_ALL;
-
-        if (hasFuzzyUpgrade) {
-            effectiveFuzzyMode = getConfigManager().getSetting(Settings.FUZZY_MODE);
+    private DiffResult compareStandard(Set<AEKey> allKeys, Map<AEKey, Long> newStacks) {
+        DiffResult result = new DiffResult(null, 0L, null);
+        for (AEKey key : allKeys) {
+            long diff = newStacks.getOrDefault(key, 0L) - beforeInv.getOrDefault(key, 0L);
+            if (diff != 0 && (result.key == null || Math.abs(diff) > Math.abs(result.diff))) {
+                result = new DiffResult(key, diff, null);
+            }
         }
+        return result;
+    }
 
-        if (!hasFuzzyUpgrade) {
-            for (AEKey key : allKeys) {
-                long diff = newStacks.getOrDefault(key, 0L) - beforeInv.getOrDefault(key, 0L);
-                if (diff != 0 && (result.key == null || Math.abs(diff) > Math.abs(result.diff))) {
-                    result = new DiffResult(key, diff, null);
-                }
-            }
-        } else {
-            List<Set<AEKey>> groups = new ArrayList<>();
-            for (AEKey key : allKeys) {
-                boolean added = false;
-                for (Set<AEKey> group : groups) {
-                    if (group.iterator().next().fuzzyEquals(key, effectiveFuzzyMode)) {
-                        group.add(key);
-                        added = true;
-                        break;
-                    }
-                }
-                if (!added) {
-                    Set<AEKey> newGroup = new HashSet<>();
-                    newGroup.add(key);
-                    groups.add(newGroup);
-                }
-            }
+    private DiffResult compareFuzzy(Set<AEKey> allKeys, Map<AEKey, Long> newStacks, FuzzyMode mode) {
+        DiffResult result = new DiffResult(null, 0L, null);
+        List<Set<AEKey>> groups = groupKeysByFuzzy(allKeys, mode);
 
-            for (Set<AEKey> group : groups) {
-                long sumBefore = group.stream().mapToLong(k -> beforeInv.getOrDefault(k, 0L)).sum();
-                long sumNew = group.stream().mapToLong(k -> newStacks.getOrDefault(k, 0L)).sum();
-                long diff = sumNew - sumBefore;
+        for (Set<AEKey> group : groups) {
+            long sumBefore = group.stream().mapToLong(k -> beforeInv.getOrDefault(k, 0L)).sum();
+            long sumNew = group.stream().mapToLong(k -> newStacks.getOrDefault(k, 0L)).sum();
+            long diff = sumNew - sumBefore;
 
-                if (diff != 0) {
-                    AEKey keyForDiffResult = null;
-                    for (AEKey potentialKey : group) {
-                        if (newStacks.containsKey(potentialKey)) {
-                            keyForDiffResult = potentialKey;
-                            break;
-                        }
-                    }
-                    if (keyForDiffResult == null) {
-                        keyForDiffResult = group.iterator().next();
-                    }
-                    if (result.key == null || Math.abs(diff) > Math.abs(result.diff)) {
-                        result = new DiffResult(keyForDiffResult, diff, group);
-                    }
+            if (diff != 0) {
+                AEKey keyForDiffResult = group.stream()
+                        .filter(newStacks::containsKey)
+                        .findFirst()
+                        .orElseGet(() -> group.iterator().next());
+                if (result.key == null || Math.abs(diff) > Math.abs(result.diff)) {
+                    result = new DiffResult(keyForDiffResult, diff, group);
                 }
             }
         }
         return result;
     }
 
+    private List<Set<AEKey>> groupKeysByFuzzy(Set<AEKey> keys, FuzzyMode mode) {
+        List<Set<AEKey>> groups = new ArrayList<>();
+
+        for (AEKey key : keys) {
+            boolean added = false;
+            for (Set<AEKey> group : groups) {
+                if (group.iterator().next().fuzzyEquals(key, mode)) {
+                    group.add(key);
+                    added = true;
+                    break;
+                }
+            }
+            if (!added) {
+                Set<AEKey> newGroup = new HashSet<>();
+                newGroup.add(key);
+                groups.add(newGroup);
+            }
+        }
+        return groups;
+    }
+
+
     private void onStorageChanged() {
-        Map<AEKey, Long> newInv = new HashMap<>();
-        for (int i = 0; i < this.storage.size(); i++){
-            if (this.storage.getStack(i) != null){
-                newInv.put(this.storage.getStack(i).what(), this.storage.getStack(i).amount());
-            }
-        }
-        if (this.isUpgradedWith(AEItems.REDSTONE_CARD)){
+        Map<AEKey, Long> newInv = updateInventoryFromStorage();
+        if (isUpgradedWith(AEItems.REDSTONE_CARD)) {
             var diffResult = compare(newInv);
-            if (diffResult.key != null && diffResult.diff > 0 && !getLocation().getLevel().isClientSide){
-                AEKey configKey = null;
-                if (diffResult.fuzzyGroup != null && this.isUpgradedWith(AEItems.FUZZY_CARD)) {
-                    for (AEKey fuzzyKey : diffResult.fuzzyGroup) {
-                        configKey = this.configMap.keySet().stream().filter(
-                                key -> key.fuzzyEquals(fuzzyKey, getConfigManager().getSetting(Settings.FUZZY_MODE))
-                        ).findAny().orElse(null);
-                        if (configKey != null){
-                            break;
-                        }
+            if (diffResult.key != null && diffResult.diff > 0 && !getLocation().getLevel().isClientSide) {
+                AEKey configKey = extractConfigKey(diffResult);
+                if (hasValidGridNode() && configKey != null) {
+                    if (!isUpgradedWith(AEItems.INVERTER_CARD) && diffResult.diff >= configMap.get(configKey)) {
+                        triggerRedstonePulse();
                     }
-                } else if (this.configMap.containsKey(diffResult.key)) {
-                    configKey = diffResult.key;
-                }
-                if (((SignallingInterfaceBE) this.host.getBlockEntity()).getGridNode() != null && ((SignallingInterfaceBE) this.host.getBlockEntity()).getGridNode().isPowered()){
-                    if (configKey != null) {
-                        if (!this.isUpgradedWith(AEItems.INVERTER_CARD) && diffResult.diff >= this.configMap.get(configKey)){
-                            ((SignallingInterfaceBE) host.getBlockEntity()).redstoneOut = true;
-                            this.host.getBlockEntity().getLevel().updateNeighborsAt(
-                                    this.host.getBlockEntity().getBlockPos(), this.host.getBlockEntity().getBlockState().getBlock());
-                            Runnable revert = () -> {
-                                ((SignallingInterfaceBE) host.getBlockEntity()).redstoneOut = false;
-                                this.host.getBlockEntity().getLevel().updateNeighborsAt(
-                                        this.host.getBlockEntity().getBlockPos(), this.host.getBlockEntity().getBlockState().getBlock());
-                            };
-                            Utils.asyncDelay(revert, 0.05f);
-                        }
-                    } else if (this.isUpgradedWith(AEItems.INVERTER_CARD)){
-                        ((SignallingInterfaceBE) host.getBlockEntity()).redstoneOut = true;
-                        this.host.getBlockEntity().getLevel().updateNeighborsAt(
-                                this.host.getBlockEntity().getBlockPos(), this.host.getBlockEntity().getBlockState().getBlock());
-                        Runnable revert = () -> {
-                            ((SignallingInterfaceBE) host.getBlockEntity()).redstoneOut = false;
-                            this.host.getBlockEntity().getLevel().updateNeighborsAt(
-                                    this.host.getBlockEntity().getBlockPos(), this.host.getBlockEntity().getBlockState().getBlock());
-                        };
-                        Utils.asyncDelay(revert, 0.05f);
-                    }
+                } else if (isUpgradedWith(AEItems.INVERTER_CARD)) {
+                    triggerRedstonePulse();
                 }
             }
         }
-        this.beforeInv.clear();
-        for (int i = 0; i < this.storage.size(); i++){
-            if (this.storage.getStack(i) != null){
-                this.beforeInv.put(this.storage.getStack(i).what(), this.storage.getStack(i).amount());
+        beforeInv = updateInventoryFromStorage();
+        host.saveChanges();
+        updatePlan();
+    }
+
+    private Map<AEKey, Long> updateInventoryFromStorage() {
+        Map<AEKey, Long> inv = new HashMap<>();
+        for (int i = 0; i < storage.size(); i++) {
+            var stack = storage.getStack(i);
+            if (stack != null) {
+                inv.put(stack.what(), stack.amount());
             }
         }
-        this.host.saveChanges();
-        this.updatePlan();
+        return inv;
+    }
+
+    private AEKey extractConfigKey(DiffResult diffResult) {
+        AEKey configKey = null;
+        if (diffResult.fuzzyGroup != null && isUpgradedWith(AEItems.FUZZY_CARD)) {
+            for (AEKey fuzzyKey : diffResult.fuzzyGroup) {
+                configKey = configMap.keySet().stream().filter(
+                        key -> key.fuzzyEquals(fuzzyKey, getConfigManager().getSetting(Settings.FUZZY_MODE))
+                ).findAny().orElse(null);
+                if (configKey != null) {
+                    break;
+                }
+            }
+        } else if (configMap.containsKey(diffResult.key)) {
+            configKey = diffResult.key;
+        }
+        return configKey;
+    }
+
+    private boolean hasValidGridNode() {
+        var blockEntity = host.getBlockEntity();
+        var gridNode = ((SignallingInterfaceBE) blockEntity).getGridNode();
+        return gridNode != null && gridNode.isPowered();
+    }
+
+    private void triggerRedstonePulse() {
+        var blockEntity = host.getBlockEntity();
+        SignallingInterfaceBE signallingBlock = (SignallingInterfaceBE) blockEntity;
+        signallingBlock.redstoneOut = true;
+        blockEntity.getLevel().updateNeighborsAt(
+                blockEntity.getBlockPos(), blockEntity.getBlockState().getBlock());
+        Runnable revert = () -> {
+            signallingBlock.redstoneOut = false;
+            blockEntity.getLevel().updateNeighborsAt(
+                    blockEntity.getBlockPos(), blockEntity.getBlockState().getBlock());
+        };
+        Utils.asyncDelay(revert, 0.05f);
     }
 
     public void addDrops(List<ItemStack> drops) {

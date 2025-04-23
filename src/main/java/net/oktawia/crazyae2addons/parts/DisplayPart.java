@@ -186,132 +186,86 @@ public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTi
             controller.registerNotification(word.replace("&", ""), this);
         }
     }
-
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
                               int combinedLightIn, int combinedOverlayIn) {
-        if (!this.isPowered() || this.textValue.isEmpty()){
-            return;
-        }
+        if (!isPowered() || textValue.isEmpty()) return;
         poseStack.pushPose();
 
-        Direction facing = getSide();
-        float rotation = 0.0F;
-        float upRotation = 0.0F;
-        switch (facing) {
-            case SOUTH -> {
-                rotation = 0.0F;
-                poseStack.translate(0, 1, 0.5);
-            }
-            case WEST  -> {
-                rotation = -90.0F;
-                poseStack.translate(0.5, 1, 0);
-            }
-            case EAST  -> {
-                rotation = 90.0F;
-                poseStack.translate(0.5, 1, 1);
-            }
-            case NORTH -> {
-                rotation = 180.0F;
-                poseStack.translate(1, 1, 0.5);
-            }
-            case UP -> {
-                upRotation = -90.0F;
-                poseStack.translate(0, 0.5, 0);
-            }
-            case DOWN -> {
-                upRotation = 90.0F;
-                poseStack.translate(1, 0.5, 0);
-            }
-        }
+        Transformation facingTrans = getFacingTransformation(getSide());
+        poseStack.translate(facingTrans.tx, facingTrans.ty, facingTrans.tz);
+        poseStack.mulPose(Axis.YP.rotationDegrees(facingTrans.yRotation));
+        poseStack.mulPose(Axis.XP.rotationDegrees(facingTrans.xRotation));
 
-        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
-        poseStack.mulPose(Axis.XP.rotationDegrees(upRotation));
-        if (upRotation != 0.0F){
-            float theSpin = 0.0F;
-            if (upRotation == 90.0F){
-                switch (this.spin) {
-                    case 0 -> {
-                        theSpin = 0.0F;
-                        poseStack.translate(-1, 1, 0);
-                    }
-                    case 1 -> {
-                        theSpin = 90.0F;
-                        poseStack.translate(-1, 0, 0);
-                    }
-                    case 2 -> {
-                        theSpin = 180.0F;
-                        poseStack.translate(0, 0, 0);
-                    }
-                    case 3 -> {
-                        theSpin = -90.0F;
-                        poseStack.translate(0, 1, 0);
-                    }
-                }
-            } else {
-                switch (this.spin) {
-                    case 0 -> {
-                        theSpin = 0.0F;
-                        poseStack.translate(0, 0, 0);
-                    }
-                    case 1 -> {
-                        theSpin = -90.0F;
-                        poseStack.translate(1, 0, 0);
-                    }
-                    case 2 -> {
-                        theSpin = 180.0F;
-                        poseStack.translate(1, -1, 0);
-                    }
-                    case 3 -> {
-                        theSpin = 90.0F;
-                        poseStack.translate(0, -1, 0);
-                    }
-                }
-            }
-            poseStack.mulPose(Axis.ZP.rotationDegrees(theSpin));
+        if (facingTrans.xRotation != 0.0F) {
+            applySpinTransformation(poseStack, facingTrans.xRotation);
         }
 
         var fr = Minecraft.getInstance().font;
-
         poseStack.translate(0, 0, 0.51);
-        poseStack.scale(1.0f / 64.0f, -1.0f / 64.0f, 1.0f / 64.0f);
+        poseStack.scale(1 / 64f, -1 / 64f, 1 / 64f);
 
-        String valFormatted = replaceVariables(this.textValue);
-        String[] lines = valFormatted.split("&nl");
-        String longestLine = Arrays.stream(lines)
+        String[] lines = replaceVariables(textValue).split("&nl");
+        int longestLineWidth = Arrays.stream(lines)
                 .max(Comparator.comparingInt(String::length))
-                .orElse("");
-        int longestLineWidth = fr.width(longestLine);
-
-        float baseScale = 1.0f / 64.0f;
-
-        float fitScaleX = 64.0F / (longestLineWidth * baseScale);
-        float fitScaleY = 64.0F / (lines.length * fr.lineHeight * baseScale);
-        float finalScale;
-        if (fitScaleY < fitScaleX){
-            finalScale = baseScale * fitScaleY;
-        } else {
-            finalScale = baseScale * fitScaleX;
-        }
-
+                .map(fr::width)
+                .orElse(0);
+        float baseScale = 1 / 64f;
+        float fitScaleX = 64F / (longestLineWidth * baseScale);
+        float fitScaleY = 64F / (lines.length * fr.lineHeight * baseScale);
+        float finalScale = baseScale * Math.min(fitScaleX, fitScaleY);
         poseStack.scale(finalScale, finalScale, finalScale);
+
         for (int i = 0; i < lines.length; i++) {
             var text = Component.literal(lines[i]);
-            fr.drawInBatch(
-                text,
-                (float) longestLineWidth / 2 - (float) fr.width(lines[i]) / 2,
-                fr.lineHeight * i,
-                0xFFFFFF,
-                false,
-                poseStack.last().pose(),
-                buffers,
-                Font.DisplayMode.NORMAL,
-                0,
-                15728880);
+            int lineWidth = fr.width(lines[i]);
+            fr.drawInBatch(text, longestLineWidth / 2f - lineWidth / 2f, fr.lineHeight * i,
+                    0xFFFFFF, false, poseStack.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, 15728880);
         }
         poseStack.popPose();
     }
+
+    private static class Transformation {
+        final float tx, ty, tz, yRotation, xRotation;
+        Transformation(float tx, float ty, float tz, float yRotation, float xRotation) {
+            this.tx = tx; this.ty = ty; this.tz = tz; this.yRotation = yRotation; this.xRotation = xRotation;
+        }
+    }
+
+    private Transformation getFacingTransformation(Direction facing) {
+        float tx = 0, ty = 0, tz = 0, yRot = 0, xRot = 0;
+        switch (facing) {
+            case SOUTH -> { tx = 0; ty = 1; tz = 0.5F; }
+            case WEST  -> { tx = 0.5F; ty = 1; tz = 0; yRot = -90F; }
+            case EAST  -> { tx = 0.5F; ty = 1; tz = 1; yRot = 90F; }
+            case NORTH -> { tx = 1; ty = 1; tz = 0.5F; yRot = 180F; }
+            case UP    -> { tx = 0; ty = 0.5F; tz = 0; xRot = -90F; }
+            case DOWN  -> { tx = 1; ty = 0.5F; tz = 0; xRot = 90F; }
+        }
+        return new Transformation(tx, ty, tz, yRot, xRot);
+    }
+
+    private void applySpinTransformation(PoseStack poseStack, float upRotation) {
+        float theSpin = 0.0F;
+        if (upRotation == 90F) {
+            switch (this.spin) {
+                case 0 -> { theSpin = 0.0F; poseStack.translate(-1, 1, 0); }
+                case 1 -> { theSpin = 90.0F; poseStack.translate(-1, 0, 0); }
+                case 2 -> { theSpin = 180.0F; poseStack.translate(0, 0, 0); }
+                case 3 -> { theSpin = -90.0F; poseStack.translate(0, 1, 0); }
+            }
+        } else {
+            switch (this.spin) {
+                case 0 -> { theSpin = 0.0F; poseStack.translate(0, 0, 0); }
+                case 1 -> { theSpin = -90.0F; poseStack.translate(1, 0, 0); }
+                case 2 -> { theSpin = 180.0F; poseStack.translate(1, -1, 0); }
+                case 3 -> { theSpin = 90.0F; poseStack.translate(0, -1, 0); }
+            }
+        }
+        poseStack.mulPose(Axis.ZP.rotationDegrees(theSpin));
+    }
+
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {

@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.oktawia.crazyae2addons.logic.CrazyPatternModifierHost;
 import net.oktawia.crazyae2addons.logic.CrazyPatternMultiplierHost;
-import net.oktawia.crazyae2addons.logic.Impulsed.ImpulsedPatternProviderLogicHost;
 import net.oktawia.crazyae2addons.parts.*;
 import net.oktawia.crazyae2addons.entities.*;
 import net.oktawia.crazyae2addons.menus.*;
@@ -28,7 +27,6 @@ public class Menus {
             "crafting_canceler",
             CraftingCancelerMenu::new,
             CraftingCancelerBE.class
-
     );
     public static final MenuType<EntityTickerMenu> ENTITY_TICKER_MENU = create(
             "entity_ticker",

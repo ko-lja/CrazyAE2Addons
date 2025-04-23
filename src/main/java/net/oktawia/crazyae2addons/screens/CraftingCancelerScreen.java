@@ -59,18 +59,22 @@ public class CraftingCancelerScreen<C extends CraftingCancelerMenu> extends AEBa
         }
         boolean en = false;
         int dur = 0;
-        if (!valid){
-            onoffbutton.setSelected(false);
-            duration.setTextColor(0xFF0000);
-            Runnable setColorFunction = () -> duration.setTextColor(0xFFFFFF);
-            Runnable clearInput = () -> duration.setValue("");
-            Utils.asyncDelay(setColorFunction, 1);
-            Utils.asyncDelay(clearInput, 1);
-        }
-        else{
-            en = true;
-            dur = Integer.parseInt(duration.getValue());
-            onoffbutton.setSelected(true);
+        if (onoffbutton.isSelected()){
+            if (!valid){
+                duration.setTextColor(0xFF0000);
+                Runnable setColorFunction = () -> duration.setTextColor(0xFFFFFF);
+                Runnable clearInput = () -> duration.setValue("");
+                Utils.asyncDelay(setColorFunction, 1);
+                Utils.asyncDelay(clearInput, 1);
+            }
+            else{
+                en = true;
+                dur = Integer.parseInt(duration.getValue());
+                duration.setTextColor(0x00FF00);
+                Runnable setColorFunction = () -> duration.setTextColor(0xFFFFFF);
+                Utils.asyncDelay(setColorFunction, 1);
+            }
+        } else {
             duration.setTextColor(0x00FF00);
             Runnable setColorFunction = () -> duration.setTextColor(0xFFFFFF);
             Utils.asyncDelay(setColorFunction, 1);

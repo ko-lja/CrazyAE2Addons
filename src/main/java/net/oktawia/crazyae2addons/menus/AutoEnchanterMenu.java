@@ -3,13 +3,11 @@ package net.oktawia.crazyae2addons.menus;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
-import appeng.menu.slot.AppEngSlot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Items;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
-import net.oktawia.crazyae2addons.misc.AEItemStackFilteredSlot;
 import net.oktawia.crazyae2addons.misc.AppEngFilteredSlot;
 import net.oktawia.crazyae2addons.misc.ExtractSlot;
 

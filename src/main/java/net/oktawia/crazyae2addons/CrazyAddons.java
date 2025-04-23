@@ -1,11 +1,14 @@
 package net.oktawia.crazyae2addons;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -20,6 +23,11 @@ import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.screens.*;
 import org.jetbrains.annotations.NotNull;
 import appeng.init.client.InitScreens;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Mod(CrazyAddons.MODID)
 public class CrazyAddons {

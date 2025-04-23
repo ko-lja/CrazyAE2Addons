@@ -23,6 +23,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.crazyae2addons.defs.Blocks;
@@ -138,7 +139,6 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
     public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(1, 1, false, false);
     }
-
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (i >= getInternalInventory().size()) {
@@ -150,89 +150,74 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
             i = 0;
             return TickRateModulation.IDLE;
         }
-        if (i != 0) {
-            in1 = ((LogicSetting) this.settings.get(String.valueOf(i))).in1;
-        } else {
-            in1 = "0";
-        }
-        in2 = ((LogicSetting) this.settings.get(String.valueOf(i))).in2;
-        out = ((LogicSetting) this.settings.get(String.valueOf(i))).out;
 
-        if (in1.startsWith("&&")) {
-            switch (in1) {
-                case "&&0" -> x = l0;
-                case "&&1" -> x = l1;
-                case "&&2" -> x = l2;
-                case "&&3" -> x = l3;
-            }
-        } else if (in1.startsWith("&")) {
-            if (this.getGridNode() != null && this.getGridNode().getGrid() != null && !this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()) {
-                MEDataControllerBE controller = getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
-                x = controller.getVariable(in1.replace("&", ""));
-            } else {
-                x = 0;
-            }
-        } else {
-            try {
-                x = Integer.parseInt(in1);
-            } catch (Exception ignored) {
-            }
+        LogicSetting setting = (LogicSetting) this.settings.get(String.valueOf(i));
+        in1 = (i != 0) ? setting.in1 : "0";
+        in2 = setting.in2;
+        out = setting.out;
+
+        int x = evaluateInput(in1);
+        int y = evaluateInput(in2);
+
+        TickRateModulation modulation = processConditionalCards(itemStack, x, y);
+        if (modulation != null) return modulation;
+
+        int temp = computeTempValue(itemStack, x, y);
+        if (temp == Integer.MIN_VALUE) {
+            i++;
+            return TickRateModulation.IDLE;
         }
 
-        if (in2.startsWith("&&")) {
-            switch (in2) {
-                case "&&0" -> y = l0;
-                case "&&1" -> y = l1;
-                case "&&2" -> y = l2;
-                case "&&3" -> y = l3;
-            }
-        } else if (in2.startsWith("&")) {
-            if (this.getGridNode() != null && this.getGridNode().getGrid() != null && !this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()) {
-                MEDataControllerBE controller = getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
-                y = controller.getVariable(in2.replace("&", ""));
-            } else {
-                y = 0;
-            }
+        applyOutput(out, temp);
+        i++;
+        return TickRateModulation.IDLE;
+    }
+
+    private int evaluateInput(String input) {
+        if (input.startsWith("&&")) {
+            return switch (input) {
+                case "&&0" -> l0;
+                case "&&1" -> l1;
+                case "&&2" -> l2;
+                case "&&3" -> l3;
+                default -> 0;
+            };
+        } else if (input.startsWith("&")) {
+            MEDataControllerBE controller = getGridController();
+            return (controller != null) ? controller.getVariable(input.replace("&", "")) : 0;
         } else {
             try {
-                y = Integer.parseInt(in2);
-            } catch (Exception ignored) {
+                return Integer.parseInt(input);
+            } catch (Exception e) {
+                return 0;
             }
         }
-        int temp = 0;
-        if (itemStack.is(Items.ADD_CARD.asItem())) {
-            temp = x + y;
-        } else if (itemStack.is(Items.SUB_CARD.asItem())) {
-            temp = x - y;
-        } else if (itemStack.is(Items.MUL_CARD.asItem())) {
-            temp = x * y;
-        } else if (itemStack.is(Items.DIV_CARD.asItem()) && y != 0) {
-            temp = x / y;
-        } else if (itemStack.is(Items.MIN_CARD.asItem())) {
-            temp = min(x, y);
-        } else if (itemStack.is(Items.MAX_CARD.asItem())) {
-            temp = max(x, y);
-        } else if (itemStack.is(Items.BSR_CARD.asItem())) {
-            temp = x >> y;
-        } else if (itemStack.is(Items.BSL_CARD.asItem())) {
-            temp = x << y;
-        } else if (itemStack.is(Items.HIT_CARD.asItem())) {
-            if (x > 0) {
-                i = y;
-                return TickRateModulation.IDLE;
-            } else {
-                i++;
-                return TickRateModulation.IDLE;
-            }
+    }
+
+    private TickRateModulation processConditionalCards(ItemStack itemStack, int x, int y) {
+        if (itemStack.is(Items.HIT_CARD.asItem())) {
+            i = (x > 0) ? y : i + 1;
+            return TickRateModulation.IDLE;
         } else if (itemStack.is(Items.HIF_CARD.asItem())) {
-            if (x <= 0) {
-                i = y;
-                return TickRateModulation.IDLE;
-            } else {
-                i++;
-                return TickRateModulation.IDLE;
-            }
+            i = (x <= 0) ? y : i + 1;
+            return TickRateModulation.IDLE;
         }
+        return null;
+    }
+
+    private int computeTempValue(ItemStack itemStack, int x, int y) {
+        if (itemStack.is(Items.ADD_CARD.asItem())) return x + y;
+        if (itemStack.is(Items.SUB_CARD.asItem())) return x - y;
+        if (itemStack.is(Items.MUL_CARD.asItem())) return x * y;
+        if (itemStack.is(Items.DIV_CARD.asItem()) && y != 0) return x / y;
+        if (itemStack.is(Items.MIN_CARD.asItem())) return Math.min(x, y);
+        if (itemStack.is(Items.MAX_CARD.asItem())) return Math.max(x, y);
+        if (itemStack.is(Items.BSR_CARD.asItem())) return x >> y;
+        if (itemStack.is(Items.BSL_CARD.asItem())) return x << y;
+        return Integer.MIN_VALUE;
+    }
+
+    private void applyOutput(String out, int temp) {
         if (out.startsWith("&&")) {
             switch (out) {
                 case "&&0" -> l0 = temp;
@@ -241,13 +226,18 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
                 case "&&3" -> l3 = temp;
             }
         } else if (out.startsWith("&")) {
-            if (this.getGridNode() != null && this.getGridNode().getGrid() != null && !this.getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()) {
-                MEDataControllerBE controller = getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
+            MEDataControllerBE controller = getGridController();
+            if (controller != null)
                 controller.addVariable(this.identifier, out.replace("&", ""), temp, 0);
-            }
         }
-        i++;
-        return TickRateModulation.IDLE;
+    }
+
+    private MEDataControllerBE getGridController() {
+        if (getGridNode() != null && getGridNode().getGrid() != null &&
+                !getGridNode().getGrid().getMachines(MEDataControllerBE.class).isEmpty()) {
+            return getMainNode().getGrid().getMachines(MEDataControllerBE.class).stream().toList().get(0);
+        }
+        return null;
     }
 
     public static String randomHexId() {

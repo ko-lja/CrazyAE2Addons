@@ -63,13 +63,11 @@ public class CircuitedPatternProviderBE extends PatternProviderBlockEntity imple
 
     @Override
     public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
-        // In omnidirectional mode, every side is grid-connectable
         var pushDirection = getPushDirection().getDirection();
         if (pushDirection == null) {
             return EnumSet.allOf(Direction.class);
         }
 
-        // Otherwise all sides *except* the target side are connectable
         return EnumSet.complementOf(EnumSet.of(pushDirection));
     }
 
@@ -217,7 +215,6 @@ public class CircuitedPatternProviderBE extends PatternProviderBlockEntity imple
         if (mode == SettingsFrom.MEMORY_CARD) {
             logic.importSettings(input, player);
 
-            // Restore push direction blockstate
             if (input.contains(PatternProviderBlock.PUSH_DIRECTION.getName(), Tag.TAG_BYTE)) {
                 var pushDirection = input.getByte(PatternProviderBlock.PUSH_DIRECTION.getName());
                 if (pushDirection >= 0 && pushDirection < PushDirection.values().length) {

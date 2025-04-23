@@ -60,85 +60,89 @@ public class NBTExportBusPart extends IOBusPart {
         data = "";
     }
 
-
     public boolean doesItemMatch(AEItemKey item, CompoundTag criteria, boolean matchAll) {
-        if (item == null) {
+        if (item == null || item.getTag() == null) {
             return false;
         }
         CompoundTag itemTag = item.getTag();
-        if (itemTag == null) {
-            return false;
+
+        if (isSingleAny(criteria)) {
+            return matchAll ? false : true;
         }
 
+        boolean allowExtraTags = containsAnyTag(criteria);
+
+        return matchAll
+                ? matchesAll(itemTag, criteria, allowExtraTags)
+                : matchesAny(itemTag, criteria);
+    }
+
+    private boolean isSingleAny(CompoundTag criteria) {
         if (criteria.getAllKeys().size() == 1 && criteria.contains("ANY")) {
-            Tag onlyTag = criteria.get("ANY");
-            if (onlyTag instanceof StringTag && ((StringTag) onlyTag).getAsString().equals("ANY")) {
-                return matchAll ? false : true;
+            Tag tag = criteria.get("ANY");
+            return isAny(tag);
+        }
+        return false;
+    }
+
+    private boolean containsAnyTag(CompoundTag criteria) {
+        for (String key : criteria.getAllKeys()) {
+            Tag tag = criteria.get(key);
+            if ("ANY".equals(key) && isAny(tag)) {
+                return true;
             }
         }
+        return false;
+    }
 
-        boolean allowExtraTags = false;
+    private boolean matchesAll(CompoundTag itemTag, CompoundTag criteria, boolean allowExtraTags) {
+        if (!allowExtraTags && itemTag.getAllKeys().size() != criteria.getAllKeys().size()) {
+            return false;
+        }
         for (String critKey : criteria.getAllKeys()) {
             Tag critValue = criteria.get(critKey);
-            if (critKey.equals("ANY") && critValue instanceof StringTag &&
-                    ((StringTag) critValue).getAsString().equals("ANY")) {
-                allowExtraTags = true;
-                break;
+            if (critKey.equals("ANY")) {
+                if (!existsAnyMatch(itemTag, critValue)) {
+                    return false;
+                }
+            } else if (isAny(critValue)) {
+                if (!itemTag.contains(critKey)) {
+                    return false;
+                }
+            } else {
+                if (!itemTag.contains(critKey) || !itemTag.get(critKey).equals(critValue)) {
+                    return false;
+                }
             }
         }
+        return true;
+    }
 
-        if (matchAll) {
-            if (!allowExtraTags && itemTag.getAllKeys().size() != criteria.getAllKeys().size()) {
-                return false;
+    private boolean matchesAny(CompoundTag itemTag, CompoundTag criteria) {
+        for (String critKey : criteria.getAllKeys()) {
+            Tag critValue = criteria.get(critKey);
+            if (critKey.equals("ANY") && existsAnyMatch(itemTag, critValue)) {
+                return true;
+            } else if (isAny(critValue) && itemTag.contains(critKey)) {
+                return true;
+            } else if (itemTag.contains(critKey) && itemTag.get(critKey).equals(critValue)) {
+                return true;
             }
-            for (String critKey : criteria.getAllKeys()) {
-                Tag critValue = criteria.get(critKey);
-                if (critKey.equals("ANY")) {
-                    boolean found = false;
-                    for (String itemKey : itemTag.getAllKeys()) {
-                        if (itemTag.get(itemKey).equals(critValue)) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        return false;
-                    }
-                } else if (critValue instanceof StringTag && ((StringTag) critValue).getAsString().equals("ANY")) {
-                    if (!itemTag.contains(critKey)) {
-                        return false;
-                    }
-                } else {
-                    if (!itemTag.contains(critKey)) {
-                        return false;
-                    }
-                    if (!itemTag.get(critKey).equals(critValue)) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        } else { // matchAny
-            for (String critKey : criteria.getAllKeys()) {
-                Tag critValue = criteria.get(critKey);
-                if (critKey.equals("ANY")) {
-                    for (String itemKey : itemTag.getAllKeys()) {
-                        if (itemTag.get(itemKey).equals(critValue)) {
-                            return true;
-                        }
-                    }
-                } else if (critValue instanceof StringTag && ((StringTag) critValue).getAsString().equals("ANY")) {
-                    if (itemTag.contains(critKey)) {
-                        return true;
-                    }
-                } else {
-                    if (itemTag.contains(critKey) && itemTag.get(critKey).equals(critValue)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
         }
+        return false;
+    }
+
+    private boolean existsAnyMatch(CompoundTag itemTag, Tag critValue) {
+        for (String itemKey : itemTag.getAllKeys()) {
+            if (itemTag.get(itemKey).equals(critValue)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isAny(Tag tag) {
+        return tag instanceof StringTag && ((StringTag) tag).getAsString().equals("ANY");
     }
 
 

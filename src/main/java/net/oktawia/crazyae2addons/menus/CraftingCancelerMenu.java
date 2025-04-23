@@ -16,8 +16,6 @@ import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 import java.util.logging.Logger;
 
 public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
-    private final ContainerLevelAccess access;
-    private final BlockEntity blockEntity;
 
     @GuiSync(38)
     public boolean en;
@@ -28,14 +26,8 @@ public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
     private static final String ACTION_SEND_STATE = "ActionSendState";
     private static final String ACTION_SEND_DURATION = "ActionSendDuration";
 
-    public CraftingCancelerMenu(int id, Inventory playerInventory, FriendlyByteBuf additional){
-        this(id, playerInventory, (CraftingCancelerBE) playerInventory.player.level().getBlockEntity(additional.readBlockPos()));
-    }
-
     public CraftingCancelerMenu(int id, Inventory ip, CraftingCancelerBE host) {
         super(Menus.CRAFTING_CANCELER_MENU, id, ip, host);
-        this.access = ContainerLevelAccess.create(ip.player.level(), host.getBlockPos());
-        this.blockEntity = host;
         en = getHost().getEnabled();
         dur = getHost().getDuration();
 
@@ -51,15 +43,6 @@ public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
         this.dur = dur;
     }
 
-    @Override
-    public ItemStack quickMoveStack(Player player, int i) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean stillValid(Player player) {
-        return this.access.evaluate((world, pos) -> world.getBlockEntity(pos) == this.blockEntity, true);
-    }
     public void sendState(boolean state){
         setEnabled(state);
         if (isClientSide()){
@@ -67,7 +50,6 @@ public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
         }
         else{
             this.getHost().setEnabled(state);
-            setGuiState(state, this.getHost().getDuration());
         }
     }
 
@@ -78,13 +60,6 @@ public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
         }
         else{
             this.getHost().setDuration(duration);
-            setGuiState(this.getHost().getEnabled(), duration);
         }
-    }
-
-    public void setGuiState(boolean en, int dur){
-        this.en = en;
-        this.dur = dur;
-        broadcastChanges();
     }
 }

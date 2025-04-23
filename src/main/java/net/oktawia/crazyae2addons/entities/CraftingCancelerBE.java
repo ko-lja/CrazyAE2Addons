@@ -1,17 +1,14 @@
 package net.oktawia.crazyae2addons.entities;
 
-import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.*;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
@@ -23,41 +20,35 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.Tags;
 import net.oktawia.crazyae2addons.Utils;
-import net.oktawia.crazyae2addons.defs.BlockEntities;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
 import org.jetbrains.annotations.Nullable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 public class CraftingCancelerBE extends AENetworkBlockEntity implements MenuProvider, IGridTickable, IUpgradeableObject {
     private boolean enabled;
     private int duration;
     private List<ICraftingCPU> craftingCpus;
     private Instant intervalStart;
-    private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
 
     public CraftingCancelerBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.duration = 0;
         this.enabled = false;
-        this.getMainNode().setIdlePowerUsage((double)4.0F).addService(IGridTickable.class, this).setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.getMainNode().setIdlePowerUsage(4.0F).addService(IGridTickable.class, this).setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
     @Override
     public TickingRequest getTickingRequest(IGridNode iGridNode) {
-        return new TickingRequest(1, 5, false, true);
+        return new TickingRequest(20, 20, false, true);
     }
 
     @Override
