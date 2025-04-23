@@ -2,6 +2,8 @@
 
 Crazy AE2 Addons is a Minecraft mod that enhances Applied Energistics 2 by introducing additional features to improve automation and overall gameplay experience. Built on Java 17 and Forge, it is currently designed for Minecraft version 1.20.1.
 
+If you want to support me creating, consider downloading from [Modrinth](https://modrinth.com/mod/crazy-ae2-addons) or [Curseforge](https://www.curseforge.com/minecraft/mc-mods/crazy-ae2-addons)
+
 # Features
 ## Pattern & Crafting Tools
 - [x] **Crazy Pattern Modifier** – Adjusts processing patterns, including NBT ignore settings and programmed circuit values.
