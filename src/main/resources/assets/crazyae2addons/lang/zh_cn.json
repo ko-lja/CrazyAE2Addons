@@ -56,4 +56,8 @@
     "item.crazyae2addons.circuited_pp_part": "电路化样板供应器",
     "item.crazyae2addons.energy_exporter": "能量导出器",
     "gui.crazyae2addons.energy_exporter": "能量导出器"
+    "gui.crazyae2addons.crazy_pattern_multiplier": "样板倍增工具",
+    "item.crazyae2addons.crazy_pattern_multiplier": "样板倍增工具",
+    "item.crazyae2addons.crazy_pattern_modifier": "NBT样板修改工具",
+    "block.crazyae2addons.isolated_data_processor_block": "独立式数据处理器"
   }
