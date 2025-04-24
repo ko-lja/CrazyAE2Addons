@@ -10,16 +10,12 @@ import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingSubmitResult;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.crafting.execution.*;
-import appeng.crafting.inv.ListCraftingInventory;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.mojang.logging.LogUtils;
 import net.oktawia.crazyae2addons.interfaces.IIgnoreNBT;
-import net.oktawia.crazyae2addons.logic.Impulsed.ImpulsedPatternProviderLogic;
-import net.oktawia.crazyae2addons.logic.Impulsed.ImpulsedPatternProviderLogicHost;
+import net.oktawia.crazyae2addons.interfaces.IPatternProviderCpu;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,8 +27,6 @@ public abstract class MixinCraftingCpuLogic {
 
     @Shadow
     private ExecutingCraftingJob job;
-
-    @Shadow public abstract void cancel();
 
     @Shadow @Final private CraftingCPUCluster cluster;
     @Unique
@@ -61,17 +55,21 @@ public abstract class MixinCraftingCpuLogic {
     }
 
     @Redirect(
-            method = "executeCrafting",
+            method = "Lappeng/crafting/execution/CraftingCpuLogic;executeCrafting(ILappeng/me/service/CraftingService;Lappeng/api/networking/energy/IEnergyService;Lnet/minecraft/world/level/Level;)I",
             at = @At(
                     value = "INVOKE",
                     target = "Lappeng/api/networking/crafting/ICraftingProvider;pushPattern(Lappeng/api/crafting/IPatternDetails;[Lappeng/api/stacks/KeyCounter;)Z"
-            ),
-            remap = false
+            )
     )
-    private boolean redirectPushPattern(ICraftingProvider instance, IPatternDetails patternDetails, KeyCounter[] keyCounters) {
-        if (instance instanceof ImpulsedPatternProviderLogic impulsedLogic){
-            return impulsedLogic.pushPattern(patternDetails, keyCounters, this.cluster);
+    private boolean redirectPushPattern(
+            ICraftingProvider instance, IPatternDetails iPatternDetails, KeyCounter[] keyCounters
+    ) {
+        boolean result = instance.pushPattern(iPatternDetails, keyCounters);
+        if (result) {
+            ((IPatternProviderCpu) instance).setCpuCluster(this.cluster);
+            return true;
         }
-        return instance.pushPattern(patternDetails, keyCounters);
+        return false;
     }
+
 }

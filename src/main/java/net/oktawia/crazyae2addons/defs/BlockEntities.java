@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.definitions.BlockDefinition;
@@ -12,22 +13,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fml.ModList;
 import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.Utils;
+import net.oktawia.crazyae2addons.compat.GregTech.GTAmpereMeterBE;
 import net.oktawia.crazyae2addons.entities.*;
 
 public class BlockEntities {
     private static final Map<ResourceLocation, BlockEntityType<?>> BLOCK_ENTITY_TYPES = new HashMap<>();
+
     public static final BlockEntityType<CraftingCancelerBE> CRAFTING_CANCELER_BE = create(
             "crafting_canceler_be",
             CraftingCancelerBE.class,
             CraftingCancelerBE::new,
             Blocks.CRAFTING_CANCELER_BLOCK);
-
-    public static final BlockEntityType<AutoEnchanterBE> AUTO_ENCHANTER_BE = create(
-            "auto_enchanter_be",
-            AutoEnchanterBE.class,
-            AutoEnchanterBE::new,
-            Blocks.AUTO_ENCHANTER_BLOCK);
 
     public static final BlockEntityType<MEDataControllerBE> ME_DATA_CONTROLLER_BE = create(
             "me_data_controller_be",
@@ -47,18 +46,6 @@ public class BlockEntities {
             DataTrackerBE::new,
             Blocks.DATA_TRACKER_BLOCK);
 
-    public static final BlockEntityType<CircuitedPatternProviderBE> CIRCUITED_PATTERN_PROVIDER_BE = create(
-            "circuited_pp_be",
-            CircuitedPatternProviderBE.class,
-            CircuitedPatternProviderBE::new,
-            Blocks.CIRCUITED_PATTERN_PROVIDER_BLOCK);
-
-    public static final BlockEntityType<AmpereMeterBE> AMPERE_METER_BE = create(
-            "ampere_meter_be",
-            AmpereMeterBE.class,
-            AmpereMeterBE::new,
-            Blocks.AMPERE_METER_BLOCK);
-
     public static final BlockEntityType<IsolatedDataProcessorBE> ISOLATED_DATA_PROCESSOR_BE = create(
             "isolated_data_processor_be",
             IsolatedDataProcessorBE.class,
@@ -76,6 +63,29 @@ public class BlockEntities {
             SignallingInterfaceBE.class,
             SignallingInterfaceBE::new,
             Blocks.SIGNALLING_INTERFACE_BLOCK);
+
+    public static final BlockEntityType<? extends AEBaseBlockEntity> CIRCUITED_PATTERN_PROVIDER_BE =
+            ModList.get().isLoaded("gtceu") ?
+                    create(
+                            "circuited_pp_be",
+                            CircuitedPatternProviderBE.class,
+                            CircuitedPatternProviderBE::new,
+                            Blocks.CIRCUITED_PATTERN_PROVIDER_BLOCK
+                    ) : null;
+
+    public static final BlockEntityType<? extends AmpereMeterBE> AMPERE_METER_BE =
+            ModList.get().isLoaded("gtceu") ?
+                    create(
+                            "ampere_meter_be",
+                            GTAmpereMeterBE.class,
+                            GTAmpereMeterBE::new,
+                            Blocks.AMPERE_METER_BLOCK
+                    ) : create(
+                    "ampere_meter_be",
+                    AmpereMeterBE.class,
+                    AmpereMeterBE::new,
+                    Blocks.AMPERE_METER_BLOCK
+            );
 
     public static Map<ResourceLocation, BlockEntityType<?>> getBlockEntityTypes() {
         return Collections.unmodifiableMap(BLOCK_ENTITY_TYPES);

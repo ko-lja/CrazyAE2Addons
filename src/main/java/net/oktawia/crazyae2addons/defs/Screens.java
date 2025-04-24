@@ -1,6 +1,7 @@
 package net.oktawia.crazyae2addons.defs;
 
 import appeng.init.client.InitScreens;
+import net.minecraftforge.fml.ModList;
 import net.oktawia.crazyae2addons.menus.*;
 import net.oktawia.crazyae2addons.screens.*;
 
@@ -25,11 +26,6 @@ public class Screens {
                 Menus.CRAZY_PATTERN_MODIFIER_MENU,
                 CrazyPatternModifierScreen<CrazyPatternModifierMenu>::new,
                 "/screens/crazy_pattern_modifier.json"
-        );
-        InitScreens.register(
-                Menus.AUTO_ENCHANTER_MENU,
-                AutoEnchanterScreen<AutoEnchanterMenu>::new,
-                "/screens/auto_enchanter.json"
         );
         InitScreens.register(
                 Menus.DISPLAY_MENU,
@@ -65,11 +61,6 @@ public class Screens {
                 Menus.CHUNKY_FLUID_P2P_TUNNEL_MENU,
                 ChunkyFluidP2PTunnelScreen<ChunkyFluidP2PTunnelMenu>::new,
                 "/screens/chunky_fluid_p2p_tunnel.json"
-        );
-        InitScreens.register(
-                Menus.CIRCUITED_PATTERN_PROVIDER_MENU,
-                CircuitedPatternProviderScreen<CircuitedPatternProviderMenu>::new,
-                "/screens/circuited_pp.json"
         );
         InitScreens.register(
                 Menus.ENERGY_EXPORTER_MENU,
@@ -116,5 +107,12 @@ public class Screens {
                 SetStockAmountScreen<SetStockAmountMenu>::new,
                 "/screens/set_stock_amount.json"
         );
+        if (ModList.get().isLoaded("gtceu")){
+            InitScreens.register(
+                Menus.CIRCUITED_PATTERN_PROVIDER_MENU,
+                CircuitedPatternProviderScreen<CircuitedPatternProviderMenu>::new,
+                "/screens/circuited_pp.json"
+            );
+        }
     }
 }

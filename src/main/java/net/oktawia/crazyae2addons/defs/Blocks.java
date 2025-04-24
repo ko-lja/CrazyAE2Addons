@@ -12,6 +12,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.fml.ModList;
 import net.oktawia.crazyae2addons.blocks.*;
 import net.oktawia.crazyae2addons.items.*;
 import net.oktawia.crazyae2addons.CrazyAddons;
@@ -32,20 +33,6 @@ public class Blocks {
                     "U", AEBlocks.CRAFTING_UNIT.asItem()
             )
 
-    );
-    public static final BlockDefinition<AutoEnchanterBlock> AUTO_ENCHANTER_BLOCK = block(
-            "Auto Enchanter",
-            "auto_enchanter_block",
-            AutoEnchanterBlock::new,
-            AutoEnchanterBlockItem::new,
-            " D /EUI/MMM",
-            Map.of(
-                    "D", Items.DIAMOND,
-                    "E", AEParts.EXPORT_BUS.asItem(),
-                    "U", net.minecraft.world.level.block.Blocks.ENCHANTING_TABLE.asItem(),
-                    "I", AEParts.IMPORT_BUS.asItem(),
-                    "M", net.minecraft.world.level.block.Blocks.OBSIDIAN.asItem()
-            )
     );
     public static final BlockDefinition<MEDataControllerBlock> ME_DATA_CONTROLLER_BLOCK = block(
             "ME Data Controller",
@@ -83,17 +70,19 @@ public class Blocks {
                     "L", net.oktawia.crazyae2addons.defs.Items.LOGIC_CARD.asItem()
             )
     );
-    public static final BlockDefinition<CircuitedPatternProviderBlock> CIRCUITED_PATTERN_PROVIDER_BLOCK = block(
-            "Circuited Pattern Provider",
-            "circuited_pp",
-            CircuitedPatternProviderBlock::new,
-            CircuitedPatternProviderBlockItem::new,
-            "PCC",
-            Map.of(
-                    "P", AEBlocks.PATTERN_PROVIDER.asItem(),
-                    "C", AEItems.LOGIC_PROCESSOR_PRESS.asItem()
-            )
-    );
+    public static final BlockDefinition<CircuitedPatternProviderBlock> CIRCUITED_PATTERN_PROVIDER_BLOCK =
+            ModList.get().isLoaded("gtceu") ?
+                block(
+                    "Circuited Pattern Provider",
+                    "circuited_pp",
+                    CircuitedPatternProviderBlock::new,
+                    CircuitedPatternProviderBlockItem::new,
+                    "PCC",
+                    Map.of(
+                        "P", AEBlocks.PATTERN_PROVIDER.asItem(),
+                        "C", AEItems.LOGIC_PROCESSOR_PRESS.asItem()
+                    )
+            ) : null;
     public static final BlockDefinition<AmpereMeterBlock> AMPERE_METER_BLOCK = block(
             "Ampere Meter",
             "ampere_meter",

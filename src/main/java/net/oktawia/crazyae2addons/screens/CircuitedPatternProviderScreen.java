@@ -1,63 +1,14 @@
 package net.oktawia.crazyae2addons.screens;
 
-import appeng.api.config.LockCraftingMode;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Icon;
+import appeng.client.gui.implementations.PatternProviderScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.ServerSettingToggleButton;
-import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.client.gui.widgets.ToggleButton;
-import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ConfigButtonPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.logic.Circuited.CircuitedPatternProviderLockReason;
 import net.oktawia.crazyae2addons.menus.CircuitedPatternProviderMenu;
 
-public class CircuitedPatternProviderScreen<C extends CircuitedPatternProviderMenu> extends AEBaseScreen<C> {
+public class CircuitedPatternProviderScreen<C extends CircuitedPatternProviderMenu> extends PatternProviderScreen<C> {
 
-    private final SettingToggleButton<YesNo> blockingModeButton;
-    private final SettingToggleButton<LockCraftingMode> lockCraftingModeButton;
-    private final ToggleButton showInPatternAccessTerminalButton;
-    private final CircuitedPatternProviderLockReason lockReason;
-
-    public CircuitedPatternProviderScreen(C menu, Inventory playerInventory, Component title,
-                                 ScreenStyle style) {
+    public CircuitedPatternProviderScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
-
-        this.blockingModeButton = new ServerSettingToggleButton<>(Settings.BLOCKING_MODE, YesNo.NO);
-        this.addToLeftToolbar(this.blockingModeButton);
-
-        lockCraftingModeButton = new ServerSettingToggleButton<>(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE);
-        this.addToLeftToolbar(lockCraftingModeButton);
-
-        widgets.addOpenPriorityButton();
-
-        this.showInPatternAccessTerminalButton = new ToggleButton(Icon.PATTERN_ACCESS_SHOW,
-                Icon.PATTERN_ACCESS_HIDE,
-                GuiText.PatternAccessTerminal.text(), GuiText.PatternAccessTerminalHint.text(),
-                btn -> selectNextPatternProviderMode());
-        this.addToLeftToolbar(this.showInPatternAccessTerminalButton);
-
-        this.lockReason = new CircuitedPatternProviderLockReason(this);
-        widgets.add("lockReason", this.lockReason);
-    }
-
-    @Override
-    protected void updateBeforeRender() {
-        super.updateBeforeRender();
-
-        this.lockReason.setVisible(this.getMenu().getLockCraftingMode() != LockCraftingMode.NONE);
-        this.blockingModeButton.set(this.getMenu().getBlockingMode());
-        this.lockCraftingModeButton.set(this.getMenu().getLockCraftingMode());
-        this.showInPatternAccessTerminalButton.setState(this.getMenu().getShowInAccessTerminal() == YesNo.YES);
-    }
-
-    private void selectNextPatternProviderMode() {
-        final boolean backwards = isHandlingRightClick();
-        NetworkHandler.instance().sendToServer(new ConfigButtonPacket(Settings.PATTERN_ACCESS_TERMINAL, backwards));
     }
 }

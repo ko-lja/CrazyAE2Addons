@@ -6,7 +6,9 @@
   "mixins": [
     "ExecutingCraftingJobAccessor",
     "MixinCraftingCpuLogic",
-    "MixinListCraftingInventory"
+    "MixinListCraftingInventory",
+    "MixinPatternProviderLogic",
+    "PatternProviderLogicAccessor"
   ],
   "client": [
   ]

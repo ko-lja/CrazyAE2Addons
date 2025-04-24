@@ -1,18 +1,13 @@
 package net.oktawia.crazyae2addons.mixins;
 
-import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.crafting.inv.ListCraftingInventory;
-import com.mojang.logging.LogUtils;
 import net.oktawia.crazyae2addons.interfaces.IIgnoreNBT;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ListCraftingInventory.class)
 public class MixinListCraftingInventory implements IIgnoreNBT {

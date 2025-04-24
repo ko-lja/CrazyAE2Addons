@@ -15,9 +15,6 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -154,39 +151,10 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
         if (this.target == null){
             this.target = getLevel().getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         }
-        if (this.target instanceof MetaMachineBlockEntity){
-            var gtMachine = SimpleTieredMachine.getMachine(getLevel(), target.getBlockPos());
-            if (gtMachine == null) return;
-            var machineClass = gtMachine.getClass();
-            boolean useLogic = false;
-            Field field;
-            RecipeLogic recLogic = null;
 
-            try {
-                field = machineClass.getSuperclass().getDeclaredField("recipeLogic");
-                field.setAccessible(true);
-                try {
-                    recLogic = (RecipeLogic) field.get(gtMachine);
-                    useLogic = true;
-                } catch (Exception ignored) {}
-            } catch (Exception ignored) {}
+        this.resolveTarget = this.target;
+        this.available = extractNumericInfo(this.target);
 
-            if (useLogic){
-                this.available = extractNumericInfo(recLogic);
-            } else {
-                this.available = extractNumericInfo(gtMachine);
-            }
-            RecipeLogic finalRecLogic = recLogic;
-            boolean finalUseLogic = useLogic;
-            if (finalUseLogic){
-                this.resolveTarget = finalRecLogic;
-            } else {
-                this.resolveTarget = gtMachine;
-            }
-        } else {
-            this.resolveTarget = this.target;
-            this.available = extractNumericInfo(this.target);
-        }
         if (!getLevel().isClientSide()) {
             NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
                 new DataValuesPacket(this.getBlockEntity().getBlockPos(), this.getSide(), this.available, this.selected, this.valueName));
@@ -374,7 +342,7 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
 
     @Override
     public boolean onPartActivate(Player p, InteractionHand hand, Vec3 pos) {
-        if (!p.getCommandSenderWorld().isClientSide()) {
+        if (!isClientSide()) {
             MenuOpener.open(Menus.DATA_EXTRACTOR_MENU, p, MenuLocators.forPart(this));
         }
         return true;

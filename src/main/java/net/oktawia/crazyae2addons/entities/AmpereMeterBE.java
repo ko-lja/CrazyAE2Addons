@@ -3,8 +3,6 @@ package net.oktawia.crazyae2addons.entities;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class AmpereMeterBE extends AEBaseBlockEntity implements MenuProvider {
 
@@ -87,8 +84,6 @@ public class AmpereMeterBE extends AEBaseBlockEntity implements MenuProvider {
             return LazyOptional.of(() -> feLogicInput).cast();
         } else if (cap == ForgeCapabilities.ENERGY && dir == outputSide) {
             return LazyOptional.of(() -> feLogicOutput).cast();
-        } else if (cap == GTCapability.CAPABILITY_ENERGY_CONTAINER){
-            return LazyOptional.of(() -> euLogic).cast();
         }
         return super.getCapability(cap, dir);
     }
@@ -159,60 +154,5 @@ public class AmpereMeterBE extends AEBaseBlockEntity implements MenuProvider {
         @Override public int getMaxEnergyStored() { return 0; }
         @Override public boolean canExtract() { return true; }
         @Override public boolean canReceive() { return false; }
-    };
-
-    public IEnergyContainer euLogic = new IEnergyContainer() {
-        @Override public long acceptEnergyFromNetwork(Direction side, long volt, long amp) {
-            if (AmpereMeterBE.this.getLevel() == null) return 0;
-            Direction outputSide = !AmpereMeterBE.this.direction ? Utils.getRightDirection(getBlockState()) : Utils.getLeftDirection(getBlockState());
-            BlockEntity output = AmpereMeterBE.this.getLevel().getBlockEntity(AmpereMeterBE.this.getBlockPos().relative(outputSide));
-            if (output == null) return 0;
-            AtomicLong transferred = new AtomicLong();
-            output.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, outputSide.getOpposite()).ifPresent(out -> {
-                transferred.set(out.acceptEnergyFromNetwork(outputSide.getOpposite(), volt, amp));
-            });
-            if (!Objects.equals(AmpereMeterBE.this.unit, "A (%s)".formatted(Utils.voltagesMap.get(volt)))){
-                AmpereMeterBE.this.average.clear();
-                AmpereMeterBE.this.unit = "A (%s)".formatted(Utils.voltagesMap.get(volt));
-            }
-            if (AmpereMeterBE.this.average.size() >= 5){
-                int trans = AmpereMeterBE.this.average.values().stream().reduce(0, Integer::sum)/AmpereMeterBE.this.average.size();
-                AmpereMeterBE.this.transfer = Utils.shortenNumber(trans);
-                AmpereMeterBE.this.numTransfer = trans;
-                AmpereMeterBE.this.average.clear();
-                if (AmpereMeterBE.this.getMenu() != null){
-                    AmpereMeterBE.this.getMenu().unit = AmpereMeterBE.this.unit;
-                    AmpereMeterBE.this.getMenu().transfer = AmpereMeterBE.this.transfer;
-                }
-            }
-            AmpereMeterBE.this.average.put(AmpereMeterBE.this.average.size(), (int) transferred.get());
-            return transferred.get();
-        }
-        @Override public boolean inputsEnergy(Direction direction) { return true; }
-        @Override public long changeEnergy( long l ) { return 0; }
-        @Override public long getEnergyStored() { return 0; }
-        @Override public long getEnergyCapacity() { return Integer.MAX_VALUE; }
-        @Override public long getInputAmperage() {
-            if (AmpereMeterBE.this.getLevel() == null) return 0;
-            Direction outputSide = !AmpereMeterBE.this.direction ? Utils.getRightDirection(getBlockState()) : Utils.getLeftDirection(getBlockState());
-            BlockEntity output = AmpereMeterBE.this.getLevel().getBlockEntity(AmpereMeterBE.this.getBlockPos().relative(outputSide));
-            if (output == null) return 0;
-            AtomicLong amperage = new AtomicLong();
-            output.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, outputSide.getOpposite()).ifPresent(out -> {
-                amperage.set(out.getInputAmperage());
-            });
-            return amperage.get();
-        }
-        @Override public long getInputVoltage() {
-            if (AmpereMeterBE.this.getLevel() == null) return 0;
-            Direction outputSide = !AmpereMeterBE.this.direction ? Utils.getRightDirection(getBlockState()) : Utils.getLeftDirection(getBlockState());
-            BlockEntity output = AmpereMeterBE.this.getLevel().getBlockEntity(AmpereMeterBE.this.getBlockPos().relative(outputSide));
-            if (output == null) return 0;
-            AtomicLong voltage = new AtomicLong();
-            output.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, outputSide.getOpposite()).ifPresent(out -> {
-                voltage.set(out.getInputVoltage());
-            });
-            return voltage.get();
-        }
     };
 }

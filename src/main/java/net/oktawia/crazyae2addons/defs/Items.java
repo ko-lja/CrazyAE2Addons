@@ -2,12 +2,16 @@ package net.oktawia.crazyae2addons.defs;
 
 import appeng.api.parts.PartModels;
 import appeng.core.definitions.*;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import net.minecraft.Util;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.fml.ModList;
 import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.compat.GregTech.GTEnergyExporterPart;
 import net.oktawia.crazyae2addons.parts.*;
 import net.oktawia.crazyae2addons.items.*;
+import net.oktawia.crazyae2addons.compat.GregTech.*;
 
 import java.util.*;
 import java.util.function.Function;
@@ -196,12 +200,18 @@ public class Items {
         );
     });
 
-    public static final ItemDefinition<DataExtractorPartItem> DATA_EXTRACTOR_PART_ITEM = Util.make(() -> {
-        PartModels.registerModels(PartModelsHelper.createModels(DataExtractorPart.class));
+    public static final ItemDefinition<PartItem<? extends DataExtractorPart>> DATA_EXTRACTOR_PART_ITEM = Util.make(() -> {
+        PartModels.registerModels(PartModelsHelper.createModels(
+            ModList.get().isLoaded("gtceu")
+                ? GTDataExtractorPart.class
+                : DataExtractorPart.class
+        ));
         return part(
                 "Data Extractor",
                 "data_extractor",
-                DataExtractorPartItem::new,
+                ModList.get().isLoaded("gtceu")
+                        ? GTDataExtractorPartItem::new
+                        : DataExtractorPartItem::new,
                 "IL",
                 Map.of(
                         "I", AEParts.IMPORT_BUS.asItem(),
@@ -224,12 +234,18 @@ public class Items {
         );
     });
 
-    public static final ItemDefinition<EnergyExporterPartItem> ENERGY_EXPORTER_PART_ITEM = Util.make(() -> {
-        PartModels.registerModels(PartModelsHelper.createModels(EnergyExporterPart.class));
+    public static final ItemDefinition<PartItem<? extends EnergyExporterPart>> ENERGY_EXPORTER_PART_ITEM = Util.make(() -> {
+        PartModels.registerModels(PartModelsHelper.createModels(
+                ModList.get().isLoaded("gtceu")
+                        ? GTEnergyExporterPart.class
+                        : EnergyExporterPart.class
+        ));
         return part(
                 "Energy Exporter",
                 "energy_exporter",
-                EnergyExporterPartItem::new,
+                ModList.get().isLoaded("gtceu")
+                        ? GTEnergyExporterPartItem::new
+                        : EnergyExporterPartItem::new,
                 "ERR",
                 Map.of(
                         "E", AEParts.EXPORT_BUS.asItem(),
@@ -293,7 +309,8 @@ public class Items {
                     )
             ));
 
-    public static final ItemDefinition<CircuitUpgradeCard> CIRCUIT_UPGRADE_CARD_ITEM = Util.make(() ->
+    public static final ItemDefinition<CircuitUpgradeCard> CIRCUIT_UPGRADE_CARD_ITEM =
+            ModList.get().isLoaded("gtceu") ? Util.make(() ->
             item(
             "Circuit Upgrade Card",
                     "circuit_upgrade_card",
@@ -303,7 +320,7 @@ public class Items {
                             "C", AEItems.ADVANCED_CARD.asItem(),
                             "T", AEItems.LOGIC_PROCESSOR_PRESS.asItem()
                     )
-            ));
+            )) : null;
 
     public static final ItemDefinition<XpShardItem> XP_SHARD_ITEM = Util.make(() -> item("XP Shard", "xp_shard", XpShardItem::new));
 

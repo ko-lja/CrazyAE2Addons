@@ -1,10 +1,8 @@
 package net.oktawia.crazyae2addons.parts;
 
 import appeng.api.config.*;
-import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -12,32 +10,15 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
-import appeng.api.upgrades.UpgradeInventories;
-import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEItems;
-import appeng.helpers.IConfigInvHost;
-import appeng.helpers.externalstorage.GenericStackInv;
-import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.parts.p2p.P2PModels;
-import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
-import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.mojang.logging.LogUtils;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -55,20 +36,13 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.network.PacketDistributor;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.Utils;
-import net.oktawia.crazyae2addons.defs.Blocks;
-import net.oktawia.crazyae2addons.defs.Items;
 import net.oktawia.crazyae2addons.defs.Menus;
 import net.oktawia.crazyae2addons.menus.EnergyExporterMenu;
-import net.oktawia.crazyae2addons.network.DisplayValuePacket;
-import net.oktawia.crazyae2addons.network.NetworkHandler;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Objects;
 
 
 public class EnergyExporterPart extends UpgradeablePart implements
@@ -232,29 +206,16 @@ public class EnergyExporterPart extends UpgradeablePart implements
         BlockEntity neighbor = getLevel().getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         transfered = "0";
         if (neighbor != null){
-            if (this.greg) {
-                neighbor.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, getSide().getOpposite()).ifPresent(storage -> {
-                    double powerRequired = Math.min((long) voltage * maxAmps * FeCompat.ratio(false), storage.getEnergyCanBeInserted());
-                    double availablePower = getGridNode().getGrid().getEnergyService().getStoredPower() * 2;
-                    double maxPower = getGridNode().getGrid().getEnergyService().getMaxStoredPower() * 2;
-                    if (((availablePower - powerRequired) * 100 / maxPower) > 33){
-                        double ext = getGridNode().getGrid().getEnergyService().extractAEPower(powerRequired / 2, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                        storage.acceptEnergyFromNetwork(getSide().getOpposite(), voltage, maxAmps);
-                        transfered = Utils.shortenNumber(ext * 2);
-                    }
-                });
-            } else {
-                neighbor.getCapability(ForgeCapabilities.ENERGY, getSide().getOpposite()).ifPresent(storage -> {
-                    double powerRequired = Math.min(Math.pow(64, getInstalledUpgrades(AEItems.SPEED_CARD)), storage.getMaxEnergyStored() - storage.getEnergyStored()) - 1;
-                    double availablePower = getGridNode().getGrid().getEnergyService().getStoredPower() * 2;
-                    double maxPower = getGridNode().getGrid().getEnergyService().getMaxStoredPower() * 2;
-                    if (((availablePower - powerRequired) * 100 / maxPower) > 33){
-                        double ext = getGridNode().getGrid().getEnergyService().extractAEPower(powerRequired / 2, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                        storage.receiveEnergy((int) powerRequired, false);
-                        transfered = Utils.shortenNumber(ext * 2);
-                    }
-                });
-            }
+            neighbor.getCapability(ForgeCapabilities.ENERGY, getSide().getOpposite()).ifPresent(storage -> {
+                double powerRequired = Math.min(Math.pow(64, getInstalledUpgrades(AEItems.SPEED_CARD)), storage.getMaxEnergyStored() - storage.getEnergyStored()) - 1;
+                double availablePower = getGridNode().getGrid().getEnergyService().getStoredPower() * 2;
+                double maxPower = getGridNode().getGrid().getEnergyService().getMaxStoredPower() * 2;
+                if (((availablePower - powerRequired) * 100 / maxPower) > 33){
+                    double ext = getGridNode().getGrid().getEnergyService().extractAEPower(powerRequired / 2, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                    storage.receiveEnergy((int) powerRequired, false);
+                    transfered = Utils.shortenNumber(ext * 2);
+                }
+            });
         }
         if (this.getMenu() != null){
             this.getMenu().transfered = transfered;
@@ -268,36 +229,7 @@ public class EnergyExporterPart extends UpgradeablePart implements
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
-        this.greg = !this.inv.getStackInSlot(0).isEmpty();
-        if (this.getMenu() != null){
-            this.getMenu().greg = this.greg;
-        }
-        if (!greg) return;
-        Item tier = this.inv.getStackInSlot(0).getItem();
-        if (tier == GTItems.BATTERY_LV_LITHIUM.asItem()){
-            voltage = (int) Math.pow(2, 5);
-        } else if (tier == GTItems.BATTERY_MV_LITHIUM.asItem()){
-            voltage = (int) Math.pow(2, 7);
-        } else if (tier == GTItems.BATTERY_HV_LITHIUM.asItem()){
-            voltage = (int) Math.pow(2, 9);
-        } else if (tier == GTItems.BATTERY_EV_VANADIUM.asItem()){
-            voltage = (int) Math.pow(2, 11);
-        } else if (tier == GTItems.BATTERY_IV_VANADIUM.asItem()){
-            voltage = (int) Math.pow(2, 13);
-        } else if (tier == GTItems.BATTERY_LuV_VANADIUM.asItem()){
-            voltage = (int) Math.pow(2, 15);
-        } else if (tier == GTItems.BATTERY_ZPM_NAQUADRIA.asItem()){
-            voltage = (int) Math.pow(2, 17);
-        } else if (tier == GTItems.BATTERY_UV_NAQUADRIA.asItem()){
-            voltage = (int) Math.pow(2, 19);
-        } else {
-            voltage = 8;
-        }
-        if (this.getMenu() != null){
-            this.getMenu().voltage = this.voltage;
-        }
-    }
+    public void onChangeInventory(InternalInventory inv, int slot) {}
 
     @Nullable
     @Override

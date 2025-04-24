@@ -3,16 +3,17 @@ package net.oktawia.crazyae2addons.misc;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.IPatternDetails.IInput;
 import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.AEKey;
-import net.minecraft.nbt.*;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import appeng.api.stacks.GenericStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.StringJoiner;
 
 public class PatternDetailsSerializer {
 
@@ -39,52 +40,64 @@ public class PatternDetailsSerializer {
         root.putBoolean("push", details.supportsPushInputsToExternalInventory());
         return root;
     }
+
     public static IPatternDetails deserialize(CompoundTag tag) {
         AEItemKey def = AEItemKey.fromTag(tag.getCompound("def"));
 
-        ListTag inputsList = (ListTag) tag.get("input");
+        ListTag inputsList = tag.getList("input", Tag.TAG_LIST);
         IInput[] inputs = new IInput[inputsList.size()];
         for (int i = 0; i < inputsList.size(); i++) {
-            Tag inputEntry = inputsList.get(i);
-            if (!(inputEntry instanceof ListTag)) continue;
-            ListTag inputTag = (ListTag) inputEntry;
+            Tag entry = inputsList.get(i);
+            if (!(entry instanceof ListTag)) continue;
+            ListTag stacksTag = (ListTag) entry;
+
             List<GenericStack> stacks = new ArrayList<>();
-            for (int j = 0; j < inputTag.size(); j++) {
-                CompoundTag stackTag = inputTag.getCompound(j);
-                GenericStack stack = GenericStack.readTag(stackTag);
-                stacks.add(stack);
+            for (int j = 0; j < stacksTag.size(); j++) {
+                stacks.add(GenericStack.readTag(stacksTag.getCompound(j)));
             }
-            GenericStack[] possibleInputs = stacks.toArray(new GenericStack[0]);
-            inputs[i] = new IInput() {
-                @Override
-                public GenericStack[] getPossibleInputs() {
-                    return possibleInputs;
-                }
-                @Override
-                public long getMultiplier() {
-                    return 1;
-                }
-                @Override
-                public boolean isValid(AEKey input, Level level) {
-                    return false;
-                }
-                @Override
-                public AEKey getRemainingKey(AEKey template) {
-                    return null;
-                }
-            };
+            inputs[i] = new DeserializedInput(stacks.toArray(new GenericStack[0]));
         }
 
-        ListTag outputsList = (ListTag) tag.get("output");
-        List<GenericStack> outputStacks = new ArrayList<>();
-        for (int i = 0; i < outputsList.size(); i++) {
-            GenericStack stack = GenericStack.readTag(outputsList.getCompound(i));
-            outputStacks.add(stack);
+        ListTag outputsTag = tag.getList("output", Tag.TAG_COMPOUND);
+        List<GenericStack> outStacks = new ArrayList<>();
+        for (int i = 0; i < outputsTag.size(); i++) {
+            outStacks.add(GenericStack.readTag(outputsTag.getCompound(i)));
         }
-        GenericStack[] outputs = outputStacks.toArray(new GenericStack[0]);
+        GenericStack[] outputs = outStacks.toArray(new GenericStack[0]);
 
         boolean push = tag.getBoolean("push");
         return new PatternDetails(def, inputs, outputs, push);
+    }
+
+    private static class DeserializedInput implements IPatternDetails.IInput {
+        private final GenericStack[] possible;
+
+        DeserializedInput(GenericStack[] possible) {
+            this.possible = possible;
+        }
+
+        @Override public GenericStack[] getPossibleInputs() {
+            return possible;
+        }
+
+        @Override public long getMultiplier() {
+            return 1;
+        }
+
+        @Override
+        public boolean isValid(AEKey input, Level level) {
+            for (GenericStack stack : possible) {
+                if (stack.what().equals(input)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public AEKey getRemainingKey(AEKey template) {
+            return template;
+        }
     }
 
     public static class PatternDetails implements IPatternDetails {
@@ -93,31 +106,17 @@ public class PatternDetailsSerializer {
         private final GenericStack[] outputs;
         private final boolean supportsPush;
 
-        public PatternDetails(AEItemKey definition, IInput[] inputs, GenericStack[] outputs, boolean supportsPush) {
+        PatternDetails(AEItemKey definition, IInput[] inputs, GenericStack[] outputs, boolean supportsPush) {
             this.definition = definition;
             this.inputs = inputs;
             this.outputs = outputs;
             this.supportsPush = supportsPush;
         }
 
-        @Override
-        public AEItemKey getDefinition() {
-            return definition;
-        }
+        @Override public AEItemKey getDefinition()                     { return definition; }
+        @Override public IInput[] getInputs()                          { return inputs; }
+        @Override public GenericStack[] getOutputs()                   { return outputs; }
+        @Override public boolean supportsPushInputsToExternalInventory() { return supportsPush; }
 
-        @Override
-        public IInput[] getInputs() {
-            return inputs;
-        }
-
-        @Override
-        public GenericStack[] getOutputs() {
-            return outputs;
-        }
-
-        @Override
-        public boolean supportsPushInputsToExternalInventory() {
-            return supportsPush;
-        }
     }
 }

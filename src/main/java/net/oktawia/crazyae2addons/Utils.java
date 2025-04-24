@@ -1,14 +1,27 @@
 package net.oktawia.crazyae2addons;
 
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartItem;
+import appeng.blockentity.AEBaseBlockEntity;
+import com.mojang.logging.LogUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.fml.ModList;
+import net.oktawia.crazyae2addons.defs.BlockEntities;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -71,7 +84,8 @@ public class Utils {
         }
         return valid;
     }
-    public static boolean inRange(int input, int x, int y){
+
+    public static boolean inRange(int input, int x, int y) {
         return (input >= x && input <= y);
     }
 
@@ -102,5 +116,4 @@ public class Utils {
         Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
         return facing.getCounterClockWise(Direction.Axis.Y);
     }
-
 }

@@ -5,6 +5,10 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.fml.ModList;
+import net.oktawia.crazyae2addons.compat.GregTech.GTAmpereMeterBE;
+import net.oktawia.crazyae2addons.compat.GregTech.GTDataExtractorPart;
+import net.oktawia.crazyae2addons.compat.GregTech.GTEnergyExporterPart;
 import net.oktawia.crazyae2addons.logic.CrazyPatternModifierHost;
 import net.oktawia.crazyae2addons.logic.CrazyPatternMultiplierHost;
 import net.oktawia.crazyae2addons.parts.*;
@@ -43,11 +47,6 @@ public class Menus {
             CrazyPatternModifierMenu::new,
             CrazyPatternModifierHost.class
     );
-    public static final MenuType<AutoEnchanterMenu> AUTO_ENCHANTER_MENU = create(
-            "auto_enchanter",
-            AutoEnchanterMenu::new,
-            AutoEnchanterBE.class
-    );
     public static final MenuType<DisplayMenu> DISPLAY_MENU = create(
             "display",
             DisplayMenu::new,
@@ -58,11 +57,17 @@ public class Menus {
             MEDataControllerMenu::new,
             MEDataControllerBE.class
     );
-    public static final MenuType<DataExtractorMenu> DATA_EXTRACTOR_MENU = create(
-            "data_extractor",
-            DataExtractorMenu::new,
-            DataExtractorPart.class
-    );
+    public static final MenuType<DataExtractorMenu> DATA_EXTRACTOR_MENU =
+        ModList.get().isLoaded("gtceu")
+            ? create(
+                "data_extractor",
+                DataExtractorMenu::new,
+                GTDataExtractorPart.class
+            ) : create(
+                "data_extractor",
+                DataExtractorMenu::new,
+                DataExtractorPart.class
+            );
     public static final MenuType<DataProcessorMenu> DATA_PROCESSOR_MENU = create(
             "data_processor",
             DataProcessorMenu::new,
@@ -83,26 +88,39 @@ public class Menus {
             ChunkyFluidP2PTunnelMenu::new,
             ChunkyFluidP2PTunnelPart.class
     );
-    public static final MenuType<CircuitedPatternProviderMenu> CIRCUITED_PATTERN_PROVIDER_MENU = create(
+    public static final MenuType<CircuitedPatternProviderMenu> CIRCUITED_PATTERN_PROVIDER_MENU =
+            ModList.get().isLoaded("gtceu") ? create(
             "circuited_pp",
             CircuitedPatternProviderMenu::new,
             CircuitedPatternProviderBE.class
-    );
-    public static final MenuType<EnergyExporterMenu> ENERGY_EXPORTER_MENU = create(
-            "energy_exporter",
-            EnergyExporterMenu::new,
-            EnergyExporterPart.class
-    );
+    ) : null;
+    public static final MenuType<EnergyExporterMenu> ENERGY_EXPORTER_MENU =
+        ModList.get().isLoaded("gtceu")
+            ? create(
+                "energy_exporter",
+                EnergyExporterMenu::new,
+                GTEnergyExporterPart.class
+            ) : create(
+                "energy_exporter",
+                EnergyExporterMenu::new,
+                EnergyExporterPart.class
+            );
     public static final MenuType<RightClickProviderMenu> RIGHT_CLICK_PROVIDER_MENU = create(
             "rc_provider",
             RightClickProviderMenu::new,
             RightClickProviderPart.class
     );
-    public static final MenuType<AmpereMeterMenu> AMPERE_METER_MENU = create(
+    public static final MenuType<AmpereMeterMenu> AMPERE_METER_MENU =
+        ModList.get().isLoaded("gtceu")
+        ? create(
+            "ampere_meter",
+            AmpereMeterMenu::new,
+            GTAmpereMeterBE.class
+        ) : create(
             "ampere_meter",
             AmpereMeterMenu::new,
             AmpereMeterBE.class
-    );
+        );
     public static final MenuType<IsolatedDataProcessorMenu> ISOLATED_DATA_PROCESSOR_MENU = create(
             "isolated_data_processor",
             IsolatedDataProcessorMenu::new,

@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.Utils;
 import net.oktawia.crazyae2addons.menus.DataExtractorMenu;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class DataExtractorScreen<C extends DataExtractorMenu> extends UpgradeableScreen<C> {
 
@@ -92,7 +93,9 @@ public class DataExtractorScreen<C extends DataExtractorMenu> extends Upgradeabl
     }
 
     public void renderPage(int start, int end){
-        setTextContent("selectedValue", Component.literal("Selected: " + Arrays.stream(getMenu().available.split("\\|")).toList().get(getMenu().selected)));
+        try {
+            setTextContent("selectedValue", Component.literal("Selected: " + Arrays.stream(getMenu().available.split(Pattern.quote("|"))).toList().get(getMenu().selected)));
+        } catch (Exception ignored) {}
         int theI;
         for (int i = start; i < end; i ++){
             if (i >= Arrays.stream(getMenu().available.split("\\|")).toList().size() || i < 0){
