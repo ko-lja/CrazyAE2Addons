@@ -22,25 +22,27 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(CraftingCpuLogic.class)
+@Mixin(value = CraftingCpuLogic.class, remap = false)
 public abstract class MixinCraftingCpuLogic {
 
     @Shadow
     private ExecutingCraftingJob job;
 
     @Shadow @Final private CraftingCPUCluster cluster;
-    @Unique
-    public boolean ignoreNBT = false;
+
+    @Unique public boolean ignoreNBT = false;
 
 
-    @Inject(method = "trySubmitJob", at = @At("TAIL"), remap = false)
+    @Inject(method = "trySubmitJob", at = @At("RETURN"))
     public void trySubmitJob(IGrid grid, ICraftingPlan plan, IActionSource src, ICraftingRequester requester, CallbackInfoReturnable<ICraftingSubmitResult> cir) {
         plan.patternTimes().forEach((pattern, ignored) -> {
             if (pattern.getPrimaryOutput().what().matches(plan.finalOutput())) {
-                ignoreNBT = pattern.getDefinition().getTag().getBoolean("ignorenbt");
+                if (pattern.getDefinition().getTag() != null && pattern.getDefinition().getTag().contains("ignorenbt")){
+                    this.ignoreNBT = pattern.getDefinition().getTag().getBoolean("ignorenbt");
+                    ((IIgnoreNBT) ((ExecutingCraftingJobAccessor) job).getWaitingFor()).setIgnoreNBT(ignoreNBT);
+                }
             }
         });
-        ((IIgnoreNBT) ((ExecutingCraftingJobAccessor) job).getWaitingFor()).setIgnoreNBT(ignoreNBT);
     }
 
     @ModifyExpressionValue(
@@ -51,11 +53,11 @@ public abstract class MixinCraftingCpuLogic {
             )
     )
     private boolean modifyFinalOutputCheck(boolean originalCheck, AEKey what, long amount, Actionable type) {
-        return ((what.fuzzyEquals(((ExecutingCraftingJobAccessor) job).getFinalOutput().what(), FuzzyMode.IGNORE_ALL)) && this.ignoreNBT || originalCheck);
+        return (what.getId() == ((ExecutingCraftingJobAccessor) job).getFinalOutput().what().getId() && this.ignoreNBT || originalCheck);
     }
 
     @Redirect(
-            method = "Lappeng/crafting/execution/CraftingCpuLogic;executeCrafting(ILappeng/me/service/CraftingService;Lappeng/api/networking/energy/IEnergyService;Lnet/minecraft/world/level/Level;)I",
+            method = "executeCrafting(ILappeng/me/service/CraftingService;Lappeng/api/networking/energy/IEnergyService;Lnet/minecraft/world/level/Level;)I",
             at = @At(
                     value = "INVOKE",
                     target = "Lappeng/api/networking/crafting/ICraftingProvider;pushPattern(Lappeng/api/crafting/IPatternDetails;[Lappeng/api/stacks/KeyCounter;)Z"

@@ -8,6 +8,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.fml.ModList;
 import net.oktawia.crazyae2addons.menus.CrazyPatternModifierMenu;
 import net.oktawia.crazyae2addons.misc.IconButton;
 import net.minecraft.client.gui.components.Button;
@@ -26,7 +27,6 @@ public class CrazyPatternModifierScreen<C extends CrazyPatternModifierMenu> exte
     }
 
     private void setupGui(){
-
         this.nbt = new IconButton(Icon.ENTER, this::changeNbt);
         this.circConfirm = new IconButton(Icon.ENTER, this::modifyCirc);
 
@@ -43,7 +43,11 @@ public class CrazyPatternModifierScreen<C extends CrazyPatternModifierMenu> exte
     protected void updateBeforeRender(){
         super.updateBeforeRender();
         setTextContent("info1", Component.literal(getMenu().textNBT));
-        setTextContent("info2", Component.literal(getMenu().textCirc));
+        if (ModList.get().isLoaded("gtceu")){
+            setTextContent("info2", Component.literal(getMenu().textCirc));
+        } else {
+            setTextContent("info2", Component.literal("GregTech not detected"));
+        }
     }
 
     public void changeNbt(Button btn) {
@@ -51,10 +55,12 @@ public class CrazyPatternModifierScreen<C extends CrazyPatternModifierMenu> exte
     }
 
     public void modifyCirc(Button btn){
-        if (circ.getValue().isEmpty()){
-            this.getMenu().changeCircuit(0);
-        } else if ((circ.getValue().chars().allMatch(Character::isDigit) && !circ.getValue().isEmpty() && Integer.parseInt(circ.getValue()) <= 32)){
-            this.getMenu().changeCircuit(Integer.parseInt(circ.getValue()));
+        if (ModList.get().isLoaded("gtceu")){
+            if (circ.getValue().isEmpty()){
+                this.getMenu().changeCircuit(0);
+            } else if ((circ.getValue().chars().allMatch(Character::isDigit) && !circ.getValue().isEmpty() && Integer.parseInt(circ.getValue()) <= 32)){
+                this.getMenu().changeCircuit(Integer.parseInt(circ.getValue()));
+            }
         }
     }
 }

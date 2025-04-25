@@ -74,7 +74,13 @@ description='''${mod_description}'''
     modId="gtceu"
     mandatory=false
     versionRange="[1.6.4,)"
-    ordering="AFTER"
+    ordering="BEFORE"
+    side="BOTH"
+[[dependencies.${mod_id}]]
+    modId="mae2"
+    mandatory=false
+    versionRange="[1.5.0,)"
+    ordering="BEFORE"
     side="BOTH"
 
 [[mixins]]

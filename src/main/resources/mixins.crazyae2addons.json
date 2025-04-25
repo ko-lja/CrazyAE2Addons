@@ -3,13 +3,14 @@
   "minVersion": "0.8",
   "package": "net.oktawia.crazyae2addons.mixins",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "net.oktawia.crazyae2addons.mixins.Plugin",
   "mixins": [
     "ExecutingCraftingJobAccessor",
     "MixinCraftingCpuLogic",
+    "MixinGT",
+    "MixinGTMAE2",
     "MixinListCraftingInventory",
     "MixinPatternProviderLogic",
     "PatternProviderLogicAccessor"
-  ],
-  "client": [
   ]
 }
