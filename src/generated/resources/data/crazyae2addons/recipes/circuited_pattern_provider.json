@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "ae2:logic_processor_press"
+    },
+    "P": {
+      "item": "ae2:pattern_provider"
+    }
+  },
+  "pattern": [
+    "PCC"
+  ],
+  "result": {
+    "item": "crazyae2addons:circuited_pattern_provider"
+  },
+  "show_notification": true
+}

@@ -23,11 +23,11 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.oktawia.crazyae2addons.defs.Blocks;
-import net.oktawia.crazyae2addons.defs.Items;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.menus.IsolatedDataProcessorMenu;
 import net.oktawia.crazyae2addons.misc.LogicSetting;
 import net.oktawia.crazyae2addons.misc.NBTContainer;
@@ -35,14 +35,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.security.SecureRandom;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements MenuProvider, IUpgradeableObject, IGridTickable {
 
     public AppEngInternalInventory inv = new AppEngInternalInventory(this, 9);
     public IsolatedDataProcessorMenu menu;
-    public IUpgradeInventory upgrades = UpgradeInventories.forMachine(Blocks.ISOLATED_DATA_PROCESSOR_BLOCK, 0, this::saveChanges);
+    public IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.ISOLATED_DATA_PROCESSOR_BLOCK.get(), 0, this::saveChanges);
     public String identifier;
     public Integer submenuNum;
     public NBTContainer settings = new NBTContainer();
@@ -52,14 +49,13 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
     public String out = "";
     public int i = 0;
     public int x = 0;
-    public int y = 0;
     public int l0 = 0;
     public int l1 = 0;
     public int l2 = 0;
     public int l3 = 0;
 
-    public IsolatedDataProcessorBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
-        super(blockEntityType, pos, blockState);
+    public IsolatedDataProcessorBE(BlockPos pos, BlockState blockState) {
+        super(CrazyBlockEntityRegistrar.ISOLATED_DATA_PROCESSOR_BE.get(), pos, blockState);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(4)
@@ -117,7 +113,7 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
     }
 
     public void openMenu(Player player, MenuLocator locator) {
-        MenuOpener.open(Menus.ISOLATED_DATA_PROCESSOR_MENU, player, locator);
+        MenuOpener.open(CrazyMenuRegistrar.ISOLATED_DATA_PROCESSOR_MENU.get(), player, locator);
     }
 
     @Override
@@ -193,10 +189,10 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
     }
 
     private TickRateModulation processConditionalCards(ItemStack itemStack, int x, int y) {
-        if (itemStack.is(Items.HIT_CARD.asItem())) {
+        if (itemStack.is(CrazyItemRegistrar.HIT_CARD.get().asItem())) {
             i = (x > 0) ? y : i + 1;
             return TickRateModulation.IDLE;
-        } else if (itemStack.is(Items.HIF_CARD.asItem())) {
+        } else if (itemStack.is(CrazyItemRegistrar.HIF_CARD.get().asItem())) {
             i = (x <= 0) ? y : i + 1;
             return TickRateModulation.IDLE;
         }
@@ -204,14 +200,14 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
     }
 
     private int computeTempValue(ItemStack itemStack, int x, int y) {
-        if (itemStack.is(Items.ADD_CARD.asItem())) return x + y;
-        if (itemStack.is(Items.SUB_CARD.asItem())) return x - y;
-        if (itemStack.is(Items.MUL_CARD.asItem())) return x * y;
-        if (itemStack.is(Items.DIV_CARD.asItem()) && y != 0) return x / y;
-        if (itemStack.is(Items.MIN_CARD.asItem())) return Math.min(x, y);
-        if (itemStack.is(Items.MAX_CARD.asItem())) return Math.max(x, y);
-        if (itemStack.is(Items.BSR_CARD.asItem())) return x >> y;
-        if (itemStack.is(Items.BSL_CARD.asItem())) return x << y;
+        if (itemStack.is(CrazyItemRegistrar.ADD_CARD.get().asItem())) return x + y;
+        if (itemStack.is(CrazyItemRegistrar.SUB_CARD.get().asItem())) return x - y;
+        if (itemStack.is(CrazyItemRegistrar.MUL_CARD.get().asItem())) return x * y;
+        if (itemStack.is(CrazyItemRegistrar.DIV_CARD.get().asItem()) && y != 0) return x / y;
+        if (itemStack.is(CrazyItemRegistrar.MIN_CARD.get().asItem())) return Math.min(x, y);
+        if (itemStack.is(CrazyItemRegistrar.MAX_CARD.get().asItem())) return Math.max(x, y);
+        if (itemStack.is(CrazyItemRegistrar.BSR_CARD.get().asItem())) return x >> y;
+        if (itemStack.is(CrazyItemRegistrar.BSL_CARD.get().asItem())) return x << y;
         return Integer.MIN_VALUE;
     }
 

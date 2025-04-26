@@ -21,11 +21,11 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.oktawia.crazyae2addons.defs.Blocks;
-import net.oktawia.crazyae2addons.defs.Items;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.menus.DataProcessorMenu;
 import net.oktawia.crazyae2addons.misc.NBTContainer;
 import net.oktawia.crazyae2addons.misc.LogicSetting;
@@ -40,7 +40,7 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
 
     public AppEngInternalInventory inv = new AppEngInternalInventory(this, 9);
     public DataProcessorMenu menu;
-    public IUpgradeInventory upgrades = UpgradeInventories.forMachine(Blocks.DATA_PROCESSOR_BLOCK, 0, this::saveChanges);
+    public IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.DATA_PROCESSOR_BLOCK.get(), 0, this::saveChanges);
     public Integer submenuNum;
     public String identifier;
     public NBTContainer settings = new NBTContainer();
@@ -48,8 +48,8 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
     public boolean looped = false;
     public boolean reRegister = false;
 
-    public DataProcessorBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
-        super(blockEntityType, pos, blockState);
+    public DataProcessorBE(BlockPos pos, BlockState blockState) {
+        super(CrazyBlockEntityRegistrar.DATA_PROCESSOR_BE.get(), pos, blockState);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(4)
@@ -125,7 +125,7 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
     }
 
     public void openMenu(Player player, MenuLocator locator) {
-        MenuOpener.open(Menus.DATA_PROCESSOR_MENU, player, locator);
+        MenuOpener.open(CrazyMenuRegistrar.DATA_PROCESSOR_MENU.get(), player, locator);
     }
 
     public static String randomHexId() {
@@ -177,28 +177,28 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
                 i++;
                 continue;
             }
-            if (itemStack.is(Items.ADD_CARD.asItem())) {
+            if (itemStack.is(CrazyItemRegistrar.ADD_CARD.get().asItem())) {
                 temp = x + y;
-            } else if (itemStack.is(Items.SUB_CARD.asItem())) {
+            } else if (itemStack.is(CrazyItemRegistrar.SUB_CARD.get().asItem())) {
                 temp = x - y;
-            } else if (itemStack.is(Items.MUL_CARD.asItem())) {
+            } else if (itemStack.is(CrazyItemRegistrar.MUL_CARD.get().asItem())) {
                 temp = x * y;
-            } else if (itemStack.is(Items.DIV_CARD.asItem()) && y != 0) {
+            } else if (itemStack.is(CrazyItemRegistrar.DIV_CARD.get().asItem()) && y != 0) {
                 temp = x / y;
-            } else if (itemStack.is(Items.MIN_CARD.asItem())) {
+            } else if (itemStack.is(CrazyItemRegistrar.MIN_CARD.get().asItem())) {
                 temp = min(x, y);
-            } else if (itemStack.is(Items.MAX_CARD.asItem())) {
+            } else if (itemStack.is(CrazyItemRegistrar.MAX_CARD.get().asItem())) {
                 temp = max(x, y);
-            } else if (itemStack.is(Items.BSR_CARD.asItem())) {
+            } else if (itemStack.is(CrazyItemRegistrar.BSR_CARD.get().asItem())) {
                 temp = x >> y;
-            } else if (itemStack.is(Items.BSL_CARD.asItem())) {
+            } else if (itemStack.is(CrazyItemRegistrar.BSL_CARD.get().asItem())) {
                 temp = x << y;
-            } else if (itemStack.is(Items.HIT_CARD.asItem())) {
+            } else if (itemStack.is(CrazyItemRegistrar.HIT_CARD.get().asItem())) {
                 if (x > 0) {
                     i = y;
                     continue;
                 }
-            } else if (itemStack.is(Items.HIF_CARD.asItem())) {
+            } else if (itemStack.is(CrazyItemRegistrar.HIF_CARD.get().asItem())) {
                 if (x <= 0) {
                     i = y;
                     continue;

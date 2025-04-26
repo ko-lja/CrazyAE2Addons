@@ -2,14 +2,11 @@ package net.oktawia.crazyae2addons.misc;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AmountFormat;
-import appeng.core.localization.GuiText;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;

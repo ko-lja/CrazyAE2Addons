@@ -5,7 +5,7 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.parts.DataExtractorPart;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.screens.DataExtractorScreen;
 
 public class DataExtractorMenu extends UpgradeableMenu<DataExtractorPart> implements IUpgradeableObject {
@@ -28,7 +28,7 @@ public class DataExtractorMenu extends UpgradeableMenu<DataExtractorPart> implem
     public String ACTION_SAVE_DELAY = "actionSaveDelay";
 
     public DataExtractorMenu(int id, Inventory ip, DataExtractorPart host) {
-        super(Menus.DATA_EXTRACTOR_MENU, id, ip, host);
+        super(CrazyMenuRegistrar.DATA_EXTRACTOR_MENU.get(), id, ip, host);
         getHost().setMenu(this);
         registerClientAction(ACTION_SYNC_SELECTED, Integer.class, this::syncValue);
         registerClientAction(ACTION_GET_DATA, this::getData);

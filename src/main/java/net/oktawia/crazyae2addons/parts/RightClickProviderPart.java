@@ -1,6 +1,8 @@
 package net.oktawia.crazyae2addons.parts;
 
-import appeng.api.config.*;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -20,7 +22,6 @@ import appeng.parts.p2p.P2PModels;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import com.mojang.authlib.GameProfile;
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -38,7 +39,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.RightClickProviderMenu;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,7 +53,7 @@ public class RightClickProviderPart extends UpgradeablePart implements
 
     public AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
     private static final P2PModels MODELS = new P2PModels(
-            new ResourceLocation(CrazyAddons.MODID, "part/rc_provider"));
+            new ResourceLocation(CrazyAddons.MODID, "part/right_click_provider"));
 
     @PartModels
     public static List<IPartModel> getModels() {
@@ -67,6 +68,8 @@ public class RightClickProviderPart extends UpgradeablePart implements
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(8)
                 .addService(IGridTickable.class,this);
+        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
     }
 
     @Override
@@ -108,7 +111,7 @@ public class RightClickProviderPart extends UpgradeablePart implements
     @Override
     public boolean onPartActivate(Player p, InteractionHand hand, Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
-            MenuOpener.open(Menus.RIGHT_CLICK_PROVIDER_MENU, p, MenuLocators.forPart(this));
+            MenuOpener.open(CrazyMenuRegistrar.RIGHT_CLICK_PROVIDER_MENU.get(), p, MenuLocators.forPart(this));
         }
         return true;
     }

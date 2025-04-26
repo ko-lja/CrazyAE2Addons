@@ -15,7 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.Level;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.Signalling.SignallingInterfaceLogicHost;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +40,7 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
     private final SignallingInterfaceLogicHost host;
 
     public SetStockAmountMenu(int id, Inventory ip, SignallingInterfaceLogicHost host) {
-        super(Menus.SET_STOCK_AMOUNT_MENU, id, ip, host);
+        super(CrazyMenuRegistrar.SET_STOCK_AMOUNT_MENU.get(), id, ip, host);
         registerClientAction(ACTION_SET_STOCK_AMOUNT, Integer.class, this::confirm);
         this.host = host;
         this.stockedItem = new InaccessibleSlot(new AppEngInternalInventory(1), 0);
@@ -55,7 +55,7 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
     public static void open(ServerPlayer player, MenuLocator locator,
                             int slot,
                             AEKey whatToStock, int initialAmount) {
-        MenuOpener.open(Menus.SET_STOCK_AMOUNT_MENU, player, locator);
+        MenuOpener.open(CrazyMenuRegistrar.SET_STOCK_AMOUNT_MENU.get(), player, locator);
 
         if (player.containerMenu instanceof SetStockAmountMenu cca) {
             cca.setWhatToStock(slot, whatToStock, initialAmount);

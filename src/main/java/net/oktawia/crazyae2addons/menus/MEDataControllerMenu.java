@@ -8,10 +8,8 @@ import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.oktawia.crazyae2addons.defs.Items;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.MEDataControllerBE;
-import net.oktawia.crazyae2addons.misc.AEItemStackFilteredSlot;
 
 public class MEDataControllerMenu extends UpgradeableMenu<MEDataControllerBE> {
 
@@ -20,7 +18,7 @@ public class MEDataControllerMenu extends UpgradeableMenu<MEDataControllerBE> {
     @GuiSync(875)
     public int maxVariables = 0;
     public MEDataControllerMenu(int id, Inventory ip, MEDataControllerBE host) {
-        super(Menus.ME_DATA_CONTROLLER_MENU, id, ip, host);
+        super(CrazyMenuRegistrar.ME_DATA_CONTROLLER_MENU.get(), id, ip, host);
         this.getHost().setMenu(this);
         for(int i = 0; i < 6; i = i + 1){
             this.addSlot(new AppEngSlot(getHost().inv, i), SlotSemantics.STORAGE);

@@ -1,27 +1,20 @@
 package net.oktawia.crazyae2addons.menus;
 
 import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.crafting.pattern.EncodedPatternItem;
-import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
-import com.mojang.logging.LogUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.oktawia.crazyae2addons.defs.Menus;
-import net.oktawia.crazyae2addons.logic.CrazyPatternModifierHost;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.CrazyPatternMultiplierHost;
 import net.oktawia.crazyae2addons.misc.AppEngFilteredSlot;
-import org.jline.utils.Log;
 
 public class CrazyPatternMultiplierMenu extends AEBaseMenu {
 
@@ -32,7 +25,7 @@ public class CrazyPatternMultiplierMenu extends AEBaseMenu {
     public double mult;
 
     public CrazyPatternMultiplierMenu(int id, Inventory ip, CrazyPatternMultiplierHost host) {
-        super(Menus.CRAZY_PATTERN_MULTIPLIER_MENU, id, ip, host);
+        super(CrazyMenuRegistrar.CRAZY_PATTERN_MULTIPLIER_MENU.get(), id, ip, host);
         this.createPlayerInventorySlots(ip);
         this.host = host;
         this.mult = host.getItemStack().getTag() == null ? 0 : host.getItemStack().getTag().getDouble("mult");

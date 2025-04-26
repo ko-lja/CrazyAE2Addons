@@ -20,10 +20,10 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.crazyae2addons.Utils;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
 import org.jetbrains.annotations.Nullable;
 import java.time.Instant;
@@ -39,8 +39,8 @@ public class CraftingCancelerBE extends AENetworkBlockEntity implements MenuProv
     private List<ICraftingCPU> craftingCpus;
     private Instant intervalStart;
 
-    public CraftingCancelerBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
-        super(blockEntityType, pos, blockState);
+    public CraftingCancelerBE(BlockPos pos, BlockState blockState) {
+        super(CrazyBlockEntityRegistrar.CRAFTING_CANCELER_BE.get(), pos, blockState);
         this.duration = 0;
         this.enabled = false;
         this.getMainNode().setIdlePowerUsage(4.0F).addService(IGridTickable.class, this).setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -176,6 +176,6 @@ public class CraftingCancelerBE extends AENetworkBlockEntity implements MenuProv
     }
 
     public void openMenu(Player player, MenuLocator locator) {
-        MenuOpener.open(Menus.CRAFTING_CANCELER_MENU, player, locator);
+        MenuOpener.open(CrazyMenuRegistrar.CRAFTING_CANCELER_MENU.get(), player, locator);
     }
 }

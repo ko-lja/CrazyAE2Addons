@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "item": "ae2:crafting_monitor"
+    },
+    "T": {
+      "item": "ae2:monitor"
+    },
+    "U": {
+      "item": "ae2:crafting_unit"
+    }
+  },
+  "pattern": [
+    "TM",
+    "MU"
+  ],
+  "result": {
+    "item": "crazyae2addons:crafting_canceler"
+  },
+  "show_notification": true
+}

@@ -12,7 +12,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 
 
 public interface SignallingInterfaceLogicHost extends IConfigurableObject, IUpgradeableObject, IPriorityHost, IConfigInvHost {
@@ -53,12 +53,12 @@ public interface SignallingInterfaceLogicHost extends IConfigurableObject, IUpgr
     }
 
     default void openMenu(Player player, MenuLocator locator) {
-        MenuOpener.open(Menus.SIGNALLING_INTERFACE_MENU, player, locator);
+        MenuOpener.open(CrazyMenuRegistrar.SIGNALLING_INTERFACE_MENU.get(), player, locator);
     }
 
     @Override
     default void returnToMainMenu(Player player, ISubMenu subMenu) {
-        MenuOpener.returnTo(Menus.SIGNALLING_INTERFACE_MENU, player, subMenu.getLocator());
+        MenuOpener.returnTo(CrazyMenuRegistrar.SIGNALLING_INTERFACE_MENU.get(), player, subMenu.getLocator());
     }
 
 }

@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.Vec3;
 import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.EntityTickerMenu;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,7 +71,7 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
     @Override
     public boolean onPartActivate(Player p, InteractionHand hand, Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
-            MenuOpener.open(Menus.ENTITY_TICKER_MENU, p, MenuLocators.forPart(this));
+            MenuOpener.open(CrazyMenuRegistrar.ENTITY_TICKER_MENU.get(), p, MenuLocators.forPart(this));
         }
         return true;
     }

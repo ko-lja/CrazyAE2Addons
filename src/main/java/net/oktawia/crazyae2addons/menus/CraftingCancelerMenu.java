@@ -2,18 +2,9 @@ package net.oktawia.crazyae2addons.menus;
 
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkDirection;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
-
-import java.util.logging.Logger;
 
 public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
 
@@ -27,7 +18,7 @@ public class CraftingCancelerMenu extends UpgradeableMenu<CraftingCancelerBE> {
     private static final String ACTION_SEND_DURATION = "ActionSendDuration";
 
     public CraftingCancelerMenu(int id, Inventory ip, CraftingCancelerBE host) {
-        super(Menus.CRAFTING_CANCELER_MENU, id, ip, host);
+        super(CrazyMenuRegistrar.CRAFTING_CANCELER_MENU.get(), id, ip, host);
         en = getHost().getEnabled();
         dur = getHost().getDuration();
 

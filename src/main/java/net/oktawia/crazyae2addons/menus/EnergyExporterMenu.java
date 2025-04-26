@@ -5,7 +5,7 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
 import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.parts.EnergyExporterPart;
 
 
@@ -21,7 +21,7 @@ public class EnergyExporterMenu extends UpgradeableMenu<EnergyExporterPart> {
     public boolean greg;
 
     public EnergyExporterMenu(int id, Inventory ip, EnergyExporterPart host) {
-        super(Menus.ENERGY_EXPORTER_MENU, id, ip, host);
+        super(CrazyMenuRegistrar.ENERGY_EXPORTER_MENU.get(), id, ip, host);
         this.getHost().setMenu(this);
         this.addSlot(new AppEngSlot(host.inv, 0), SlotSemantics.STORAGE);
         this.maxAmps = host.maxAmps;

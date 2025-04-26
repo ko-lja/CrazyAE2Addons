@@ -1,6 +1,5 @@
 package net.oktawia.crazyae2addons.parts;
 
-import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKeyType;
@@ -21,7 +20,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.oktawia.crazyae2addons.Utils;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.ChunkyFluidP2PTunnelMenu;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,7 +59,7 @@ public class ChunkyFluidP2PTunnelPart extends CapabilityP2PTunnelPart<ChunkyFlui
     public boolean onPartActivate(Player p, InteractionHand hand, Vec3 pos) {
         var is = p.getItemInHand(hand);
         if (!p.getCommandSenderWorld().isClientSide() && is.isEmpty()) {
-            MenuOpener.open(Menus.CHUNKY_FLUID_P2P_TUNNEL_MENU, p, MenuLocators.forPart(this));
+            MenuOpener.open(CrazyMenuRegistrar.CHUNKY_FLUID_P2P_TUNNEL_MENU.get(), p, MenuLocators.forPart(this));
             return true;
         } else {
             return super.onPartActivate(p, hand, pos);

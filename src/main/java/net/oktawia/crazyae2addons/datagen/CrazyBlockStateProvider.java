@@ -1,11 +1,11 @@
 package net.oktawia.crazyae2addons.datagen;
 
-import appeng.core.definitions.BlockDefinition;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.defs.Blocks;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 
 public class CrazyBlockStateProvider extends BlockStateProvider {
     public CrazyBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
@@ -14,14 +14,14 @@ public class CrazyBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        for (var block : Blocks.getBlocks()){
-            if (block != Blocks.AMPERE_METER_BLOCK){
+        for (var block : CrazyBlockRegistrar.getBlocks()){
+            if (block != CrazyBlockRegistrar.AMPERE_METER_BLOCK.get()){
                 simpleBlockWithItem(block);
             }
         }
     }
 
-    private void simpleBlockWithItem(BlockDefinition<?> block) {
-        simpleBlockWithItem(block.block(), cubeAll(block.block()));
+    private void simpleBlockWithItem(Block block) {
+        simpleBlockWithItem(block, cubeAll(block));
     }
 }

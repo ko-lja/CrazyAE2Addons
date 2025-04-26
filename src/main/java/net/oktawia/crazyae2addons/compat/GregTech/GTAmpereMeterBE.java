@@ -11,6 +11,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.oktawia.crazyae2addons.Utils;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.entities.AmpereMeterBE;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,8 +20,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class GTAmpereMeterBE extends AmpereMeterBE{
 
-    public GTAmpereMeterBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
-        super(blockEntityType, pos, blockState);
+    public GTAmpereMeterBE(BlockPos pos, BlockState blockState) {
+        super(pos, blockState);
     }
 
     @Override

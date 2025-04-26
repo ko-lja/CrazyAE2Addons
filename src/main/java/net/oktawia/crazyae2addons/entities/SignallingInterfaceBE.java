@@ -14,11 +14,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.oktawia.crazyae2addons.defs.Blocks;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.logic.Signalling.SignallingInterfaceLogic;
 import net.oktawia.crazyae2addons.logic.Signalling.SignallingInterfaceLogicHost;
 import org.jetbrains.annotations.Nullable;
@@ -28,18 +28,11 @@ import java.util.List;
 public class SignallingInterfaceBE extends AENetworkBlockEntity
         implements IPriorityHost, IUpgradeableObject, IConfigurableObject, SignallingInterfaceLogicHost {
 
-
-    public static final IGridNodeListener<SignallingInterfaceBE> NODE_LISTENER = new BlockEntityNodeListener<SignallingInterfaceBE>() {
-        public void onGridChanged(SignallingInterfaceBE nodeOwner, IGridNode node) {
-            nodeOwner.logic.gridChanged();
-        }
-    };
-
     private final SignallingInterfaceLogic logic = createLogic();
     public boolean redstoneOut = false;
 
-    public SignallingInterfaceBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
-        super(blockEntityType, pos, blockState);
+    public SignallingInterfaceBE(BlockPos pos, BlockState blockState) {
+        super(CrazyBlockEntityRegistrar.SIGNALLING_INTERFACE_BE.get(), pos, blockState);
     }
 
     protected SignallingInterfaceLogic createLogic() {
@@ -89,7 +82,7 @@ public class SignallingInterfaceBE extends AENetworkBlockEntity
 
     @Override
     public ItemStack getMainMenuIcon() {
-        return Blocks.SIGNALLING_INTERFACE_BLOCK.stack();
+        return CrazyBlockRegistrar.SIGNALLING_INTERFACE_BLOCK.get().asItem().getDefaultInstance();
     }
 
     @Override

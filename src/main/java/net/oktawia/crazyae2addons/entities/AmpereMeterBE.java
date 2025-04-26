@@ -12,14 +12,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.oktawia.crazyae2addons.Utils;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.menus.AmpereMeterMenu;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,8 +36,8 @@ public class AmpereMeterBE extends AEBaseBlockEntity implements MenuProvider {
     public Integer numTransfer = 0;
     public HashMap<Integer, Integer> average = new HashMap<>();
 
-    public AmpereMeterBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
-        super(blockEntityType, pos, blockState);
+    public AmpereMeterBE(BlockPos pos, BlockState blockState) {
+        super(CrazyBlockEntityRegistrar.AMPERE_METER_BE.get(), pos, blockState);
     }
 
     public void setMenu(AmpereMeterMenu menu){
@@ -73,7 +73,7 @@ public class AmpereMeterBE extends AEBaseBlockEntity implements MenuProvider {
     }
 
     public void openMenu(Player player, MenuLocator locator) {
-        MenuOpener.open(Menus.AMPERE_METER_MENU, player, locator);
+        MenuOpener.open(CrazyMenuRegistrar.AMPERE_METER_MENU.get(), player, locator);
     }
 
     @Override

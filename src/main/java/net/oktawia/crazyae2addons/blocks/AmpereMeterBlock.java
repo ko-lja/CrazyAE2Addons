@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
-import net.oktawia.crazyae2addons.defs.BlockEntities;
 import net.oktawia.crazyae2addons.entities.AmpereMeterBE;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +30,7 @@ public class AmpereMeterBlock extends AEBaseEntityBlock<AmpereMeterBE> {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new AmpereMeterBE(BlockEntities.AMPERE_METER_BE, pos, state);
+        return new AmpereMeterBE(pos, state);
     }
 
     @Override

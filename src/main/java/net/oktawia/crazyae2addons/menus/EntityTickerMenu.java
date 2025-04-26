@@ -6,7 +6,7 @@ import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.OptionalFakeSlot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.screens.EntityTickerScreen;
 
@@ -18,7 +18,7 @@ public class EntityTickerMenu extends UpgradeableMenu<EntityTickerPart> {
 
     public EntityTickerMenu(
             int id, Inventory ip, EntityTickerPart host) {
-        super(Menus.ENTITY_TICKER_MENU, id, ip, host);
+        super(CrazyMenuRegistrar.ENTITY_TICKER_MENU.get(), id, ip, host);
         getHost().menu = this;
         registerClientAction(ACTION_SEND_UPGRADE_NUM, Integer.class, this::sendUpgradeNum);
         upgradeNum = getHost().getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD);

@@ -1,28 +1,14 @@
 package net.oktawia.crazyae2addons;
 
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartItem;
-import appeng.blockentity.AEBaseBlockEntity;
-import com.mojang.logging.LogUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.fml.ModList;
-import net.oktawia.crazyae2addons.defs.BlockEntities;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 public class Utils {
 
@@ -46,19 +32,17 @@ public class Utils {
 
     public static <T> List<T> rotate(List<T> inputList, int offset) {
         if (inputList.isEmpty()) {
-            return new ArrayList<>(inputList); // Return empty list if input is empty
+            return new ArrayList<>(inputList);
         }
 
-        // Ensure the offset is within bounds of the list size
         int effectiveOffset = offset % inputList.size();
         if (effectiveOffset < 0) {
-            effectiveOffset += inputList.size(); // Handle negative offsets
+            effectiveOffset += inputList.size();
         }
 
-        // Create a rotated list
         List<T> rotatedList = new ArrayList<>();
-        rotatedList.addAll(inputList.subList(inputList.size() - effectiveOffset, inputList.size())); // End part
-        rotatedList.addAll(inputList.subList(0, inputList.size() - effectiveOffset)); // Start part
+        rotatedList.addAll(inputList.subList(inputList.size() - effectiveOffset, inputList.size()));
+        rotatedList.addAll(inputList.subList(0, inputList.size() - effectiveOffset));
 
         return rotatedList;
     }
@@ -115,5 +99,22 @@ public class Utils {
     public static Direction getLeftDirection(BlockState state) {
         Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
         return facing.getCounterClockWise(Direction.Axis.Y);
+    }
+
+    public static String toTitle(String id) {
+        StringBuilder out = new StringBuilder();
+
+        for (String part : id.split("_")) {
+            if (part.isEmpty()) continue;
+
+            if (part.chars().anyMatch(Character::isDigit)) {
+                out.append(part.toUpperCase());
+            } else {
+                out.append(Character.toUpperCase(part.charAt(0)))
+                        .append(part.substring(1).toLowerCase());
+            }
+            out.append(' ');
+        }
+        return out.toString().trim();
     }
 }

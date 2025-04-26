@@ -17,9 +17,9 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.menus.DataTrackerMenu;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,8 +30,8 @@ public class DataTrackerBE extends NotifyableBlockEntity implements MenuProvider
     public boolean active = false;
     public boolean reRegister = false;
 
-    public DataTrackerBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
-        super(blockEntityType, pos, blockState);
+    public DataTrackerBE(BlockPos pos, BlockState blockState) {
+        super(CrazyBlockEntityRegistrar.DATA_TRACKER_BE.get(), pos, blockState);
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(1)
@@ -81,7 +81,7 @@ public class DataTrackerBE extends NotifyableBlockEntity implements MenuProvider
     }
 
     public void openMenu(Player player, MenuLocator locator) {
-        MenuOpener.open(Menus.DATA_TRACKER_MENU, player, locator);
+        MenuOpener.open(CrazyMenuRegistrar.DATA_TRACKER_MENU.get(), player, locator);
     }
 
     @Override

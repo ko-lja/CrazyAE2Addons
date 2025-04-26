@@ -9,8 +9,8 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
-import net.oktawia.crazyae2addons.defs.Blocks;
-import net.oktawia.crazyae2addons.defs.Items;
+import net.oktawia.crazyae2addons.defs.BlockDefs;
+import net.oktawia.crazyae2addons.defs.ItemDefs;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -22,7 +22,7 @@ public class CrazyRecipeProvider extends RecipeProvider implements IConditionBui
 
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> pWriter) {
-        for (var entry : Blocks.getBlockRecipes().entrySet()){
+        for (var entry : BlockDefs.getBlockRecipes().entrySet()){
             ShapedRecipeBuilder builder = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, entry.getKey());
             for (var recipe : entry.getValue().getKey().split("/")) {
                 LogUtils.getLogger().info(recipe);
@@ -34,7 +34,7 @@ public class CrazyRecipeProvider extends RecipeProvider implements IConditionBui
             builder.unlockedBy(getHasName(AEBlocks.CONTROLLER.asItem()), has(AEBlocks.CONTROLLER.asItem()));
             builder.save(pWriter);
         }
-        for (var entry : Items.getItemRecipes().entrySet()){
+        for (var entry : ItemDefs.getItemRecipes().entrySet()){
             ShapedRecipeBuilder builder = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, entry.getKey());
             for (var recipe : entry.getValue().getKey().split("/")) {
                 LogUtils.getLogger().info(recipe);

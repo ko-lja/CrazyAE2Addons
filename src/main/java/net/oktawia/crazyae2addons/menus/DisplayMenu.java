@@ -4,7 +4,7 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.parts.DisplayPart;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 
 
 public class DisplayMenu extends AEBaseMenu {
@@ -16,7 +16,7 @@ public class DisplayMenu extends AEBaseMenu {
     public DisplayPart host;
 
     public DisplayMenu(int id, Inventory ip, DisplayPart host) {
-        super(Menus.DISPLAY_MENU, id, ip, host);
+        super(CrazyMenuRegistrar.DISPLAY_MENU.get(), id, ip, host);
         this.host = host;
         this.displayValue = host.textValue;
         registerClientAction(ACTION_SYNC_DISPLAY_VALUE, String.class, this::syncValue);

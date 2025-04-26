@@ -22,8 +22,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.ModList;
-import net.oktawia.crazyae2addons.defs.BlockEntities;
-import net.oktawia.crazyae2addons.defs.Items;
+import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -56,7 +56,7 @@ public abstract class MixinGTMAE2 {
             )
     )
     private void beforePushToMachines(IPatternDetails patternDetails, KeyCounter[] inputHolder, CallbackInfoReturnable<Boolean> cir) {
-        if (ModList.get().isLoaded("gtceu") && host.getBlockEntity().getType() == BlockEntities.CIRCUITED_PATTERN_PROVIDER_BE){
+        if (ModList.get().isLoaded("gtceu") && host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.CIRCUITED_PATTERN_PROVIDER_BE.get()){
             mae2SetCirc(patternDetails);
         }
     }
@@ -94,7 +94,7 @@ public abstract class MixinGTMAE2 {
                     ip.getGridNode().getGrid()
                             .getMachines(StorageBusPart.class)
                             .forEach(bus -> {
-                                if (bus.isUpgradedWith(Items.CIRCUIT_UPGRADE_CARD_ITEM)) {
+                                if (bus.isUpgradedWith(CrazyItemRegistrar.CIRCUIT_UPGRADE_CARD_ITEM.get())) {
                                     BlockEntity busBe = bus.getBlockEntity();
                                     Level busLevel = busBe.getLevel();
                                     BlockPos next = busBe.getBlockPos().relative(bus.getSide());

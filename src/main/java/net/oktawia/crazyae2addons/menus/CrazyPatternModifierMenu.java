@@ -1,17 +1,13 @@
 package net.oktawia.crazyae2addons.menus;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.stacks.AEItemKey;
 import appeng.core.definitions.AEItems;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.implementations.UpgradeableMenu;
-import appeng.menu.slot.AppEngSlot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.CrazyPatternModifierHost;
 import net.oktawia.crazyae2addons.misc.AppEngFilteredSlot;
 
@@ -26,7 +22,7 @@ public class CrazyPatternModifierMenu extends AEBaseMenu {
     public String textCirc = "";
 
     public CrazyPatternModifierMenu(int id, Inventory ip, CrazyPatternModifierHost host) {
-        super(Menus.CRAZY_PATTERN_MODIFIER_MENU, id, ip, host);
+        super(CrazyMenuRegistrar.CRAZY_PATTERN_MODIFIER_MENU.get(), id, ip, host);
         this.createPlayerInventorySlots(ip);
         host.setMenu(this);
         this.addSlot(new AppEngFilteredSlot(host.inv, 0, AEItems.PROCESSING_PATTERN.stack()), SlotSemantics.STORAGE);

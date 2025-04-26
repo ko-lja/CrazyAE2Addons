@@ -20,7 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.implementations.StackTransferContextImplementation;
 import appeng.parts.automation.StackWorldBehaviors;
 import appeng.util.prioritylist.DefaultPriorityList;
@@ -225,7 +225,7 @@ public class NBTExportBusPart extends IOBusPart {
 
     @Override
     protected MenuType<?> getMenuType() {
-        return Menus.NBT_EXPORT_BUS_MENU;
+        return CrazyMenuRegistrar.NBT_EXPORT_BUS_MENU.get();
     }
 
     @Override

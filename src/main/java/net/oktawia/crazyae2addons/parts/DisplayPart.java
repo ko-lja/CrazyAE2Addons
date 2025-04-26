@@ -25,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.MEDataControllerBE;
 import net.oktawia.crazyae2addons.menus.DisplayMenu;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
@@ -112,7 +112,7 @@ public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTi
     @Override
     public boolean onPartActivate(Player p, InteractionHand hand, Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
-            MenuOpener.open(Menus.DISPLAY_MENU, p, MenuLocators.forPart(this));
+            MenuOpener.open(CrazyMenuRegistrar.DISPLAY_MENU.get(), p, MenuLocators.forPart(this));
         }
         return true;
     }

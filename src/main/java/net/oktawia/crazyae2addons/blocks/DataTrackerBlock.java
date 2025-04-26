@@ -15,7 +15,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.oktawia.crazyae2addons.defs.BlockEntities;
 import net.oktawia.crazyae2addons.entities.DataTrackerBE;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +42,7 @@ public class DataTrackerBlock extends AEBaseEntityBlock<DataTrackerBE> {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new DataTrackerBE(BlockEntities.DATA_TRACKER_BE, pos, state);
+        return new DataTrackerBE(pos, state);
     }
 
     @Override

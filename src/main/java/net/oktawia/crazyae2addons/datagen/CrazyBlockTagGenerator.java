@@ -6,7 +6,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.defs.Blocks;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -18,11 +18,11 @@ public class CrazyBlockTagGenerator extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
-        for (var block : Blocks.getBlocks()){
+        for (var block : CrazyBlockRegistrar.getBlocks()){
             this.tag(BlockTags.NEEDS_IRON_TOOL)
-                    .add(block.block());
+                    .add(block);
             this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                    .add(block.block());
+                    .add(block);
         }
     }
 }

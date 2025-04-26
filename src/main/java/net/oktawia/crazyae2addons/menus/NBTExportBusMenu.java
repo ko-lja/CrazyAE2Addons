@@ -4,7 +4,7 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.parts.NBTExportBusPart;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 
 public class NBTExportBusMenu extends AEBaseMenu {
     public static final String SEND_MATCH_MODE = "SendMatchMode";
@@ -19,7 +19,7 @@ public class NBTExportBusMenu extends AEBaseMenu {
     public NBTExportBusPart host;
 
     public NBTExportBusMenu(int id, Inventory playerInventory, NBTExportBusPart host) {
-        super(Menus.NBT_EXPORT_BUS_MENU, id, playerInventory, host);
+        super(CrazyMenuRegistrar.NBT_EXPORT_BUS_MENU.get(), id, playerInventory, host);
         registerClientAction(SEND_MATCH_MODE, Boolean.class, this::updateMatchMode);
         registerClientAction(SEND_DATA, String.class, this::updateData);
         this.host = host;

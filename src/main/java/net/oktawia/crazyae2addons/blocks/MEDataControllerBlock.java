@@ -14,7 +14,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.oktawia.crazyae2addons.defs.BlockEntities;
 import net.oktawia.crazyae2addons.entities.MEDataControllerBE;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +25,7 @@ public class MEDataControllerBlock extends AEBaseEntityBlock<MEDataControllerBE>
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new MEDataControllerBE(BlockEntities.ME_DATA_CONTROLLER_BE, pos, state);
+        return new MEDataControllerBE(pos, state);
     }
 
     @Override

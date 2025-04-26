@@ -1,13 +1,13 @@
 {
   "values": [
-    "crazyae2addons:crafting_canceler_block",
-    "crazyae2addons:me_data_controller_block",
-    "crazyae2addons:data_processor_block",
-    "crazyae2addons:data_tracker_block",
-    "crazyae2addons:circuited_pp",
+    "crazyae2addons:crafting_canceler",
+    "crazyae2addons:me_data_controller",
+    "crazyae2addons:data_processor",
+    "crazyae2addons:data_tracker",
+    "crazyae2addons:circuited_pattern_provider",
     "crazyae2addons:ampere_meter",
-    "crazyae2addons:isolated_data_processor_block",
-    "crazyae2addons:impulsed_pp",
-    "crazyae2addons:signalling_interface_block"
+    "crazyae2addons:isolated_data_processor",
+    "crazyae2addons:impulsed_pattern_provider",
+    "crazyae2addons:signalling_interface"
   ]
 }

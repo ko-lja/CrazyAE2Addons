@@ -8,7 +8,7 @@ import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.FakeSlot;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.Signalling.SignallingInterfaceLogicHost;
 
 public class SignallingInterfaceMenu extends UpgradeableMenu<SignallingInterfaceLogicHost> {
@@ -16,7 +16,7 @@ public class SignallingInterfaceMenu extends UpgradeableMenu<SignallingInterface
     public static final String ACTION_OPEN_SET_AMOUNT = "setAmount";
 
     public SignallingInterfaceMenu(int id, Inventory ip, SignallingInterfaceLogicHost host) {
-        super(Menus.SIGNALLING_INTERFACE_MENU, id, ip, host);
+        super(CrazyMenuRegistrar.SIGNALLING_INTERFACE_MENU.get(), id, ip, host);
 
         registerClientAction(ACTION_OPEN_SET_AMOUNT, Integer.class, this::openSetAmountMenu);
 

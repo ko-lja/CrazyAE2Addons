@@ -3,7 +3,7 @@ package net.oktawia.crazyae2addons.menus;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
 import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.AmpereMeterBE;
 
 
@@ -20,7 +20,7 @@ public class AmpereMeterMenu extends AEBaseMenu {
     public String CHANGE_DIRECTION = "actionChangeDirection";
 
     public AmpereMeterMenu(int id, Inventory ip, AmpereMeterBE host) {
-        super(Menus.AMPERE_METER_MENU, id, ip, host);
+        super(CrazyMenuRegistrar.AMPERE_METER_MENU.get(), id, ip, host);
         this.host = host;
         this.direction = host.direction;
         this.host.setMenu(this);

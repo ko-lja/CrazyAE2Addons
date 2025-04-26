@@ -9,8 +9,9 @@ import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.locator.MenuLocators;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.oktawia.crazyae2addons.defs.Items;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.ItemDefs;
+import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.DataProcessorBE;
 import net.oktawia.crazyae2addons.misc.AppEngManyFilteredSlot;
 
@@ -28,11 +29,11 @@ public class DataProcessorMenu extends UpgradeableMenu<DataProcessorBE> implemen
 
 
     public DataProcessorMenu(int id, Inventory ip, DataProcessorBE host) {
-        super(Menus.DATA_PROCESSOR_MENU, id, ip, host);
+        super(CrazyMenuRegistrar.DATA_PROCESSOR_MENU.get(), id, ip, host);
         this.in = getHost().in;
         this.looped = host.looped;
         getHost().setMenu(this);
-        List<ItemStack> allowedItems = Items.getCards().stream().map(ItemDefinition::stack).toList();
+        List<ItemStack> allowedItems = CrazyItemRegistrar.getCards().stream().map(x -> x.asItem().getDefaultInstance()).toList();
         for (int i = 0; i < getHost().getInternalInventory().size(); i ++){
             this.addSlot(new AppEngManyFilteredSlot(getHost().inv, i, allowedItems), SlotSemantics.STORAGE);
         }
@@ -59,7 +60,7 @@ public class DataProcessorMenu extends UpgradeableMenu<DataProcessorBE> implemen
         if(isClientSide()){
             sendClientAction(OPEN_SUB, index);
         } else {
-            MenuOpener.open(Menus.DATA_PROCESSOR_SUB_MENU, getPlayer(), MenuLocators.forBlockEntity(getBlockEntity()), true);
+            MenuOpener.open(CrazyMenuRegistrar.DATA_PROCESSOR_SUB_MENU.get(), getPlayer(), MenuLocators.forBlockEntity(getBlockEntity()), true);
         }
     }
 }

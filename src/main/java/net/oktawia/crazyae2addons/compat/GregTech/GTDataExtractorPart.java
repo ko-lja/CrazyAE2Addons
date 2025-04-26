@@ -25,10 +25,12 @@ public class GTDataExtractorPart extends DataExtractorPart {
             this.target = getLevel()
                     .getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         }
+        if (target == null){
+            return;
+        }
 
         List<String> data = new ArrayList<>();
 
-        // GregTech: jeśli to MetaMachine, wyciągaj z recipeLogic lub samej maszyny
         if (target instanceof MetaMachineBlockEntity) {
             var gtMachine = SimpleTieredMachine.getMachine(getLevel(), target.getBlockPos());
             if (gtMachine != null) {
@@ -50,12 +52,10 @@ public class GTDataExtractorPart extends DataExtractorPart {
                 }
             }
         } else {
-            // standardowe pola i metody
             data.addAll(extractNumericInfo(target));
             this.resolveTarget = target;
         }
 
-        // capability: ITEM_HANDLER / FLUID_HANDLER_ITEM
         if (target.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent()) {
             data.add("percentFilled");
             data.add("fluidPercentFilled");

@@ -17,9 +17,8 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.oktawia.crazyae2addons.defs.BlockEntities;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderCpu;
-import net.oktawia.crazyae2addons.misc.JobFailedToast;
 import net.oktawia.crazyae2addons.misc.PatternDetailsSerializer;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
@@ -89,7 +88,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
             at = @At("RETURN")
     )
     private void afterPushPatterns(IPatternDetails patternDetails, KeyCounter[] inputHolder, CallbackInfoReturnable<Boolean> cir) {
-        if (host.getBlockEntity().getType() == BlockEntities.IMPULSED_PATTERN_PROVIDER_BE){
+        if (host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
             this.lastPattern = PatternDetailsSerializer.deserialize(PatternDetailsSerializer.serialize(patternDetails));
         }
         if (patternDetails.getDefinition().getTag() != null && patternDetails.getDefinition().getTag().contains("ignorenbt")){
@@ -104,7 +103,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
             at = @At("RETURN")
     )
     private void onCtorTail(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize, CallbackInfo ci) {
-        if(host.getBlockEntity().getType() == BlockEntities.IMPULSED_PATTERN_PROVIDER_BE) {
+        if(host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()) {
             this.configManager.putSetting(Settings.BLOCKING_MODE, YesNo.NO);
             this.configManager.putSetting(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_UNTIL_RESULT);
         }
@@ -120,7 +119,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
             )
     )
     private void afterUnlockCleared(GenericStack genericStack, CallbackInfo ci) {
-        if(host.getBlockEntity().getType() == BlockEntities.IMPULSED_PATTERN_PROVIDER_BE){
+        if(host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
             this.lastPattern = null;
             this.cpuCluster = null;
         }
@@ -142,7 +141,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
             at = @At("HEAD")
     )
     private void beforeUpdateRedstoneState(CallbackInfo ci) {
-        if(host.getBlockEntity().getType() == BlockEntities.IMPULSED_PATTERN_PROVIDER_BE){
+        if(host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
             if (realRedstoneState != YesNo.YES && getRealRedstoneState()){
                 this.repeat();
             }

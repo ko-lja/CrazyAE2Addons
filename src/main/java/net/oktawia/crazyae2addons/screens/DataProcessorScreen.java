@@ -3,21 +3,12 @@ package net.oktawia.crazyae2addons.screens;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocator;
-import appeng.menu.locator.MenuLocators;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.Utils;
-import net.oktawia.crazyae2addons.defs.Menus;
-import net.oktawia.crazyae2addons.menus.DataExtractorMenu;
 import net.oktawia.crazyae2addons.menus.DataProcessorMenu;
-
-import java.util.Arrays;
 
 public class DataProcessorScreen<C extends DataProcessorMenu> extends UpgradeableScreen<C> {
     public AETextField inval;

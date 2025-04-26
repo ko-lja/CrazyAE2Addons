@@ -3,7 +3,8 @@ package net.oktawia.crazyae2addons.datagen;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
-import net.oktawia.crazyae2addons.defs.Blocks;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -14,14 +15,14 @@ public class CrazyBlockLootTables extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
-        for (var block : Blocks.getBlocks()){
-            this.dropSelf(block.block());
+        for (var block : CrazyBlockRegistrar.getBlocks()){
+            this.dropSelf(block);
         }
     }
 
     @Override
-    protected Iterable<Block> getKnownBlocks(){
-        return Blocks.getBlocks().stream().map(b -> (Block) b.block())::iterator;
+    protected @NotNull Iterable<Block> getKnownBlocks(){
+        return CrazyBlockRegistrar.getBlocks().stream()::iterator;
     }
 
 }

@@ -32,7 +32,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.PacketDistributor;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.MEDataControllerBE;
 import net.oktawia.crazyae2addons.menus.DataExtractorMenu;
 import net.oktawia.crazyae2addons.network.DataValuesPacket;
@@ -316,7 +316,7 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
     @Override
     public boolean onPartActivate(Player p, InteractionHand h, Vec3 pos) {
         if (!isClientSide())
-            MenuOpener.open(Menus.DATA_EXTRACTOR_MENU, p, MenuLocators.forPart(this));
+            MenuOpener.open(CrazyMenuRegistrar.DATA_EXTRACTOR_MENU.get(), p, MenuLocators.forPart(this));
         return true;
     }
 }

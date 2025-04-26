@@ -17,13 +17,9 @@ import appeng.core.definitions.AEItems;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.parts.AEBasePart;
-import com.mojang.logging.LogUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -31,15 +27,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.misc.DataVariable;
 import net.oktawia.crazyae2addons.misc.NBTContainer;
 import net.oktawia.crazyae2addons.misc.NotificationData;
 import net.oktawia.crazyae2addons.parts.DataExtractorPart;
 import net.oktawia.crazyae2addons.parts.NotifyablePart;
-import net.oktawia.crazyae2addons.defs.Blocks;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.MEDataControllerMenu;
 import org.jetbrains.annotations.Nullable;
 import java.util.*;
@@ -48,12 +44,12 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
 
     public AppEngCellInventory inv = new AppEngCellInventory(this, 6);
     public MEDataControllerMenu menu;
-    public IUpgradeInventory upgrades = UpgradeInventories.forMachine(Blocks.ME_DATA_CONTROLLER_BLOCK, 0, this::saveChanges);
+    public IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.ME_DATA_CONTROLLER_BLOCK.get(), 0, this::saveChanges);
     public NBTContainer variables = new NBTContainer();
     public NBTContainer toNotify = new NBTContainer();
 
-    public MEDataControllerBE(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
-        super(blockEntityType, pos, blockState);
+    public MEDataControllerBE(BlockPos pos, BlockState blockState) {
+        super(CrazyBlockEntityRegistrar.ME_DATA_CONTROLLER_BE.get(), pos, blockState);
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL).setIdlePowerUsage(4).addService(IGridTickable.class, this);
     }
 
@@ -110,7 +106,7 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
     }
 
     public void openMenu(Player player, MenuLocator locator) {
-        MenuOpener.open(Menus.ME_DATA_CONTROLLER_MENU, player, locator);
+        MenuOpener.open(CrazyMenuRegistrar.ME_DATA_CONTROLLER_MENU.get(), player, locator);
     }
 
     @Override

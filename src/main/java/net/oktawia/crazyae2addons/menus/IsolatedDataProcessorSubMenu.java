@@ -8,8 +8,7 @@ import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.slot.FakeSlot;
 import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.defs.Menus;
-import net.oktawia.crazyae2addons.entities.DataProcessorBE;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.IsolatedDataProcessorBE;
 import net.oktawia.crazyae2addons.misc.LogicSetting;
 import net.oktawia.crazyae2addons.misc.NBTContainer;
@@ -26,7 +25,7 @@ public class IsolatedDataProcessorSubMenu extends UpgradeableMenu<IsolatedDataPr
     public boolean COMPRESSED = true;
 
     public IsolatedDataProcessorSubMenu(int id, Inventory ip, IsolatedDataProcessorBE host) {
-        super(Menus.ISOLATED_DATA_PROCESSOR_SUBMENU, id, ip, host);
+        super(CrazyMenuRegistrar.ISOLATED_DATA_PROCESSOR_SUB_MENU.get(), id, ip, host);
         this.submenuNum = getHost().submenuNum;
         var FSlot = new FakeSlot(getHost().getInternalInventory(), this.submenuNum);
         FSlot.set(getHost().getInternalInventory().getStackInSlot(submenuNum));
@@ -57,7 +56,7 @@ public class IsolatedDataProcessorSubMenu extends UpgradeableMenu<IsolatedDataPr
         if (isClientSide()){
             sendClientAction(CLOSE_SUBSCREEN);
         } else {
-            MenuOpener.returnTo(Menus.ISOLATED_DATA_PROCESSOR_MENU, getPlayer(), MenuLocators.forBlockEntity(getBlockEntity()));
+            MenuOpener.returnTo(CrazyMenuRegistrar.ISOLATED_DATA_PROCESSOR_MENU.get(), getPlayer(), MenuLocators.forBlockEntity(getBlockEntity()));
         }
     }
 }

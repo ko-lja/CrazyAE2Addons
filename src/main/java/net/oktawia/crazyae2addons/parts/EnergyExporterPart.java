@@ -27,7 +27,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -38,7 +37,7 @@ import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.Utils;
-import net.oktawia.crazyae2addons.defs.Menus;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.EnergyExporterMenu;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,7 +111,7 @@ public class EnergyExporterPart extends UpgradeablePart implements
     @Override
     public boolean onPartActivate(Player p, InteractionHand hand, Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
-            MenuOpener.open(Menus.ENERGY_EXPORTER_MENU, p, MenuLocators.forPart(this));
+            MenuOpener.open(CrazyMenuRegistrar.ENERGY_EXPORTER_MENU.get(), p, MenuLocators.forPart(this));
         }
         return true;
     }

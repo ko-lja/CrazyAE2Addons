@@ -9,8 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.oktawia.crazyae2addons.Utils;
-import net.oktawia.crazyae2addons.defs.Items;
-import net.oktawia.crazyae2addons.menus.DataProcessorSubMenu;
+import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.menus.IsolatedDataProcessorSubMenu;
 import net.oktawia.crazyae2addons.misc.LogicSetting;
 import net.oktawia.crazyae2addons.misc.NBTContainer;
@@ -66,7 +65,7 @@ public class IsolatedDataProcessorSubScreen<C extends IsolatedDataProcessorSubMe
             in2.active = false;
             out.setEditable(false);
             out.active = false;
-        } else if(itemStack.is(Items.HIT_CARD.asItem()) || itemStack.is(Items.HIF_CARD.asItem())){
+        } else if(itemStack.is(CrazyItemRegistrar.HIT_CARD.get().asItem()) || itemStack.is(CrazyItemRegistrar.HIF_CARD.get().asItem())){
             in1.setPlaceholder(Component.literal("Value"));
             in2.setPlaceholder(Component.literal("Target"));
             out.setPlaceholder(Component.literal(""));
