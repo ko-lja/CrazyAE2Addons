@@ -88,7 +88,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
             at = @At("RETURN")
     )
     private void afterPushPatterns(IPatternDetails patternDetails, KeyCounter[] inputHolder, CallbackInfoReturnable<Boolean> cir) {
-        if (host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
+        if (host.getBlockEntity() != null && host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
             this.lastPattern = PatternDetailsSerializer.deserialize(PatternDetailsSerializer.serialize(patternDetails));
         }
         if (patternDetails.getDefinition().getTag() != null && patternDetails.getDefinition().getTag().contains("ignorenbt")){
@@ -103,7 +103,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
             at = @At("RETURN")
     )
     private void onCtorTail(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize, CallbackInfo ci) {
-        if(host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()) {
+        if(host.getBlockEntity() != null && host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()) {
             this.configManager.putSetting(Settings.BLOCKING_MODE, YesNo.NO);
             this.configManager.putSetting(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_UNTIL_RESULT);
         }
@@ -119,7 +119,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
             )
     )
     private void afterUnlockCleared(GenericStack genericStack, CallbackInfo ci) {
-        if(host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
+        if(host.getBlockEntity() != null && host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
             this.lastPattern = null;
             this.cpuCluster = null;
         }
@@ -141,7 +141,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
             at = @At("HEAD")
     )
     private void beforeUpdateRedstoneState(CallbackInfo ci) {
-        if(host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
+        if(host.getBlockEntity() != null && host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
             if (realRedstoneState != YesNo.YES && getRealRedstoneState()){
                 this.repeat();
             }
@@ -213,7 +213,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
 
     @Unique
     public void repeat() {
-        if (this.cpuCluster == null && this.cpuClusterPos != null) {
+        if (host.getBlockEntity() != null && this.cpuCluster == null && this.cpuClusterPos != null) {
             this.cpuCluster = ((CraftingBlockEntity) host.getBlockEntity()
                     .getLevel()
                     .getBlockEntity(this.cpuClusterPos))
@@ -279,7 +279,10 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
     }
     @Unique
     private boolean getRealRedstoneState() {
-        var be = this.host.getBlockEntity();
-        return be.getLevel().hasNeighborSignal(be.getBlockPos());
+        if (host.getBlockEntity() != null){
+            return host.getBlockEntity().getLevel().hasNeighborSignal(host.getBlockEntity().getBlockPos());
+        } else {
+            return false;
+        }
     }
 }

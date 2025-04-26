@@ -26,7 +26,7 @@ public class CrazyItemModelProvider extends ItemModelProvider {
 
     private ItemModelBuilder simpleItem(Item item){
         return withExistingParent(ForgeRegistries.ITEMS.getKey(item).getPath(),
-                new ResourceLocation("item/generated")).texture("layer0",
-                new ResourceLocation(CrazyAddons.MODID, "item/" + ForgeRegistries.ITEMS.getKey(item).getPath()));
+            new ResourceLocation("item/generated")).texture("layer0",
+            new ResourceLocation(CrazyAddons.MODID, "item/" + ForgeRegistries.ITEMS.getKey(item).getPath()));
     }
 }

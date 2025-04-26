@@ -16,31 +16,18 @@ import java.util.*;
 
 public class ItemDefs {
 
-    private static final List<ItemDefinition<?>> ITEMS = new ArrayList<>();
-    private static final List<ItemDefinition<?>> CARDS = new ArrayList<>();
-    private static final List<ItemDefinition<?>> PARTS = new ArrayList<>();
     private static final Map<Item, Map.Entry<String, Map<String, Item>>> ITEM_RECIPES = new HashMap<>();
 
-    public static List<ItemDefinition<?>> getCards() {
-        return Collections.unmodifiableList(CARDS);
-    }
-    public static List<ItemDefinition<?>> getItems() {
-        return Collections.unmodifiableList(ITEMS);
-    }
-    public static List<ItemDefinition<?>> getParts() {
-        return Collections.unmodifiableList(PARTS);
-    }
     public static Map<Item, Map.Entry<String, Map<String, Item>>> getItemRecipes() {
         return ITEM_RECIPES;
     }
 
-    public static ItemDefinition<CircuitUpgradeCard> item(
+    public static void item(
             Item item,
             String recipe,
             Map<String, Item> recipeMap
     ) {
         ITEM_RECIPES.put(item, Map.entry(recipe, recipeMap));
-        return null;
     }
 
     public static void registerRecipes(){
@@ -50,7 +37,7 @@ public class ItemDefs {
                 "CT",
                 Map.of(
                     "C", AEItems.ADVANCED_CARD.asItem(),
-                    "T", AEItems.LOGIC_PROCESSOR_PRESS.asItem()
+                    "T", AEItems.LOGIC_PROCESSOR.asItem()
                 )
             );
         }

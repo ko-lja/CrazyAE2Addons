@@ -1,10 +1,9 @@
 package net.oktawia.crazyae2addons;
 
-import appeng.block.AEBaseEntityBlock;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -12,11 +11,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import net.oktawia.crazyae2addons.defs.*;
 import net.oktawia.crazyae2addons.defs.regs.*;
-import net.oktawia.crazyae2addons.entities.CraftingCancelerBE;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,8 +45,8 @@ public class CrazyAddons {
     private void registerCreativeTab(final RegisterEvent evt) {
         if (evt.getRegistryKey().equals(Registries.CREATIVE_MODE_TAB)) {
             evt.register(Registries.CREATIVE_MODE_TAB,
-                    CrazyCreativeTabRegistrar.ID,
-                    () -> CrazyCreativeTabRegistrar.TAB);
+                CrazyCreativeTabRegistrar.ID,
+                () -> CrazyCreativeTabRegistrar.TAB);
         }
     }
 
@@ -57,15 +54,21 @@ public class CrazyAddons {
         event.enqueueWork(() -> {
             new UpgradeCards(event);
             CrazyBlockEntityRegistrar.setupBlockEntityTypes();
-            ItemDefs.registerRecipes();
         });
     }
 
-    @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @Mod.EventBusSubscriber(
+            modid = CrazyAddons.MODID,
+            bus   = Mod.EventBusSubscriber.Bus.MOD,
+            value = Dist.CLIENT
+    )
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             Screens.register();
+        }
+        @SubscribeEvent
+        public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders evt) {
             CrazyItemRegistrar.registerPartModels();
         }
     }

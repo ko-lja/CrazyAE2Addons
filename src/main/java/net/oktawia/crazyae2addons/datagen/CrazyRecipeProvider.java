@@ -22,10 +22,11 @@ public class CrazyRecipeProvider extends RecipeProvider implements IConditionBui
 
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> pWriter) {
+        ItemDefs.registerRecipes();
+        BlockDefs.registerRecipes();
         for (var entry : BlockDefs.getBlockRecipes().entrySet()){
             ShapedRecipeBuilder builder = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, entry.getKey());
             for (var recipe : entry.getValue().getKey().split("/")) {
-                LogUtils.getLogger().info(recipe);
                 builder.pattern(recipe);
             }
             for (Map.Entry<String, Item> e : entry.getValue().getValue().entrySet()) {
@@ -37,7 +38,6 @@ public class CrazyRecipeProvider extends RecipeProvider implements IConditionBui
         for (var entry : ItemDefs.getItemRecipes().entrySet()){
             ShapedRecipeBuilder builder = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, entry.getKey());
             for (var recipe : entry.getValue().getKey().split("/")) {
-                LogUtils.getLogger().info(recipe);
                 builder.pattern(recipe);
             }
             for (Map.Entry<String, Item> e : entry.getValue().getValue().entrySet()) {
