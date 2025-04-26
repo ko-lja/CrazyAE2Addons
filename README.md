@@ -34,9 +34,8 @@ If you want to support me creating, consider downloading from [Modrinth](https:/
 ---
 
 ## Additional Planned / Unfinished Ideas
-- [ ] **Auto Enchanter** – Automates enchanting using XP shards and lapis, supporting tier-based costs and Apotheosis integration.
 - [ ] **AE2 Mob Storage** – Adds advanced mob handling and integration with AE2 (import/export, storage).
-- [ ] **Ultimate P2P Tunnel** – A next-generation P2P tunnel for large-scale or cross-dimensional routing.
+- [ ] **Auto Enchanter** – Automates enchanting using XP shards and lapis, supporting tier-based costs and Apotheosis integration.
 - [ ] **Demand Prediction** – Monitors resource usage to predict future needs and potentially automate expansions.
 - [ ] **Suggestions/Recommendations** – Observes resource trends to offer advice (e.g., adding more power generation).
 - [ ] **Goal Registering/Monitoring** – Allows players to define specific resource/production goals and track them in the network.
