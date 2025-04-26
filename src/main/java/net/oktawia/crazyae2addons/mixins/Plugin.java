@@ -1,10 +1,10 @@
 package net.oktawia.crazyae2addons.mixins;
 
-import com.mojang.logging.LogUtils;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.LoadingModList;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import org.objectweb.asm.tree.ClassNode;
+import org.spongepowered.asm.mixin.Mixins;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
@@ -22,6 +22,7 @@ public class Plugin implements IMixinConfigPlugin {
             return ModList.get().isLoaded(modId);
         }
     }
+
 
     @Override
     public void onLoad(String mixinPackage) {}

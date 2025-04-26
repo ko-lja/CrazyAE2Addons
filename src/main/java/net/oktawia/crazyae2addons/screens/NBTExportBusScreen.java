@@ -51,6 +51,9 @@ public class NBTExportBusScreen<C extends NBTExportBusMenu> extends AEBaseScreen
     }
 
     public static boolean isValidNBT(String input) {
+        if (input.isEmpty()){
+            return true;
+        }
         try {
             CompoundTag tag = TagParser.parseTag(input);
             return true;

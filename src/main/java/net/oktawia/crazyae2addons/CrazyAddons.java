@@ -35,6 +35,11 @@ public class CrazyAddons {
 
     public CrazyAddons(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
+
+        Items.ITEM_REGISTER.register(modEventBus);
+        Blocks.BLOCK_REGISTER.register(modEventBus);
+        Blocks.BLOCK_ITEM_REGISTER.register(modEventBus);
+
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onRegisterEvent);
 
@@ -48,14 +53,7 @@ public class CrazyAddons {
     }
 
     private void onRegisterEvent(RegisterEvent event) {
-        if (event.getRegistryKey().equals(Registries.BLOCK)) {
-            Blocks.getBlocks().forEach(b -> {
-                ForgeRegistries.BLOCKS.register(b.id(), b.block());
-                ForgeRegistries.ITEMS.register(b.id(), b.asItem());
-            });
-        } else if (event.getRegistryKey().equals(Registries.ITEM)) {
-            Items.getItems().forEach(i -> ForgeRegistries.ITEMS.register(i.id(), i.asItem()));
-        } else if (event.getRegistryKey().equals(Registries.BLOCK_ENTITY_TYPE)) {
+        if (event.getRegistryKey().equals(Registries.BLOCK_ENTITY_TYPE)) {
             BlockEntities.getBlockEntityTypes().forEach(ForgeRegistries.BLOCK_ENTITY_TYPES::register);
         } else if (event.getRegistryKey().equals(Registries.MENU)) {
             Menus.getMenuTypes().forEach(ForgeRegistries.MENU_TYPES::register);

@@ -30,11 +30,11 @@ public abstract class MixinCraftingCpuLogic {
 
     @Shadow @Final private CraftingCPUCluster cluster;
 
-    @Unique public boolean ignoreNBT = false;
+    @Unique private boolean ignoreNBT = false;
 
 
     @Inject(method = "trySubmitJob", at = @At("RETURN"))
-    public void trySubmitJob(IGrid grid, ICraftingPlan plan, IActionSource src, ICraftingRequester requester, CallbackInfoReturnable<ICraftingSubmitResult> cir) {
+    private void trySubmitJob(IGrid grid, ICraftingPlan plan, IActionSource src, ICraftingRequester requester, CallbackInfoReturnable<ICraftingSubmitResult> cir) {
         plan.patternTimes().forEach((pattern, ignored) -> {
             if (pattern.getPrimaryOutput().what().matches(plan.finalOutput())) {
                 if (pattern.getDefinition().getTag() != null && pattern.getDefinition().getTag().contains("ignorenbt")){

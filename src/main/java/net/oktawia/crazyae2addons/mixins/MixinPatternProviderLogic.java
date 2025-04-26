@@ -14,12 +14,10 @@ import appeng.helpers.patternprovider.*;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.ConfigManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.oktawia.crazyae2addons.defs.BlockEntities;
-import net.oktawia.crazyae2addons.interfaces.IIgnoreNBT;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderCpu;
 import net.oktawia.crazyae2addons.misc.JobFailedToast;
 import net.oktawia.crazyae2addons.misc.PatternDetailsSerializer;
@@ -262,17 +260,24 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
         }
     }
 
-
     @Unique
     public void failCrafting(){
-        Minecraft.getInstance().getToasts().addToast(new JobFailedToast(this.cpuCluster.getJobStatus().crafting().what()));
+        if (this.cpuCluster != null) {
+            this.cancelAndUnlock();
+            if (net.minecraftforge.fml.loading.FMLEnvironment.dist.isClient()) {
+                ((PatternProviderLogicClientAccessor) this).failCraftingClient(this.cpuCluster.getJobStatus().crafting().what());
+            }
+        }
+    }
+
+    @Unique
+    private void cancelAndUnlock(){
         this.cpuCluster.cancelJob();
         this.unlockEvent = null;
         this.unlockStack = null;
         this.lastPattern = null;
         this.cpuCluster = null;
     }
-
     @Unique
     private boolean getRealRedstoneState() {
         var be = this.host.getBlockEntity();

@@ -10,7 +10,10 @@
     "MixinGT",
     "MixinGTMAE2",
     "MixinListCraftingInventory",
-    "MixinPatternProviderLogic",
-    "PatternProviderLogicAccessor"
+    "MixinPatternProviderLogic"
+  ],
+  "client": [
+    "MixinPatternProviderLogicClient",
+    "PatternProviderLogicClientAccessor"
   ]
 }

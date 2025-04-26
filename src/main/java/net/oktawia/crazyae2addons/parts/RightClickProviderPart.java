@@ -67,8 +67,6 @@ public class RightClickProviderPart extends UpgradeablePart implements
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(8)
                 .addService(IGridTickable.class,this);
-        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
-        this.getConfigManager().registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
     }
 
     @Override

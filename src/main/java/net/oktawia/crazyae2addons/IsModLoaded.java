@@ -1,0 +1,9 @@
+package net.oktawia.crazyae2addons;
+
+import net.minecraftforge.fml.ModList;
+
+public class IsModLoaded {
+    public static boolean isGTCEuLoaded() {
+        return ModList.get().isLoaded("gtceu");
+    }
+}

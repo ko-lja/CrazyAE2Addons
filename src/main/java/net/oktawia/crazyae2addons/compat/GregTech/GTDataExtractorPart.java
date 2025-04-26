@@ -4,12 +4,15 @@ import appeng.api.parts.IPartItem;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.network.PacketDistributor;
 import net.oktawia.crazyae2addons.network.DataValuesPacket;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.parts.DataExtractorPart;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GTDataExtractorPart extends DataExtractorPart {
     public GTDataExtractorPart(IPartItem<?> partItem) {
@@ -17,46 +20,76 @@ public class GTDataExtractorPart extends DataExtractorPart {
     }
 
     @Override
-    public void extractPossibleData(){
-        if (this.target == null){
-            this.target = getLevel().getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
+    public void extractPossibleData() {
+        if (this.target == null) {
+            this.target = getLevel()
+                    .getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         }
-        if (this.target instanceof MetaMachineBlockEntity){
+
+        List<String> data = new ArrayList<>();
+
+        // GregTech: jeśli to MetaMachine, wyciągaj z recipeLogic lub samej maszyny
+        if (target instanceof MetaMachineBlockEntity) {
             var gtMachine = SimpleTieredMachine.getMachine(getLevel(), target.getBlockPos());
-            if (gtMachine == null) return;
-            var machineClass = gtMachine.getClass();
-            boolean useLogic = false;
-            Field field;
-            RecipeLogic recLogic = null;
-
-            try {
-                field = machineClass.getSuperclass().getDeclaredField("recipeLogic");
-                field.setAccessible(true);
+            if (gtMachine != null) {
+                RecipeLogic recLogic = null;
                 try {
-                    recLogic = (RecipeLogic) field.get(gtMachine);
-                    useLogic = true;
+                    Field f = gtMachine.getClass()
+                            .getSuperclass()
+                            .getDeclaredField("recipeLogic");
+                    f.setAccessible(true);
+                    recLogic = (RecipeLogic) f.get(gtMachine);
                 } catch (Exception ignored) {}
-            } catch (Exception ignored) {}
 
-            if (useLogic){
-                this.available = extractNumericInfo(recLogic);
-            } else {
-                this.available = extractNumericInfo(gtMachine);
-            }
-            RecipeLogic finalRecLogic = recLogic;
-            boolean finalUseLogic = useLogic;
-            if (finalUseLogic){
-                this.resolveTarget = finalRecLogic;
-            } else {
-                this.resolveTarget = gtMachine;
+                if (recLogic != null) {
+                    data.addAll(extractNumericInfo(recLogic));
+                    this.resolveTarget = recLogic;
+                } else {
+                    data.addAll(extractNumericInfo(gtMachine));
+                    this.resolveTarget = gtMachine;
+                }
             }
         } else {
-            this.resolveTarget = this.target;
-            this.available = extractNumericInfo(this.target);
+            // standardowe pola i metody
+            data.addAll(extractNumericInfo(target));
+            this.resolveTarget = target;
         }
+
+        // capability: ITEM_HANDLER / FLUID_HANDLER_ITEM
+        if (target.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent()) {
+            data.add("percentFilled");
+            data.add("fluidPercentFilled");
+        } else {
+            if (target.getCapability(ForgeCapabilities.ITEM_HANDLER).isPresent()) {
+                data.add("percentFilled");
+            }
+            if (target.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()) {
+                data.add("fluidPercentFilled");
+            }
+        }
+        // energy
+        if (target.getCapability(ForgeCapabilities.ENERGY).isPresent()) {
+            data.add("storedEnergy");
+        }
+
+        // zachowaj selected, valueName
+        if (!data.equals(this.available)) {
+            this.available = data;
+            if (selected >= available.size()) {
+                selected = available.isEmpty() ? 0 : available.size() - 1;
+            }
+        }
+
         if (!getLevel().isClientSide()) {
             NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
-                    new DataValuesPacket(this.getBlockEntity().getBlockPos(), this.getSide(), this.available, this.selected, this.valueName));
+                    new DataValuesPacket(
+                            getBlockEntity().getBlockPos(),
+                            getSide(),
+                            this.available,
+                            this.selected,
+                            this.valueName
+                    )
+            );
         }
     }
 }

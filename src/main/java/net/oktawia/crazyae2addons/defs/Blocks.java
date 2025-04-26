@@ -13,12 +13,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.blocks.*;
 import net.oktawia.crazyae2addons.items.*;
 import net.oktawia.crazyae2addons.CrazyAddons;
 
 public class Blocks {
-
+    public static final DeferredRegister<Block> BLOCK_REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, CrazyAddons.MODID);
+    public static final DeferredRegister<Item> BLOCK_ITEM_REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, CrazyAddons.MODID);
     private static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
     private static final Map<BlockDefinition<?>, Map.Entry<String, Map<String, Item>>> BLOCK_RECIPES = new HashMap<>();
     public static final BlockDefinition<CraftingCancelerBlock> CRAFTING_CANCELER_BLOCK = block(
@@ -27,7 +31,7 @@ public class Blocks {
             CraftingCancelerBlock::new,
             CraftingCancelerBlockItem::new,
             "TM/MU",
-            Map.of(
+            () -> Map.of(
                     "T", AEParts.MONITOR.asItem(),
                     "M", AEBlocks.CRAFTING_MONITOR.asItem(),
                     "U", AEBlocks.CRAFTING_UNIT.asItem()
@@ -40,7 +44,7 @@ public class Blocks {
             MEDataControllerBlock::new,
             MEDataControllerBlockItem::new,
             "SLS/LCL/SLS",
-            Map.of(
+            () -> Map.of(
                     "S", AEItems.SKY_DUST.asItem(),
                     "L", net.oktawia.crazyae2addons.defs.Items.LOGIC_CARD.asItem(),
                     "C", AEBlocks.CONTROLLER.asItem()
@@ -52,7 +56,7 @@ public class Blocks {
             DataProcessorBlock::new,
             DataProcessorBlockItem::new,
             " L /TST/ L ",
-            Map.of(
+            () -> Map.of(
                     "S", AEBlocks.CONTROLLER.asItem(),
                     "L", net.oktawia.crazyae2addons.defs.Items.LOGIC_CARD.asItem(),
                     "T", AEItems.ENGINEERING_PROCESSOR.asItem()
@@ -64,21 +68,21 @@ public class Blocks {
             DataTrackerBlock::new,
             DataTrackerBlockItem::new,
             "TSL",
-            Map.of(
+            () -> Map.of(
                     "T", Items.REDSTONE_TORCH,
                     "S", AEBlocks.SKY_STONE_BLOCK.asItem(),
                     "L", net.oktawia.crazyae2addons.defs.Items.LOGIC_CARD.asItem()
             )
     );
     public static final BlockDefinition<CircuitedPatternProviderBlock> CIRCUITED_PATTERN_PROVIDER_BLOCK =
-            ModList.get().isLoaded("gtceu") ?
+            IsModLoaded.isGTCEuLoaded() ?
                 block(
                     "Circuited Pattern Provider",
                     "circuited_pp",
                     CircuitedPatternProviderBlock::new,
                     CircuitedPatternProviderBlockItem::new,
                     "PCC",
-                    Map.of(
+                    () -> Map.of(
                         "P", AEBlocks.PATTERN_PROVIDER.asItem(),
                         "C", AEItems.LOGIC_PROCESSOR_PRESS.asItem()
                     )
@@ -89,7 +93,7 @@ public class Blocks {
             AmpereMeterBlock::new,
             AmpereMeterBlockItem::new,
             "ICE",
-            Map.of(
+            () -> Map.of(
                     "I", AEParts.IMPORT_BUS.asItem(),
                     "C", DATA_TRACKER_BLOCK.asItem(),
                     "E", AEParts.EXPORT_BUS.asItem()
@@ -101,7 +105,7 @@ public class Blocks {
             IsolatedDataProcessorBlock::new,
             IsolatedDataProcessorBlockItem::new,
             "WWW/WCW/WWW",
-            Map.of(
+            () -> Map.of(
                     "W", net.minecraft.world.level.block.Blocks.WHITE_WOOL.asItem(),
                     "C", DATA_PROCESSOR_BLOCK.asItem()
             )
@@ -112,7 +116,7 @@ public class Blocks {
             ImpulsedPatternProviderBlock::new,
             ImpulsedPatternProviderBlockItem::new,
             "PDR",
-            Map.of(
+            () -> Map.of(
                     "P", AEBlocks.PATTERN_PROVIDER.asItem(),
                     "D", Items.DIAMOND,
                     "R", Items.REDSTONE_TORCH
@@ -124,7 +128,7 @@ public class Blocks {
             SignallingInterfaceBlock::new,
             SignallingInterfaceBlockItem::new,
             "IT",
-            Map.of(
+            () -> Map.of(
                     "I", AEBlocks.INTERFACE.asItem(),
                     "T", DATA_TRACKER_BLOCK.asItem()
             )
@@ -143,12 +147,15 @@ public class Blocks {
             Supplier<T> blockSupplier,
             BiFunction<Block, Item.Properties, BlockItem> itemFactory,
             String recipe,
-            Map<String, Item> recipe_map) {
-        var block = blockSupplier.get();
-        var item = itemFactory.apply(block, new Item.Properties());
-        var definition = new BlockDefinition<>(englishName, CrazyAddons.makeId(id), block, item);
+            Supplier<Map<String, Item>> recipeMapSupplier
+    ) {
+        T blockInstance = blockSupplier.get();
+        BlockItem blockItemInstance = itemFactory.apply(blockInstance, new Item.Properties());
+        BLOCK_REGISTER.register(id, () -> blockInstance);
+        BLOCK_ITEM_REGISTER.register(id, () -> blockItemInstance);
+        var definition = new BlockDefinition<>(englishName, CrazyAddons.makeId(id), blockInstance, blockItemInstance);
         BLOCKS.add(definition);
-        BLOCK_RECIPES.put(definition, Map.entry(recipe, recipe_map));
+        BLOCK_RECIPES.put(definition, Map.entry(recipe, recipeMapSupplier.get()));
         return definition;
     }
 }

@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.ModList;
 import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.Utils;
 import net.oktawia.crazyae2addons.compat.GregTech.GTAmpereMeterBE;
 import net.oktawia.crazyae2addons.entities.*;
@@ -65,8 +66,8 @@ public class BlockEntities {
             Blocks.SIGNALLING_INTERFACE_BLOCK);
 
     public static final BlockEntityType<? extends AEBaseBlockEntity> CIRCUITED_PATTERN_PROVIDER_BE =
-            ModList.get().isLoaded("gtceu") ?
-                    create(
+            IsModLoaded.isGTCEuLoaded()
+                    ? create(
                             "circuited_pp_be",
                             CircuitedPatternProviderBE.class,
                             CircuitedPatternProviderBE::new,
@@ -74,8 +75,8 @@ public class BlockEntities {
                     ) : null;
 
     public static final BlockEntityType<? extends AmpereMeterBE> AMPERE_METER_BE =
-            ModList.get().isLoaded("gtceu") ?
-                    create(
+            IsModLoaded.isGTCEuLoaded()
+                    ? create(
                             "ampere_meter_be",
                             GTAmpereMeterBE.class,
                             GTAmpereMeterBE::new,

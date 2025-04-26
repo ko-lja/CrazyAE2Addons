@@ -6,6 +6,7 @@ import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.fml.ModList;
+import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.compat.GregTech.GTAmpereMeterBE;
 import net.oktawia.crazyae2addons.compat.GregTech.GTDataExtractorPart;
 import net.oktawia.crazyae2addons.compat.GregTech.GTEnergyExporterPart;
@@ -58,7 +59,7 @@ public class Menus {
             MEDataControllerBE.class
     );
     public static final MenuType<DataExtractorMenu> DATA_EXTRACTOR_MENU =
-        ModList.get().isLoaded("gtceu")
+            IsModLoaded.isGTCEuLoaded()
             ? create(
                 "data_extractor",
                 DataExtractorMenu::new,
@@ -89,13 +90,14 @@ public class Menus {
             ChunkyFluidP2PTunnelPart.class
     );
     public static final MenuType<CircuitedPatternProviderMenu> CIRCUITED_PATTERN_PROVIDER_MENU =
-            ModList.get().isLoaded("gtceu") ? create(
-            "circuited_pp",
-            CircuitedPatternProviderMenu::new,
-            CircuitedPatternProviderBE.class
-    ) : null;
+            IsModLoaded.isGTCEuLoaded()
+                ? create(
+                    "circuited_pp",
+                    CircuitedPatternProviderMenu::new,
+                    CircuitedPatternProviderBE.class
+                ) : null;
     public static final MenuType<EnergyExporterMenu> ENERGY_EXPORTER_MENU =
-        ModList.get().isLoaded("gtceu")
+            IsModLoaded.isGTCEuLoaded()
             ? create(
                 "energy_exporter",
                 EnergyExporterMenu::new,
@@ -111,7 +113,7 @@ public class Menus {
             RightClickProviderPart.class
     );
     public static final MenuType<AmpereMeterMenu> AMPERE_METER_MENU =
-        ModList.get().isLoaded("gtceu")
+        IsModLoaded.isGTCEuLoaded()
         ? create(
             "ampere_meter",
             AmpereMeterMenu::new,
