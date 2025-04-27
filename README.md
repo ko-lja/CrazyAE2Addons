@@ -34,7 +34,11 @@ If you want to support me creating, consider downloading from [Modrinth](https:/
 ---
 
 ## Additional Planned / Unfinished Ideas
-- [ ] **AE2 Mob Storage** – Adds advanced mob handling and integration with AE2 (import/export, storage).
+- [ ] **AE2 Mob Storage** – Adds advanced mob handling and integration with AE2 (import/export, storage):
+- [ ] Import/Export
+- [ ] auto mob farm
+- [ ] pawner integration
+- [ ] xp shards      
 - [ ] **Auto Enchanter** – Automates enchanting using XP shards and lapis, supporting tier-based costs and Apotheosis integration.
 - [ ] **Demand Prediction** – Monitors resource usage to predict future needs and potentially automate expansions.
 - [ ] **Suggestions/Recommendations** – Observes resource trends to offer advice (e.g., adding more power generation).
