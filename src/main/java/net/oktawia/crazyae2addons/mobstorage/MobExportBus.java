@@ -58,7 +58,7 @@ public class MobExportBus extends ExportBusPart {
     public static boolean canSpawn(Level level, BlockPos pos) {
         BlockState here  = level.getBlockState(pos);
         BlockState above = level.getBlockState(pos.above());
-        return here.isAir() && !above.isAir();
+        return here.isAir() && above.isAir();
     }
 
     @Override
