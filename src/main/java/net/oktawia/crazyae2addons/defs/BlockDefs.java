@@ -11,6 +11,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.blocks.*;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
@@ -120,6 +121,56 @@ public class BlockDefs {
                         "T", CrazyBlockRegistrar.DATA_TRACKER_BLOCK.get().asItem()
                 )
         );
+
+        block(
+                CrazyBlockRegistrar.MOB_FARM_WAll_BLOCK.get(),
+                "BIB/IRI/BIB",
+                () -> Map.of(
+                        "I", Blocks.IRON_BLOCK.asItem(),
+                        "B", Blocks.IRON_BARS.asItem(),
+                        "R", Items.ROTTEN_FLESH
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(),
+                "WBW/BRB/WBW",
+                () -> Map.of(
+                        "W", CrazyBlockRegistrar.MOB_FARM_WAll_BLOCK.get().asItem(),
+                        "B", AEBlocks.DENSE_ENERGY_CELL.asItem(),
+                        "R", AEItems.FLUIX_PEARL.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.MOB_FARM_INPUT_BLOCK.get(),
+                "WWW/WEW/WWW",
+                () -> Map.of(
+                        "W", CrazyBlockRegistrar.MOB_FARM_WAll_BLOCK.get().asItem(),
+                        "E", CrazyItemRegistrar.MOB_EXPORT_BUS.get()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.MOB_FARM_COLLECTOR_BLOCK.get(),
+                "WHW/HEH/WHW",
+                () -> Map.of(
+                        "W", CrazyBlockRegistrar.MOB_FARM_WAll_BLOCK.get().asItem(),
+                        "H", AEParts.IMPORT_BUS.asItem(),
+                        "E", AEItems.FLUIX_PEARL.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.MOB_FARM_DAMAGE_MODULE_BLOCK.get(),
+                "DND/NEN/DND",
+                () -> Map.of(
+                        "D", AEBlocks.DENSE_ENERGY_CELL.asItem(),
+                        "N", Items.NETHERITE_INGOT,
+                        "E", Items.ECHO_SHARD
+                )
+        );
+
     }
 
 }

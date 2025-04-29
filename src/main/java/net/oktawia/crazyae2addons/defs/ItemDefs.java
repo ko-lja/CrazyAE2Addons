@@ -17,18 +17,15 @@ import java.util.*;
 
 public class ItemDefs {
 
-    private static final Map<Item, Map.Entry<String, Map<String, Item>>> ITEM_RECIPES = new HashMap<>();
+    private static final Map<Item, List<Map.Entry<String, Map<String, Item>>>> ITEM_RECIPES = new HashMap<>();
 
-    public static Map<Item, Map.Entry<String, Map<String, Item>>> getItemRecipes() {
+    public static Map<Item, List<Map.Entry<String, Map<String, Item>>>> getItemRecipes() {
         return ITEM_RECIPES;
     }
 
-    public static void item(
-            Item item,
-            String recipe,
-            Map<String, Item> recipeMap
-    ) {
-        ITEM_RECIPES.put(item, Map.entry(recipe, recipeMap));
+    public static void item(Item item, String recipe, Map<String, Item> recipeMap) {
+        ITEM_RECIPES.computeIfAbsent(item, k -> new ArrayList<>())
+                .add(Map.entry(recipe, recipeMap));
     }
 
     public static void registerRecipes(){
@@ -355,7 +352,7 @@ public class ItemDefs {
         );
 
         item(
-                CrazyItemRegistrar.MOB_CELL_256K.get(),
+                CrazyItemRegistrar.MOB_ANNIHILATION_PLANE.get(),
                 "AE",
                 Map.of(
                         "A", AEParts.ANNIHILATION_PLANE.asItem(),
@@ -364,11 +361,31 @@ public class ItemDefs {
         );
 
         item(
-                CrazyItemRegistrar.MOB_CELL_256K.get(),
+                CrazyItemRegistrar.MOB_EXPORT_BUS.get(),
                 "BE",
                 Map.of(
                         "B", AEParts.EXPORT_BUS.asItem(),
                         "E", Items.ECHO_SHARD.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.LOOTING_UPGRADE_CARD.get(),
+                "ACS",
+                Map.of(
+                        "A", AEItems.ADVANCED_CARD.asItem(),
+                        "C", Items.DIAMOND,
+                        "S", Items.IRON_SWORD
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.EXPERIENCE_UPGRADE_CARD.get(),
+                "ACB",
+                Map.of(
+                        "A", AEItems.ADVANCED_CARD.asItem(),
+                        "C", Items.EXPERIENCE_BOTTLE,
+                        "B", Items.GOLD_INGOT
                 )
         );
 

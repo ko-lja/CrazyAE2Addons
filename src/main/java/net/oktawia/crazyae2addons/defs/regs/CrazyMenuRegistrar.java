@@ -1,7 +1,6 @@
 package net.oktawia.crazyae2addons.defs.regs;
 
 import appeng.menu.AEBaseMenu;
-import appeng.menu.implementations.IOBusMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.fml.ModList;
@@ -108,6 +107,9 @@ public class CrazyMenuRegistrar {
 
     public static final RegistryObject<MenuType<MobExportBusMenu>> MOB_EXPORT_BUS_MENU =
             reg(id("mob_export_bus"), MobExportBusMenu::new, MobExportBus.class);
+
+    public static final RegistryObject<MenuType<MobFarmControllerMenu>> MOB_FARM_CONTROLLER_MENU =
+            reg(id("mob_farm_controller"), MobFarmControllerMenu::new, MobFarmControllerBE.class);
 
     private CrazyMenuRegistrar() {}
 }

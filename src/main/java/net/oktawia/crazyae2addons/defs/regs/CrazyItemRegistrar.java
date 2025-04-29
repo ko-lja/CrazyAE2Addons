@@ -15,7 +15,6 @@ import net.oktawia.crazyae2addons.compat.GregTech.*;
 import net.oktawia.crazyae2addons.items.*;
 import net.oktawia.crazyae2addons.mobstorage.*;
 import net.oktawia.crazyae2addons.parts.*;
-import appeng.items.materials.MaterialItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,6 +169,14 @@ public class CrazyItemRegistrar {
     public static final RegistryObject<MobExportBusItem> MOB_EXPORT_BUS =
             ITEMS.register("mob_export_bus",
                     () -> new MobExportBusItem(new Item.Properties()));
+
+    public static final RegistryObject<LootingUpgradeCard> LOOTING_UPGRADE_CARD =
+            ITEMS.register("looting_upgrade_card",
+                    () -> new LootingUpgradeCard(new Item.Properties()));
+
+    public static final RegistryObject<ExperienceUpgradeCard> EXPERIENCE_UPGRADE_CARD =
+            ITEMS.register("experience_upgrade_card",
+                    () -> new ExperienceUpgradeCard(new Item.Properties()));
 
     private CrazyItemRegistrar() {}
 

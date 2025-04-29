@@ -9,7 +9,6 @@ import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.compat.GregTech.*;
-import net.minecraftforge.fml.ModList;
 import net.oktawia.crazyae2addons.entities.*;
 
 import java.util.ArrayList;
@@ -78,6 +77,9 @@ public class CrazyBlockEntityRegistrar {
                     return type;
                 }
             });
+
+    public static final RegistryObject<BlockEntityType<MobFarmControllerBE>> MOB_FARM_CONTROLLER_BE =
+            reg("mob_farm_controller", CrazyBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK, MobFarmControllerBE::new, MobFarmControllerBE.class);
 
     public static void setupBlockEntityTypes() {
         for (var runnable : BLOCK_ENTITY_SETUP) {

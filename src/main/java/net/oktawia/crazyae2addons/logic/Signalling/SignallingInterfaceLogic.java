@@ -86,7 +86,6 @@ public class SignallingInterfaceLogic implements ICraftingRequester, IUpgradeabl
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, new Ticker());
         this.actionSource = new MachineSource(mainNode::getNode);
-
         this.interfaceRequestSource = new InterfaceRequestSource(mainNode::getNode);
 
         gridNode.addService(ICraftingRequester.class, this);
@@ -94,7 +93,6 @@ public class SignallingInterfaceLogic implements ICraftingRequester, IUpgradeabl
         this.craftingTracker = new SignallingInterfaceMultiCraftingTracker(this, slots);
         this.cm.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.plannedWork = new GenericStack[slots];
-
 
         getConfig().useRegisteredCapacities();
         getStorage().useRegisteredCapacities();

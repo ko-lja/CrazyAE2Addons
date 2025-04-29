@@ -3,7 +3,6 @@ package net.oktawia.crazyae2addons.defs.regs;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -96,6 +95,41 @@ public class CrazyBlockRegistrar {
     public static final RegistryObject<BlockItem> SIGNALLING_INTERFACE_BLOCK_ITEM =
             BLOCK_ITEMS.register("signalling_interface",
                     () -> new SignallingInterfaceBlockItem(SIGNALLING_INTERFACE_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<MobFarmController> MOB_FARM_CONTROLLER_BLOCK =
+            BLOCKS.register("mob_farm_controller", MobFarmController::new);
+
+    public static final RegistryObject<BlockItem> MOB_FARM_CONTROLLER_BLOCK_ITEM =
+            BLOCK_ITEMS.register("mob_farm_controller",
+                    () -> new MobFarmControllerItem(MOB_FARM_CONTROLLER_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<MobFarmWall> MOB_FARM_WAll_BLOCK =
+            BLOCKS.register("mob_farm_wall", MobFarmWall::new);
+
+    public static final RegistryObject<BlockItem> MOB_FARM_WAll_BLOCK_ITEM =
+            BLOCK_ITEMS.register("mob_farm_wall",
+                    () -> new MobFarmWallItem(MOB_FARM_WAll_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<MobFarmCollector> MOB_FARM_COLLECTOR_BLOCK =
+            BLOCKS.register("mob_farm_collector", MobFarmCollector::new);
+
+    public static final RegistryObject<BlockItem> MOB_FARM_COLLECTOR_BLOCK_ITEM =
+            BLOCK_ITEMS.register("mob_farm_collector",
+                    () -> new MobFarmCollectorItem(MOB_FARM_COLLECTOR_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<MobFarmInput> MOB_FARM_INPUT_BLOCK =
+            BLOCKS.register("mob_farm_input", MobFarmInput::new);
+
+    public static final RegistryObject<BlockItem> MOB_FARM_INPUT_BLOCK_ITEM =
+            BLOCK_ITEMS.register("mob_farm_input",
+                    () -> new MobFarmInputItem(MOB_FARM_INPUT_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<MobFarmDamageModule> MOB_FARM_DAMAGE_MODULE_BLOCK =
+            BLOCKS.register("mob_farm_damage_module", MobFarmDamageModule::new);
+
+    public static final RegistryObject<BlockItem> MOB_FARM_DAMAGE_MODULE_BLOCK_ITEM =
+            BLOCK_ITEMS.register("mob_farm_damage_module",
+                    () -> new MobFarmDamageModuleItem(MOB_FARM_DAMAGE_MODULE_BLOCK.get(), new Item.Properties()));
 
     private CrazyBlockRegistrar() {}
 }

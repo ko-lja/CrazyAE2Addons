@@ -1,9 +1,6 @@
 package net.oktawia.crazyae2addons.defs;
 
-import appeng.client.gui.style.ScreenStyle;
 import appeng.init.client.InitScreens;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.*;
@@ -98,6 +95,12 @@ public final class Screens {
         InitScreens.register(CrazyMenuRegistrar.MOB_EXPORT_BUS_MENU.get(),
                 MobExportBusScreen<MobExportBusMenu>::new,
                 "/screens/mob_export_bus.json");
+
+        InitScreens.register(
+                CrazyMenuRegistrar.MOB_FARM_CONTROLLER_MENU.get(),
+                MobFarmControllerScreen<MobFarmControllerMenu>::new,
+                "/screens/mob_farm_controller.json"
+        );
 
         if (IsModLoaded.isGTCEuLoaded() && CrazyMenuRegistrar.CIRCUITED_PATTERN_PROVIDER_MENU != null) {
             InitScreens.register(CrazyMenuRegistrar.CIRCUITED_PATTERN_PROVIDER_MENU.get(),

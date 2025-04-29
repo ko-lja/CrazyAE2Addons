@@ -20,6 +20,7 @@ public class ImpulsedPatternProviderBE extends PatternProviderBlockEntity {
     public ImpulsedPatternProviderBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get(), pos, blockState);
     }
+
     public void openMenu(Player player, MenuLocator locator) {
         MenuOpener.open(CrazyMenuRegistrar.IMPULSED_PATTERN_PROVIDER_MENU.get(), player, locator);
     }

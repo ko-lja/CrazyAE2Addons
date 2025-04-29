@@ -3,7 +3,6 @@ package net.oktawia.crazyae2addons.mobstorage;
 import appeng.api.stacks.AEKey;
 import appeng.items.storage.BasicStorageCell;
 import appeng.items.storage.StorageTier;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 

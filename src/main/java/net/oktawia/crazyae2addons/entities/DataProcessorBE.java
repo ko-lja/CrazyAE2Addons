@@ -88,7 +88,6 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
         } else if (id.equals(ISegmentedInventory.UPGRADES)) {
             return this.upgrades;
         }
-
         return super.getSubInventory(id);
     }
 
@@ -150,6 +149,7 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
     public DataProcessorMenu getMenu(){
         return this.menu;
     }
+
     public void compute(MEDataControllerBE database, Integer depth) {
         int[] registers = new int[4];
         int i = 0, count = 0, temp = 0;

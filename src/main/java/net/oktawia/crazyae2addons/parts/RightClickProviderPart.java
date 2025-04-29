@@ -22,19 +22,25 @@ import appeng.parts.p2p.P2PModels;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -169,20 +175,106 @@ public class RightClickProviderPart extends UpgradeablePart implements
                     new GameProfile(UUID.randomUUID(), "[CrazyAE2Addons]"));
         }
         if (world == null) return TickRateModulation.IDLE;
-        var pos = getBlockEntity().getBlockPos().relative(getSide());
-        BlockState state = world.getBlockState(pos);
-        Direction face = getSide();
-        Vec3 hitVec = new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-        BlockHitResult hit = new BlockHitResult(hitVec, face, pos, false);
-        if (!this.inv.getStackInSlot(0).isEmpty()){
-            ItemStack stack = this.inv.getStackInSlot(0);
-            UseOnContext context = new UseOnContext(world, fakePlayer, InteractionHand.MAIN_HAND, stack, hit);
-            stack.getItem().useOn(context);
-        } else {
-            state.use(world, fakePlayer, InteractionHand.OFF_HAND, hit);
-        }
+        simulateUse(getLevel().getServer().getLevel(getLevel().dimension()));
         return TickRateModulation.IDLE;
     }
+
+    public void simulateUse(ServerLevel world) {
+        BlockPos basePos = getBlockEntity().getBlockPos();
+        Direction side = getSide();
+        BlockPos targetPos = basePos.relative(side);
+        BlockState targetState = world.getBlockState(targetPos);
+        ItemStack stack = this.inv.getStackInSlot(0);
+
+        fakePlayer.absMoveTo(
+                targetPos.getX() + 0.5,
+                targetPos.getY() + 1.0,
+                targetPos.getZ() + 0.5,
+                0.0F,
+                90.0F
+        );
+
+        fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, stack);
+        fakePlayer.getInventory().setItem(fakePlayer.getInventory().selected, stack.copy());
+
+        if (stack.isEmpty()) {
+            Vec3 hitVec = Vec3.atCenterOf(targetPos);
+            BlockHitResult hit = new BlockHitResult(hitVec, side, targetPos, false);
+            fakePlayer.gameMode.useItemOn(fakePlayer, world, stack, InteractionHand.MAIN_HAND, hit);
+
+            this.inv.setItemDirect(0, fakePlayer.getMainHandItem().copy());
+            return;
+        }
+
+        if (stack.getItem() instanceof BucketItem bucket) {
+            boolean isEmptyBucket = stack.getItem() == Items.BUCKET;
+            if (isEmptyBucket) {
+                if (targetState.getFluidState().isEmpty()) {
+                    return;
+                }
+                Vec3 eyePos = fakePlayer.getEyePosition(1.0F);
+                Vec3 lookVec = fakePlayer.getLookAngle();
+                Vec3 reachVec = eyePos.add(lookVec.scale(5.0D));
+
+                ClipContext context = new ClipContext(eyePos, reachVec, ClipContext.Block.OUTLINE, ClipContext.Fluid.SOURCE_ONLY, fakePlayer);
+                HitResult pickResult = world.clip(context);
+
+                if (pickResult.getType() == HitResult.Type.BLOCK && pickResult instanceof BlockHitResult blockHit) {
+                    BlockPos hitPos = blockHit.getBlockPos();
+                    BlockState hitState = world.getBlockState(hitPos);
+                    if (!hitState.isAir()) {
+                        InteractionResultHolder<ItemStack> result = bucket.use(world, fakePlayer, InteractionHand.MAIN_HAND);
+                        this.inv.setItemDirect(0, result.getObject().copy());
+                    }
+                }
+                return;
+            } else {
+                BlockState frontState = world.getBlockState(targetPos);
+                BlockState belowFront = world.getBlockState(targetPos.relative(Direction.DOWN));
+
+                if (!frontState.isAir()) {
+                    Vec3 frontVec = Vec3.atCenterOf(targetPos).add(Vec3.atLowerCornerOf(side.getOpposite().getNormal()).scale(0.5));
+                    BlockHitResult frontHit = new BlockHitResult(frontVec, side.getOpposite(), targetPos, false);
+
+                    fakePlayer.gameMode.useItemOn(fakePlayer, world, stack, InteractionHand.MAIN_HAND, frontHit);
+
+                    this.inv.setItemDirect(0, fakePlayer.getMainHandItem().copy());
+                    return;
+                }
+
+                Vec3 eyePos = fakePlayer.getEyePosition(1.0F);
+                Vec3 lookVec = fakePlayer.getLookAngle();
+                Vec3 reachVec = eyePos.add(lookVec.scale(5.0D));
+
+                ClipContext context = new ClipContext(eyePos, reachVec, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, fakePlayer);
+                HitResult pickResult = world.clip(context);
+
+                if (pickResult.getType() == HitResult.Type.BLOCK && !belowFront.isAir() && pickResult instanceof BlockHitResult blockHit) {
+                    BlockPos hitPos = blockHit.getBlockPos();
+                    BlockState hitState = world.getBlockState(hitPos);
+                    if (!hitState.isAir()) {
+                        InteractionResultHolder<ItemStack> result = bucket.use(world, fakePlayer, InteractionHand.MAIN_HAND);
+                        this.inv.setItemDirect(0, result.getObject().copy());
+                        return;
+                    }
+                }
+                return;
+            }
+        }
+        BlockHitResult hit;
+        if (targetState.isAir()) {
+            BlockPos below = targetPos.below();
+            Vec3 hitVec = Vec3.atCenterOf(below).add(0, 0.5, 0);
+            hit = new BlockHitResult(hitVec, Direction.UP, below, false);
+        } else {
+            Vec3 hitVec = Vec3.atCenterOf(targetPos).add(Vec3.atLowerCornerOf(side.getOpposite().getNormal()).scale(0.5));
+            hit = new BlockHitResult(hitVec, side.getOpposite(), targetPos, false);
+        }
+        fakePlayer.gameMode.useItemOn(fakePlayer, world, stack, InteractionHand.MAIN_HAND, hit);
+        this.inv.setItemDirect(0, fakePlayer.getMainHandItem().copy());
+    }
+
+
 
     @Override
     public void saveChanges() {
