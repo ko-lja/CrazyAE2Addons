@@ -7,7 +7,9 @@
   "plugin": "net.oktawia.crazyae2addons.mixins.Plugin",
   "mixins": [
     "ExecutingCraftingJobAccessor",
+    "MixinAbstractMonitorPart",
     "MixinCraftingCpuLogic",
+    "MixinFilterSlot",
     "MixinGT",
     "MixinGTMAE2",
     "MixinListCraftingInventory",

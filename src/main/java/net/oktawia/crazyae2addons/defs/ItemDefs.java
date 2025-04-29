@@ -4,6 +4,7 @@ import appeng.core.definitions.*;
 import appeng.items.parts.PartItem;
 import net.minecraft.Util;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.fml.ModList;
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.compat.GregTech.GTEnergyExporterPart;
@@ -91,7 +92,7 @@ public class ItemDefs {
             CrazyItemRegistrar.MAX_CARD.get(),
             "DC",
             Map.of(
-                "D", net.minecraft.world.item.Items.GLOWSTONE_DUST,
+                "D", Items.GLOWSTONE_DUST,
                 "C", CrazyItemRegistrar.LOGIC_CARD.get()
             )
         );
@@ -100,7 +101,7 @@ public class ItemDefs {
             CrazyItemRegistrar.MIN_CARD.get(),
             "CD",
             Map.of(
-                "D", net.minecraft.world.item.Items.GLOWSTONE_DUST,
+                "D", Items.GLOWSTONE_DUST,
                 "C", CrazyItemRegistrar.LOGIC_CARD.get()
             )
         );
@@ -109,7 +110,7 @@ public class ItemDefs {
             CrazyItemRegistrar.BSR_CARD.get(),
             "D/C",
             Map.of(
-                "D", net.minecraft.world.item.Items.GLOWSTONE_DUST,
+                "D",  Items.GLOWSTONE_DUST,
                 "C", CrazyItemRegistrar.LOGIC_CARD.get()
             )
         );
@@ -118,7 +119,7 @@ public class ItemDefs {
             CrazyItemRegistrar.BSL_CARD.get(),
             "C/D",
             Map.of(
-                "D", net.minecraft.world.item.Items.GLOWSTONE_DUST,
+                "D", Items.GLOWSTONE_DUST,
                 "C", CrazyItemRegistrar.LOGIC_CARD.get()
             )
         );
@@ -127,9 +128,9 @@ public class ItemDefs {
             CrazyItemRegistrar.HIT_CARD.get(),
             "DCR",
             Map.of(
-                "D", net.minecraft.world.item.Items.GLOWSTONE_DUST,
+                "D", Items.GLOWSTONE_DUST,
                 "C", CrazyItemRegistrar.LOGIC_CARD.get(),
-                "R", net.minecraft.world.item.Items.REDSTONE
+                "R", Items.REDSTONE
             )
         );
 
@@ -139,7 +140,7 @@ public class ItemDefs {
             Map.of(
                 "D", AEItems.SKY_DUST.asItem(),
                 "C", CrazyItemRegistrar.LOGIC_CARD.get(),
-                "R", net.minecraft.world.item.Items.REDSTONE
+                "R", Items.REDSTONE
             )
         );
 
@@ -157,7 +158,7 @@ public class ItemDefs {
             "ET/TL",
             Map.of(
                 "E", AEParts.EXPORT_BUS.asItem(),
-                "T", net.minecraft.world.item.Items.NAME_TAG,
+                "T", Items.NAME_TAG,
                 "L", AEItems.LOGIC_PROCESSOR.asItem()
             )
         );
@@ -194,7 +195,7 @@ public class ItemDefs {
             "ERR",
             Map.of(
                 "E", AEParts.EXPORT_BUS.asItem(),
-                "R", net.minecraft.world.item.Items.REDSTONE
+                "R", Items.REDSTONE
             )
         );
 
@@ -202,8 +203,8 @@ public class ItemDefs {
             CrazyItemRegistrar.ENTITY_TICKER_PART_ITEM.get(),
             "DND/NEN/DND",
             Map.of(
-                "D", net.minecraft.world.item.Items.DIAMOND,
-                "N", net.minecraft.world.item.Items.NETHER_STAR,
+                "D", Items.DIAMOND,
+                "N", Items.NETHER_STAR,
                 "E", CrazyItemRegistrar.ENERGY_EXPORTER_PART_ITEM.get()
             )
         );
@@ -213,8 +214,8 @@ public class ItemDefs {
             "ED/TP",
             Map.of(
                 "E", AEParts.EXPORT_BUS.asItem(),
-                "D", net.minecraft.world.item.Items.DIAMOND,
-                "T", net.minecraft.world.item.Items.NAME_TAG,
+                "D", Items.DIAMOND,
+                "T", Items.NAME_TAG,
                 "P", AEItems.ENGINEERING_PROCESSOR.asItem()
             )
         );
@@ -229,12 +230,146 @@ public class ItemDefs {
         );
 
         item(
-            CrazyItemRegistrar.CRAZY_PATTERN_MULTIPLIER_ITEM.get(),
-            "PZ/ZP",
-            Map.of(
-                "P", AEItems.BLANK_PATTERN.asItem(),
-                "Z", AEItems.CALCULATION_PROCESSOR.asItem()
-            )
+                CrazyItemRegistrar.CRAZY_PATTERN_MULTIPLIER_ITEM.get(),
+                "PZ/ZP",
+                Map.of(
+                        "P", AEItems.BLANK_PATTERN.asItem(),
+                        "Z", AEItems.CALCULATION_PROCESSOR.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_HOUSING.get(),
+                "GRG/R R/EFE",
+                Map.of(
+                        "G", AEBlocks.QUARTZ_VIBRANT_GLASS.asItem(),
+                        "R", Items.REDSTONE.asItem(),
+                        "E", Items.ECHO_SHARD.asItem(),
+                        "F", Items.FLINT.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_1K.get(),
+                "HC",
+                Map.of(
+                        "H", CrazyItemRegistrar.MOB_CELL_HOUSING.get().asItem().asItem(),
+                        "C", AEItems.CELL_COMPONENT_1K.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_4K.get(),
+                "HC",
+                Map.of(
+                        "H", CrazyItemRegistrar.MOB_CELL_HOUSING.get().asItem().asItem(),
+                        "C", AEItems.CELL_COMPONENT_4K.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_16K.get(),
+                "HC",
+                Map.of(
+                        "H", CrazyItemRegistrar.MOB_CELL_HOUSING.get().asItem().asItem(),
+                        "C", AEItems.CELL_COMPONENT_16K.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_64K.get(),
+                "HC",
+                Map.of(
+                        "H", CrazyItemRegistrar.MOB_CELL_HOUSING.get().asItem().asItem(),
+                        "C", AEItems.CELL_COMPONENT_64K.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_256K.get(),
+                "HC",
+                Map.of(
+                        "H", CrazyItemRegistrar.MOB_CELL_HOUSING.get().asItem().asItem(),
+                        "C", AEItems.CELL_COMPONENT_256K.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_1K.get(),
+                "GRG/RCR/EFE",
+                Map.of(
+                        "G", AEBlocks.QUARTZ_VIBRANT_GLASS.asItem(),
+                        "R", Items.REDSTONE.asItem(),
+                        "E", Items.ECHO_SHARD.asItem(),
+                        "F", Items.FLINT.asItem(),
+                        "C", AEItems.CELL_COMPONENT_1K.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_4K.get(),
+                "GRG/RCR/EFE",
+                Map.of(
+                        "G", AEBlocks.QUARTZ_VIBRANT_GLASS.asItem(),
+                        "R", Items.REDSTONE.asItem(),
+                        "E", Items.ECHO_SHARD.asItem(),
+                        "F", Items.FLINT.asItem(),
+                        "C", AEItems.CELL_COMPONENT_4K.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_16K.get(),
+                "GRG/RCR/EFE",
+                Map.of(
+                        "G", AEBlocks.QUARTZ_VIBRANT_GLASS.asItem(),
+                        "R", Items.REDSTONE.asItem(),
+                        "E", Items.ECHO_SHARD.asItem(),
+                        "F", Items.FLINT.asItem(),
+                        "C", AEItems.CELL_COMPONENT_16K.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_64K.get(),
+                "GRG/RCR/EFE",
+                Map.of(
+                        "G", AEBlocks.QUARTZ_VIBRANT_GLASS.asItem(),
+                        "R", Items.REDSTONE.asItem(),
+                        "E", Items.ECHO_SHARD.asItem(),
+                        "F", Items.FLINT.asItem(),
+                        "C", AEItems.CELL_COMPONENT_64K.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_256K.get(),
+                "GRG/RCR/EFE",
+                Map.of(
+                        "G", AEBlocks.QUARTZ_VIBRANT_GLASS.asItem(),
+                        "R", Items.REDSTONE.asItem(),
+                        "E", Items.ECHO_SHARD.asItem(),
+                        "F", Items.FLINT.asItem(),
+                        "C", AEItems.CELL_COMPONENT_256K.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_256K.get(),
+                "AE",
+                Map.of(
+                        "A", AEParts.ANNIHILATION_PLANE.asItem(),
+                        "E", Items.ECHO_SHARD.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.MOB_CELL_256K.get(),
+                "BE",
+                Map.of(
+                        "B", AEParts.EXPORT_BUS.asItem(),
+                        "E", Items.ECHO_SHARD.asItem()
+                )
         );
 
     }

@@ -4,6 +4,7 @@ import appeng.api.parts.PartModels;
 import appeng.items.AEBaseItem;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
+import appeng.items.storage.StorageTier;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -12,7 +13,9 @@ import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.compat.GregTech.*;
 import net.oktawia.crazyae2addons.items.*;
+import net.oktawia.crazyae2addons.mobstorage.*;
 import net.oktawia.crazyae2addons.parts.*;
+import appeng.items.materials.MaterialItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,6 +146,30 @@ public class CrazyItemRegistrar {
                     ? ITEMS.register("circuit_upgrade_card",
                     () -> new CircuitUpgradeCard(new Item.Properties()))
                     : null;
+
+
+    public static final RegistryObject<Item> MOB_CELL_HOUSING =
+            ITEMS.register("mob_cell_housing",
+                    () -> new Item(new Item.Properties()));
+
+    public static final RegistryObject<Item> MOB_CELL_1K = ITEMS.register("mob_storage_cell_1k",
+            () -> new MobStorageCell(new Item.Properties().stacksTo(1), StorageTier.SIZE_1K, MOB_CELL_HOUSING.get()));
+    public static final RegistryObject<Item> MOB_CELL_4K = ITEMS.register("mob_storage_cell_4k",
+            () -> new MobStorageCell(new Item.Properties().stacksTo(1), StorageTier.SIZE_4K, MOB_CELL_HOUSING.get()));
+    public static final RegistryObject<Item> MOB_CELL_16K = ITEMS.register("mob_storage_cell_16k",
+            () -> new MobStorageCell(new Item.Properties().stacksTo(1), StorageTier.SIZE_16K, MOB_CELL_HOUSING.get()));
+    public static final RegistryObject<Item> MOB_CELL_64K = ITEMS.register("mob_storage_cell_64k",
+            () -> new MobStorageCell(new Item.Properties().stacksTo(1), StorageTier.SIZE_64K, MOB_CELL_HOUSING.get()));
+    public static final RegistryObject<Item> MOB_CELL_256K = ITEMS.register("mob_storage_cell_256k",
+            () -> new MobStorageCell(new Item.Properties().stacksTo(1), StorageTier.SIZE_256K,
+                    MOB_CELL_HOUSING.get()));
+
+    public static final RegistryObject<MobAnnihilationPlaneItem> MOB_ANNIHILATION_PLANE =
+            ITEMS.register("mob_annihilation_plane",
+                    () -> new MobAnnihilationPlaneItem(new Item.Properties()));
+    public static final RegistryObject<MobExportBusItem> MOB_EXPORT_BUS =
+            ITEMS.register("mob_export_bus",
+                    () -> new MobExportBusItem(new Item.Properties()));
 
     private CrazyItemRegistrar() {}
 

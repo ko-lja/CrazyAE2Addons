@@ -15,18 +15,13 @@ public final class CrazyCreativeTabRegistrar {
 
     public static final CreativeModeTab TAB = CreativeModeTab.builder()
             .title(Component.literal("Crazy AE2 Addons"))
-            .icon(() -> new ItemStack(
-                    CrazyBlockRegistrar.DATA_PROCESSOR_BLOCK.get()))
+            .icon(() -> new ItemStack(CrazyBlockRegistrar.DATA_PROCESSOR_BLOCK.get()))
             .displayItems(CrazyCreativeTabRegistrar::populate)
             .build();
 
-    private static void populate(CreativeModeTab.ItemDisplayParameters ignored,
-                                 CreativeModeTab.Output out) {
-
+    private static void populate(CreativeModeTab.ItemDisplayParameters ignored, CreativeModeTab.Output out) {
         CrazyItemRegistrar.ITEMS.getEntries().forEach(ro -> push(out, ro.get()));
-
-        CrazyBlockRegistrar.BLOCK_ITEMS.getEntries()
-                .forEach(ro -> push(out, ro.get()));
+        CrazyBlockRegistrar.BLOCK_ITEMS.getEntries().forEach(ro -> push(out, ro.get()));
     }
 
     private static void push(CreativeModeTab.Output out, net.minecraft.world.item.Item item) {

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "crazyae2addons:item/circuit_upgrade_card"
+    "layer0": "crazyae2addons:item/mob_storage_cell_4k"
   }
 }

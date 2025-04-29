@@ -1,6 +1,7 @@
 package net.oktawia.crazyae2addons.defs.regs;
 
 import appeng.menu.AEBaseMenu;
+import appeng.menu.implementations.IOBusMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.fml.ModList;
@@ -14,6 +15,8 @@ import net.oktawia.crazyae2addons.compat.GregTech.GTDataExtractorPart;
 import net.oktawia.crazyae2addons.compat.GregTech.GTEnergyExporterPart;
 import net.oktawia.crazyae2addons.logic.CrazyPatternModifierHost;
 import net.oktawia.crazyae2addons.logic.CrazyPatternMultiplierHost;
+import net.oktawia.crazyae2addons.mobstorage.MobExportBus;
+import net.oktawia.crazyae2addons.mobstorage.MobExportBusMenu;
 import net.oktawia.crazyae2addons.parts.*;
 import net.oktawia.crazyae2addons.entities.*;
 import net.oktawia.crazyae2addons.menus.*;
@@ -102,6 +105,9 @@ public class CrazyMenuRegistrar {
 
     public static final RegistryObject<MenuType<SetStockAmountMenu>> SET_STOCK_AMOUNT_MENU =
             reg(id("stock_amount_menu"), SetStockAmountMenu::new, SignallingInterfaceBE.class);
+
+    public static final RegistryObject<MenuType<MobExportBusMenu>> MOB_EXPORT_BUS_MENU =
+            reg(id("mob_export_bus"), MobExportBusMenu::new, MobExportBus.class);
 
     private CrazyMenuRegistrar() {}
 }
