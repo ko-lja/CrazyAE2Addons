@@ -8,9 +8,6 @@ categories:
 item_ids:
   - crazyae2addons:round_robin_item_p2p_tunnel
 ---
-
 # Round Robin Item P2P Tunnel
-
-<BlockImage id="crazyae2addons:round_robin_item_p2p_tunnel" scale="4"></BlockImage>
 
 The Round Robin Item P2P Tunnel part ensures that items entering your ME network are spread evenly across all connected outputs, even when you insert items multiple times. Unlike the standard Item P2P Tunnel, which always sends to the nearest output first, this version tracks usage and directs each batch to the output that hasn’t received anything for the longest time.

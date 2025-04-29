@@ -11,8 +11,6 @@ item_ids:
 
 # Display
 
-<BlockImage id="crazyae2addons:display_monitor" scale="4"></BlockImage>
-
 The Display is a visual part you can attach to any ME cable to show text or network variables directly in the world. It is updating dynamically as variables change.
 
 ## How to Use

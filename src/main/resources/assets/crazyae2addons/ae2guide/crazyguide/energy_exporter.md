@@ -11,8 +11,6 @@ item_ids:
 
 # Energy Exporter
 
-<BlockImage id="crazyae2addons:energy_exporter" scale="4"></BlockImage>
-
 The Energy Exporter is a part that allows your ME network to send Forge Energy (FE) or GregTech Energy (EU) into adjacent machines or storage blocks. It extracts power from your network and pushes it outward automatically.
 
 ## How to Use

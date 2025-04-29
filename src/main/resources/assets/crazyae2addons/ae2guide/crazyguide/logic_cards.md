@@ -5,8 +5,6 @@ navigation:
   icon: crazyae2addons:add_card
 categories:
   - Data Variables
-item_ids:
-  - crazyae2addons:add_card
 ---
 
 ## Logic Cards Overview

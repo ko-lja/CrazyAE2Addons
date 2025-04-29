@@ -20,7 +20,7 @@ The Data Processor is an advanced block that allows you to perform basic logical
 1. **Place the block**: Connect the Data Processor to your ME network.
 2. **Input a variable**: Right click the block and type in the name of a variable you want to operate on. Must start with a `&`.
 3. **Insert cards**:
-    - Place [Logic Cards](logic_cards) into the slots.
+    - Place [Logic Cards](logic_cards.md) into the slots.
     - Each card represents an operation that will be performed.
 4. **Configure operations**:
     - Click the wrench button next to a card slot to open detailed settings.
@@ -28,7 +28,7 @@ The Data Processor is an advanced block that allows you to perform basic logical
 5. **Registers**:
     - Use temporary registers (`&&0`, `&&1`, `&&2`, `&&3`) for intermediate results between operations.
 6. **Outputs**:
-    - You can write results into new variables inside the [ME Data Controller](me_data_controller). The operation will terminate on any write to the Controller's storage.
+    - You can write results into new variables inside the [ME Data Controller](me_data_controller.md). The operation will terminate on any write to the Controller's storage.
 7. **Loops**:
     - The system prevents infinite loops automatically.
 8. **Speed**: The system is not tick based. All updates/calculations/reads/writes happen instantly.

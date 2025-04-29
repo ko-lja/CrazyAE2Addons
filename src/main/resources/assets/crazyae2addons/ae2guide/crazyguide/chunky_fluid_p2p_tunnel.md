@@ -11,8 +11,6 @@ item_ids:
 
 # Chunky Fluid P2P Tunnel
 
-<BlockImage id="crazyae2addons:chunky_fluid_p2p_tunnel" scale="4"></BlockImage>
-
 The Chunky Fluid P2P Tunnel part lets you send fluids in fixed-size chunks. It waits until it has collected enough fluid to meet the configured chunk size (in millibuckets), then moves exactly that amount to the connected output, cycling through them to keep distribution balanced.
 
 ## How to Use

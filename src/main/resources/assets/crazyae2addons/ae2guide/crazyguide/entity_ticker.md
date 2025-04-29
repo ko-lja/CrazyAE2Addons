@@ -11,8 +11,6 @@ item_ids:
 
 # Entity Ticker
 
-<BlockImage id="crazyae2addons:entity_ticker" scale="4"></BlockImage>
-
 The Entity Ticker is a unique ME part that dramatically speeds up the block entity you attach it to. It ticks the neighboring machine multiple times per game tick, making processes like smelting, machine operations, or other block entity updates much faster.
 
 ## How to Use

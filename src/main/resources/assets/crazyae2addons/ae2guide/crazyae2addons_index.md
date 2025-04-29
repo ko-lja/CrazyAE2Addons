@@ -34,3 +34,7 @@ blocks to be part of an ME network to operate. It adds a suite of utilities.
 ## Data Variables
 
 <CategoryIndex category="Data Variables"></CategoryIndex>
+
+## Mob Storage
+
+<CategoryIndex category="Mob Storage"></CategoryIndex>

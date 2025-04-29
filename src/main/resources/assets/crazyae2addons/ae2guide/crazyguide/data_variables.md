@@ -5,7 +5,20 @@ navigation:
   icon: crazyae2addons:data_processor
 categories:
   - Data Variables
+item_ids:
+  - crazyae2addons:logic_card
+  - crazyae2addons:add_card
+  - crazyae2addons:sub_card
+  - crazyae2addons:mul_card
+  - crazyae2addons:div_card
+  - crazyae2addons:min_card
+  - crazyae2addons:max_card
+  - crazyae2addons:bsr_card
+  - crazyae2addons:bsl_card
+  - crazyae2addons:hit_card
+  - crazyae2addons:hif_card
 ---
+
 # Beginner's Guide to Data Variables
 
 Welcome! This tutorial will teach you how to use Data Variables from Crazy AE2 Addons, even if you know absolutely nothing about programming.

@@ -13,7 +13,7 @@ item_ids:
 
 <BlockImage id="crazyae2addons:circuited_pattern_provider" scale="4"></BlockImage>
 
-Available only when GregTech is also on the mod list.
+# Available only when GregTech is also on the mod list.
 
 The Circuited Pattern Provider is a drop-in replacement for the standard AE2 Pattern Provider. It adds one extra feature: when you use a pattern that carries a `circuit` tag (set with the Crazy Pattern Modifier), the provider will automatically load that circuit into every connected GregTech machine before crafting.
 

@@ -11,14 +11,12 @@ item_ids:
 
 # Data Extractor
 
-<BlockImage id="crazyae2addons:data_extractor" scale="4"></BlockImage>
-
 The Data Extractor is a specialized part that reads numeric data from the adjacent block entity and sends these values into your ME network as variables. It works together with the ME Data Controller to store dynamic data like machine progress, energy levels, or anything else.
 
 ## How to Use
 
 1. **Place the part**: Attach the Data Extractor to an ME cable on the side facing the block entity you want to monitor.
-2. **Ensure a Data Controller**: Your network needs a [ME Data Controller](me_data_controller) somewhere in the same network to receive extracted variables.
+2. **Ensure a Data Controller**: Your network needs a [ME Data Controller](me_data_controller.md) somewhere in the same network to receive extracted variables.
 3. **Open its GUI**: Right click the part to view the available data paths.
 4. **Fetch available data**: Click the **Fetch** button to scan the target block entity. The top list will show all numeric fields.
 5. **Select data**: Use the numbered buttons to choose which data value to extract.

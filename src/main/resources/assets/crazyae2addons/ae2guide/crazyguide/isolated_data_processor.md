@@ -19,7 +19,7 @@ The Isolated Data Processor is a high-speed logic block that works similarly to 
 
 1. **Place the block**: Connect the Isolated Data Processor to your ME network.
 2. **Insert cards**:
-    - Put [Logic Cards](logic_cards) into the processor.
+    - Put [Logic Cards](logic_cards.md) into the processor.
 3. **Configure operations**:
     - Use the wrench button next to each slot to open the settings.
     - Assign inputs (registers, constants, or variables) and define the output.
@@ -28,6 +28,6 @@ The Isolated Data Processor is a high-speed logic block that works similarly to 
 5. **Looping logic**:
     - Every tick, the processor automatically reads the next card and executes the associated operation.
     - Conditional jump cards (HIT, HIF) allow skipping to other slots dynamically.
-6. **Multiple writes**: It wont stop on a write to [ME Data Controller](me_data_controller).
+6. **Multiple writes**: It wont stop on a write to [ME Data Controller](me_data_controller.md).
 
 Because it runs independently and constantly, the Isolated Data Processor is perfect for creating always-on logic like counters or timers.
