@@ -31,13 +31,15 @@ If you want to support me creating, consider downloading from [Modrinth](https:/
 - [x] **Data Tracker** – Outputs a redstone signal if a chosen network variable’s value exceeds zero.
 - [x] **Display** – Acts as a sign or screen to display desired text and/or network variable values.
 
+## Mob Storage
+- [x] **AE2 Mob Storage** – Adds advanced mob handling and integration with AE2.
+- [x] **Mob Annihilation Plane abd Mob Export Bus** - A way to import/export mobs from/to ME network storage.
+
 ---
 
 ## Additional Planned / Unfinished Ideas
-- [ ] **AE2 Mob Storage** – Adds advanced mob handling and integration with AE2 (import/export, storage):
-- [ ] Import/Export
 - [ ] auto mob farm
-- [ ] pawner integration
+- [ ] spawner integration
 - [ ] xp shards      
 - [ ] **Auto Enchanter** – Automates enchanting using XP shards and lapis, supporting tier-based costs and Apotheosis integration.
 - [ ] **Demand Prediction** – Monitors resource usage to predict future needs and potentially automate expansions.
