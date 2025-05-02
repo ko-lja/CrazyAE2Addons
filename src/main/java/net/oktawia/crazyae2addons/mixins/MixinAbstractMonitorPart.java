@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(value = appeng.parts.reporting.AbstractMonitorPart.class, remap = false)
 public abstract class MixinAbstractMonitorPart {
@@ -20,9 +21,10 @@ public abstract class MixinAbstractMonitorPart {
             at = @At(
                     value = "INVOKE",
                     target = "Lappeng/api/behaviors/ContainerItemStrategies;getContainedStack(Lnet/minecraft/world/item/ItemStack;)Lappeng/api/stacks/GenericStack;"
-            )
+            ),
+            locals = LocalCapture.CAPTURE_FAILHARD
     )
-    private void onGetContainedStack(Player player, InteractionHand hand, Vec3 pos, CallbackInfoReturnable<Boolean> cir, @Local ItemStack eq) {
+    private void onGetContainedStack(Player player, InteractionHand hand, Vec3 pos, CallbackInfoReturnable<Boolean> cir, ItemStack eq) {
         if (eq.getItem() instanceof SpawnEggItem egg) {
             MobKey key = MobKey.of(egg.getType(eq.getTag()));
             ((AbstractMonitorPart) (Object) this).setConfiguredItem(key);

@@ -206,12 +206,14 @@ public class EnergyExporterPart extends UpgradeablePart implements
         transfered = "0";
         if (neighbor != null){
             neighbor.getCapability(ForgeCapabilities.ENERGY, getSide().getOpposite()).ifPresent(storage -> {
-                double powerRequired = Math.min(Math.pow(64, getInstalledUpgrades(AEItems.SPEED_CARD)), storage.getMaxEnergyStored() - storage.getEnergyStored()) - 1;
+                double powerRequired = Math.max((Math.min(Math.pow(64, getInstalledUpgrades(AEItems.SPEED_CARD)), storage.getMaxEnergyStored() - storage.getEnergyStored()) - 1), 0);
                 double availablePower = getGridNode().getGrid().getEnergyService().getStoredPower() * 2;
                 double maxPower = getGridNode().getGrid().getEnergyService().getMaxStoredPower() * 2;
                 if (((availablePower - powerRequired) * 100 / maxPower) > 33){
                     double ext = getGridNode().getGrid().getEnergyService().extractAEPower(powerRequired / 2, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                    storage.receiveEnergy((int) powerRequired, false);
+                    if (storage.canReceive()){
+                        storage.receiveEnergy((int) powerRequired, false);
+                    }
                     transfered = Utils.shortenNumber(ext * 2);
                 }
             });
