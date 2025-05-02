@@ -50,7 +50,10 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
 
     public MEDataControllerBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.ME_DATA_CONTROLLER_BE.get(), pos, blockState);
-        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL).setIdlePowerUsage(4).addService(IGridTickable.class, this);
+        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL).setIdlePowerUsage(4).addService(IGridTickable.class, this)
+                .setVisualRepresentation(
+                        new ItemStack(CrazyBlockRegistrar.ME_DATA_CONTROLLER_BLOCK.get().asItem())
+                );
     }
 
     @Override

@@ -15,7 +15,7 @@ public class CrazyBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         for (var block : CrazyBlockRegistrar.getBlocks()){
-            if (block != CrazyBlockRegistrar.AMPERE_METER_BLOCK.get()){
+            if (block != CrazyBlockRegistrar.AMPERE_METER_BLOCK.get() && block != CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get()){
                 simpleBlockWithItem(block);
             }
         }

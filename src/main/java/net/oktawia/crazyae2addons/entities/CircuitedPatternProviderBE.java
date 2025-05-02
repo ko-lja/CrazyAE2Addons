@@ -19,6 +19,7 @@ public class CircuitedPatternProviderBE extends PatternProviderBlockEntity {
 
     public CircuitedPatternProviderBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.CIRCUITED_PATTERN_PROVIDER_BE.get(), pos, blockState);
+        this.getMainNode().setVisualRepresentation(CrazyBlockRegistrar.CIRCUITED_PATTERN_PROVIDER_BLOCK.get());
     }
 
     @Override

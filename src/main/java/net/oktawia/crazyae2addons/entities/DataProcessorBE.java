@@ -21,6 +21,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
@@ -53,7 +54,10 @@ public class DataProcessorBE extends NotifyableBlockEntity implements MenuProvid
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(4)
-                .addService(IGridTickable.class, this);
+                .addService(IGridTickable.class, this)
+                .setVisualRepresentation(
+                        new ItemStack(CrazyBlockRegistrar.DATA_PROCESSOR_BLOCK.get().asItem())
+                );
         for(int i = 0; i < inv.size(); i ++){
             this.inv.setMaxStackSize(i, 1);
             settings.set(String.valueOf(i), new LogicSetting());

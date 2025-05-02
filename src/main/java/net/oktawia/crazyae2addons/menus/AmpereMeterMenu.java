@@ -2,6 +2,7 @@ package net.oktawia.crazyae2addons.menus;
 
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
+import appeng.util.BlockUpdate;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.AmpereMeterBE;
@@ -32,6 +33,8 @@ public class AmpereMeterMenu extends AEBaseMenu {
         this.direction = dir;
         if (isClientSide()){
             sendClientAction(CHANGE_DIRECTION, dir);
+        } else if (host.getLevel() != null) {
+            host.getLevel().sendBlockUpdated(host.getBlockPos(), host.getBlockState(), host.getBlockState(), 3);
         }
     }
 }

@@ -123,7 +123,7 @@ public class BlockDefs {
         );
 
         block(
-                CrazyBlockRegistrar.MOB_FARM_WAll_BLOCK.get(),
+                CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get(),
                 "BIB/IRI/BIB",
                 () -> Map.of(
                         "I", Blocks.IRON_BLOCK.asItem(),
@@ -133,20 +133,10 @@ public class BlockDefs {
         );
 
         block(
-                CrazyBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(),
-                "WBW/BRB/WBW",
-                () -> Map.of(
-                        "W", CrazyBlockRegistrar.MOB_FARM_WAll_BLOCK.get().asItem(),
-                        "B", AEBlocks.DENSE_ENERGY_CELL.asItem(),
-                        "R", AEItems.FLUIX_PEARL.asItem()
-                )
-        );
-
-        block(
                 CrazyBlockRegistrar.MOB_FARM_INPUT_BLOCK.get(),
                 "WWW/WEW/WWW",
                 () -> Map.of(
-                        "W", CrazyBlockRegistrar.MOB_FARM_WAll_BLOCK.get().asItem(),
+                        "W", CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get().asItem(),
                         "E", CrazyItemRegistrar.MOB_EXPORT_BUS.get()
                 )
         );
@@ -155,7 +145,7 @@ public class BlockDefs {
                 CrazyBlockRegistrar.MOB_FARM_COLLECTOR_BLOCK.get(),
                 "WHW/HEH/WHW",
                 () -> Map.of(
-                        "W", CrazyBlockRegistrar.MOB_FARM_WAll_BLOCK.get().asItem(),
+                        "W", CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get().asItem(),
                         "H", AEParts.IMPORT_BUS.asItem(),
                         "E", AEItems.FLUIX_PEARL.asItem()
                 )

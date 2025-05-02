@@ -59,7 +59,10 @@ public class IsolatedDataProcessorBE extends AENetworkInvBlockEntity implements 
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(4)
-                .addService(IGridTickable.class, this);
+                .addService(IGridTickable.class, this)
+                .setVisualRepresentation(
+                        new ItemStack(CrazyBlockRegistrar.ISOLATED_DATA_PROCESSOR_BLOCK.get().asItem())
+                );
         for (int i = 0; i < inv.size(); i++) {
             this.inv.setMaxStackSize(i, 1);
             settings.set(String.valueOf(i), new LogicSetting());

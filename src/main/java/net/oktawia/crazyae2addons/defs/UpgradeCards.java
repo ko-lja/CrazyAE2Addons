@@ -16,9 +16,9 @@ public class UpgradeCards {
             Upgrades.add(AEItems.SPEED_CARD, CrazyItemRegistrar.ENTITY_TICKER_PART_ITEM.get(), 8, "group.entity_ticker.name");
             Upgrades.add(AEItems.SPEED_CARD, CrazyItemRegistrar.ENERGY_EXPORTER_PART_ITEM.get(), 4, "group.energy_exporter.name");
             Upgrades.add(AEItems.SPEED_CARD, CrazyItemRegistrar.RIGHT_CLICK_PROVIDER_PART_ITEM.get(), 4, "group.right_click_provider.name");
-            Upgrades.add(AEItems.SPEED_CARD, CrazyBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(), 4, "group.mob_farm_controller.name");
-            Upgrades.add(CrazyItemRegistrar.LOOTING_UPGRADE_CARD.get(), CrazyBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(), 3, "group.mob_farm_controller.name");
-            Upgrades.add(CrazyItemRegistrar.EXPERIENCE_UPGRADE_CARD.get(), CrazyBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(), 2, "group.mob_farm_controller.name");
+            Upgrades.add(AEItems.SPEED_CARD, CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get(), 4, "group.mob_farm_controller.name");
+            Upgrades.add(CrazyItemRegistrar.LOOTING_UPGRADE_CARD.get(), CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get(), 3, "group.mob_farm_controller.name");
+            Upgrades.add(CrazyItemRegistrar.EXPERIENCE_UPGRADE_CARD.get(), CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get(), 2, "group.mob_farm_controller.name");
 
             ItemLike signalling = CrazyBlockRegistrar.SIGNALLING_INTERFACE_BLOCK_ITEM.get();
             Upgrades.add(AEItems.REDSTONE_CARD, signalling, 1, "group.signalling_interface.name");

@@ -6,8 +6,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.menus.MobFarmMenu;
 
-public class MobFarmControllerScreen<C extends MobFarmMenu> extends UpgradeableScreen<C> {
-    public MobFarmControllerScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
+public class MobFarmScreen<C extends MobFarmMenu> extends UpgradeableScreen<C> {
+    public MobFarmScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
     }
 

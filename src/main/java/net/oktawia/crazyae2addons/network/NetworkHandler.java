@@ -1,8 +1,11 @@
 package net.oktawia.crazyae2addons.network;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.oktawia.crazyae2addons.CrazyAddons;
+
+import java.util.Optional;
 
 public class NetworkHandler {
     private static final String PROTOCOL_VERSION = "1";
@@ -20,14 +23,40 @@ public class NetworkHandler {
                 DisplayValuePacket.class,
                 DisplayValuePacket::encode,
                 DisplayValuePacket::decode,
-                DisplayValuePacket::handle
+                DisplayValuePacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
         INSTANCE.registerMessage(
                 id++,
                 DataValuesPacket.class,
                 DataValuesPacket::encode,
                 DataValuesPacket::decode,
-                DataValuesPacket::handle
+                DataValuesPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
+        INSTANCE.registerMessage(
+                id++,
+                MobFarmClusterSyncPacket.class,
+                MobFarmClusterSyncPacket::encode,
+                MobFarmClusterSyncPacket::decode,
+                MobFarmClusterSyncPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
+        INSTANCE.registerMessage(
+                id++,
+                MobFarmClusterDeletePacket.class,
+                MobFarmClusterDeletePacket::encode,
+                MobFarmClusterDeletePacket::decode,
+                MobFarmClusterDeletePacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
+        INSTANCE.registerMessage(
+                id++,
+                MobFarmClusterSyncRequestPacket.class,
+                MobFarmClusterSyncRequestPacket::encode,
+                MobFarmClusterSyncRequestPacket::decode,
+                MobFarmClusterSyncRequestPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_SERVER)
         );
     }
 }

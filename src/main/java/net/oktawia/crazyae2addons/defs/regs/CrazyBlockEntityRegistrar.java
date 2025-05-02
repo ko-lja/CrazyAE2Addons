@@ -12,6 +12,7 @@ import net.oktawia.crazyae2addons.compat.GregTech.*;
 import net.oktawia.crazyae2addons.entities.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CrazyBlockEntityRegistrar {
@@ -33,6 +34,34 @@ public class CrazyBlockEntityRegistrar {
             BLOCK_ENTITY_SETUP.add(() -> blk.setBlockEntity(
                     (Class) blockEntityClass, (BlockEntityType) type, null, null
             ));
+
+            return type;
+        });
+    }
+
+    private static <T extends AEBaseBlockEntity> RegistryObject<BlockEntityType<T>> reg(
+            String id,
+            BlockEntityType.BlockEntitySupplier<T> factory,
+            Class<T> blockEntityClass,
+            RegistryObject<? extends AEBaseEntityBlock<?>>... blocks
+    ) {
+        return BLOCK_ENTITIES.register(id, () -> {
+            AEBaseEntityBlock<?>[] blkArray = Arrays.stream(blocks)
+                    .map(RegistryObject::get)
+                    .toArray(AEBaseEntityBlock<?>[]::new);
+
+            var type = BlockEntityType.Builder.of(factory, blkArray).build(null);
+
+            BLOCK_ENTITY_SETUP.add(() -> {
+                for (AEBaseEntityBlock<?> blk : blkArray) {
+                    blk.setBlockEntity(
+                            (Class) blockEntityClass,
+                            (BlockEntityType) type,
+                            null,
+                            null
+                    );
+                }
+            });
 
             return type;
         });
@@ -78,8 +107,15 @@ public class CrazyBlockEntityRegistrar {
                 }
             });
 
-    public static final RegistryObject<BlockEntityType<MobFarmControllerBE>> MOB_FARM_CONTROLLER_BE =
-            reg("mob_farm_controller", CrazyBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK, MobFarmControllerBE::new, MobFarmControllerBE.class);
+    public static final RegistryObject<BlockEntityType<MobFarmBE>> MOB_FARM_BE =
+            reg("mob_farm",
+                    MobFarmBE::new,
+                    MobFarmBE.class,
+                    CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK,
+                    CrazyBlockRegistrar.MOB_FARM_DAMAGE_MODULE_BLOCK,
+                    CrazyBlockRegistrar.MOB_FARM_COLLECTOR_BLOCK,
+                    CrazyBlockRegistrar.MOB_FARM_INPUT_BLOCK
+            );
 
     public static void setupBlockEntityTypes() {
         for (var runnable : BLOCK_ENTITY_SETUP) {

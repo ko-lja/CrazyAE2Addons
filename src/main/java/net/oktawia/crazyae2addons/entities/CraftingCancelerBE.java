@@ -20,8 +20,10 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.crazyae2addons.Utils;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.menus.CraftingCancelerMenu;
@@ -43,7 +45,10 @@ public class CraftingCancelerBE extends AENetworkBlockEntity implements MenuProv
         super(CrazyBlockEntityRegistrar.CRAFTING_CANCELER_BE.get(), pos, blockState);
         this.duration = 0;
         this.enabled = false;
-        this.getMainNode().setIdlePowerUsage(4.0F).addService(IGridTickable.class, this).setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.getMainNode().setIdlePowerUsage(4.0F).addService(IGridTickable.class, this).setFlags(GridFlags.REQUIRE_CHANNEL)
+                .setVisualRepresentation(
+                        new ItemStack(CrazyBlockRegistrar.CRAFTING_CANCELER_BLOCK.get().asItem())
+                );
     }
 
     @Override

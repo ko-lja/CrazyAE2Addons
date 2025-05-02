@@ -7,7 +7,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.helpers.IPriorityHost;
-import appeng.me.helpers.BlockEntityNodeListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +32,10 @@ public class SignallingInterfaceBE extends AENetworkBlockEntity
 
     public SignallingInterfaceBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.SIGNALLING_INTERFACE_BE.get(), pos, blockState);
+        this.getMainNode()
+                .setVisualRepresentation(
+                        new ItemStack(CrazyBlockRegistrar.SIGNALLING_INTERFACE_BLOCK.get().asItem())
+                );
     }
 
     protected SignallingInterfaceLogic createLogic() {

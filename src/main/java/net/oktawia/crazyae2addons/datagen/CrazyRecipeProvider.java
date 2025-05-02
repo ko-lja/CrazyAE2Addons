@@ -37,8 +37,8 @@ public class CrazyRecipeProvider extends RecipeProvider implements IConditionBui
             builder.unlockedBy(getHasName(AEBlocks.CONTROLLER.asItem()), has(AEBlocks.CONTROLLER.asItem()));
             builder.save(pWriter);
         }
-        int recipeIndex = 0;
         for (var entry : ItemDefs.getItemRecipes().entrySet()) {
+            int recipeIndex = 0;
             for (var recipeEntry : entry.getValue()) {
                 ShapedRecipeBuilder builder = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, entry.getKey());
                 for (var recipe : recipeEntry.getKey().split("/")) {

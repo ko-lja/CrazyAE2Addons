@@ -445,18 +445,14 @@ public class SignallingInterfaceLogic implements ICraftingRequester, IUpgradeabl
 
     private void onConfigChanged() {
         this.host.saveChanges();
-        updatePlan(); // update plan in case fuzzy mode changed
+        updatePlan();
     }
 
     private void onUpgradesChanged() {
         this.host.saveChanges();
-
         if (!upgrades.isInstalled(AEItems.CRAFTING_CARD)) {
-            // Cancel crafting if the crafting card is removed
             this.cancelCrafting();
         }
-
-        // Update plan in case fuzzy card was inserted or removed
         updatePlan();
     }
 

@@ -13,7 +13,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
-import net.oktawia.crazyae2addons.blocks.MobFarmController;
+import net.oktawia.crazyae2addons.clusters.MobFarmClusterCalculator;
 import net.oktawia.crazyae2addons.defs.*;
 import net.oktawia.crazyae2addons.defs.regs.*;
 import net.oktawia.crazyae2addons.mobstorage.EntityTypeRenderer;
@@ -47,7 +47,6 @@ public class CrazyAddons {
         modEventBus.addListener(this::registerCreativeTab);
 
         MinecraftForge.EVENT_BUS.register(this);
-        NetworkHandler.registerPackets();
 
         modEventBus.addListener(this::commonSetup);
     }
@@ -66,10 +65,10 @@ public class CrazyAddons {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            NetworkHandler.registerPackets();
             new UpgradeCards(event);
             MobKeyType.registerContainerItemStrategies();
             CrazyBlockEntityRegistrar.setupBlockEntityTypes();
-            MobFarmController.init();
         });
     }
 
@@ -86,7 +85,9 @@ public class CrazyAddons {
         }
         @SubscribeEvent
         public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders evt) {
-            CrazyItemRegistrar.registerPartModels();
+            try {
+                CrazyItemRegistrar.registerPartModels();
+            } catch (Exception ignored) {}
         }
     }
 }

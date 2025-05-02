@@ -108,8 +108,8 @@ public class CrazyMenuRegistrar {
     public static final RegistryObject<MenuType<MobExportBusMenu>> MOB_EXPORT_BUS_MENU =
             reg(id("mob_export_bus"), MobExportBusMenu::new, MobExportBus.class);
 
-    public static final RegistryObject<MenuType<MobFarmControllerMenu>> MOB_FARM_CONTROLLER_MENU =
-            reg(id("mob_farm_controller"), MobFarmControllerMenu::new, MobFarmControllerBE.class);
+    public static final RegistryObject<MenuType<MobFarmMenu>> MOB_FARM_MENU =
+            reg(id("mob_farm"), MobFarmMenu::new, MobFarmBE.class);
 
     private CrazyMenuRegistrar() {}
 }

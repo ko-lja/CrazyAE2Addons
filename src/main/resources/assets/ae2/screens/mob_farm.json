@@ -7,9 +7,7 @@
   },
   "text": {
     "dialog_title": {
-      "text": {
-        "translate": "block.crazyae2addons.mob_farm_controller"
-      },
+      "text": "Mob Farm",
       "position": {
         "left": 8,
         "top": 6

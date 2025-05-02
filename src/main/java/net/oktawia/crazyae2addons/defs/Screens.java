@@ -97,9 +97,9 @@ public final class Screens {
                 "/screens/mob_export_bus.json");
 
         InitScreens.register(
-                CrazyMenuRegistrar.MOB_FARM_CONTROLLER_MENU.get(),
-                MobFarmControllerScreen<MobFarmControllerMenu>::new,
-                "/screens/mob_farm_controller.json"
+                CrazyMenuRegistrar.MOB_FARM_MENU.get(),
+                MobFarmScreen<MobFarmMenu>::new,
+                "/screens/mob_farm.json"
         );
 
         if (IsModLoaded.isGTCEuLoaded() && CrazyMenuRegistrar.CIRCUITED_PATTERN_PROVIDER_MENU != null) {

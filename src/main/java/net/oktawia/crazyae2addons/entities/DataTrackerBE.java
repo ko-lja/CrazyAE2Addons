@@ -17,7 +17,9 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.menus.DataTrackerMenu;
@@ -35,7 +37,10 @@ public class DataTrackerBE extends NotifyableBlockEntity implements MenuProvider
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(1)
-                .addService(IGridTickable.class, this);
+                .addService(IGridTickable.class, this)
+                .setVisualRepresentation(
+                        new ItemStack(CrazyBlockRegistrar.DATA_TRACKER_BLOCK.get().asItem())
+                );
     }
 
     @Override

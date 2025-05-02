@@ -96,19 +96,12 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("signalling_interface",
                     () -> new SignallingInterfaceBlockItem(SIGNALLING_INTERFACE_BLOCK.get(), new Item.Properties()));
 
-    public static final RegistryObject<MobFarmController> MOB_FARM_CONTROLLER_BLOCK =
-            BLOCKS.register("mob_farm_controller", MobFarmController::new);
-
-    public static final RegistryObject<BlockItem> MOB_FARM_CONTROLLER_BLOCK_ITEM =
-            BLOCK_ITEMS.register("mob_farm_controller",
-                    () -> new MobFarmControllerItem(MOB_FARM_CONTROLLER_BLOCK.get(), new Item.Properties()));
-
-    public static final RegistryObject<MobFarmWall> MOB_FARM_WAll_BLOCK =
+    public static final RegistryObject<MobFarmWall> MOB_FARM_WALL_BLOCK =
             BLOCKS.register("mob_farm_wall", MobFarmWall::new);
 
-    public static final RegistryObject<BlockItem> MOB_FARM_WAll_BLOCK_ITEM =
+    public static final RegistryObject<BlockItem> MOB_FARM_WALL_BLOCK_ITEM =
             BLOCK_ITEMS.register("mob_farm_wall",
-                    () -> new MobFarmWallItem(MOB_FARM_WAll_BLOCK.get(), new Item.Properties()));
+                    () -> new MobFarmWallItem(MOB_FARM_WALL_BLOCK.get(), new Item.Properties()));
 
     public static final RegistryObject<MobFarmCollector> MOB_FARM_COLLECTOR_BLOCK =
             BLOCKS.register("mob_farm_collector", MobFarmCollector::new);
@@ -130,6 +123,7 @@ public class CrazyBlockRegistrar {
     public static final RegistryObject<BlockItem> MOB_FARM_DAMAGE_MODULE_BLOCK_ITEM =
             BLOCK_ITEMS.register("mob_farm_damage_module",
                     () -> new MobFarmDamageModuleItem(MOB_FARM_DAMAGE_MODULE_BLOCK.get(), new Item.Properties()));
+
 
     private CrazyBlockRegistrar() {}
 }
