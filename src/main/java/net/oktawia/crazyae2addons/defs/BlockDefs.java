@@ -170,6 +170,19 @@ public class BlockDefs {
                         "S", AEItems.FLUIX_PEARL.asItem()
                 )
         );
+
+        block(
+                CrazyBlockRegistrar.SPAWNER_CONTROLLER_WALL_BLOCK.get(),
+                " S /ICO/BEB",
+                () -> Map.of(
+                        "S", Items.NETHER_STAR,
+                        "I", AEParts.IMPORT_BUS.asItem(),
+                        "C", Blocks.ENCHANTING_TABLE.asItem(),
+                        "O", AEParts.EXPORT_BUS.asItem(),
+                        "B", Blocks.OBSIDIAN.asItem(),
+                        "E", AEBlocks.DENSE_ENERGY_CELL.asItem()
+                )
+        );
     }
 
 }

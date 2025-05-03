@@ -2,7 +2,7 @@
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
-    "texture": "guis/mob_farm_controller.png",
+    "texture": "guis/mob_farm.png",
     "srcRect": [0, 0, 176, 205]
   },
   "text": {

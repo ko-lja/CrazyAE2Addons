@@ -25,6 +25,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BaseSpawner;
@@ -33,6 +35,7 @@ import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraftforge.network.PacketDistributor;
+import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.entities.SpawnerControllerBE;
 import net.oktawia.crazyae2addons.mobstorage.MobKey;
@@ -210,7 +213,6 @@ public class SpawnerControllerCluster implements IAECluster, IUpgradeableObject,
                 field.setAccessible(true);
                 field.setInt(logic, 0);
                 spawner.setChanged();
-                LogUtils.getLogger().info("DISABLED");
                 this.disabledSpawners = true;
             } catch (NoSuchFieldException | IllegalAccessException ignored) {}
         }
@@ -225,7 +227,6 @@ public class SpawnerControllerCluster implements IAECluster, IUpgradeableObject,
                 field.setAccessible(true);
                 field.setInt(logic, 16);
                 spawner.setChanged();
-                LogUtils.getLogger().info("ENABLED");
                 this.disabledSpawners = false;
             } catch (NoSuchFieldException | IllegalAccessException ignored) {}
         }
@@ -376,6 +377,9 @@ public class SpawnerControllerCluster implements IAECluster, IUpgradeableObject,
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (!CrazyConfig.COMMON.enablePeacefullSpawner.get() && (this.core != null && this.core.getLevel() != null && this.core.getLevel().getDifficulty() == Difficulty.PEACEFUL)) {
+            return TickRateModulation.IDLE;
+        }
         this.disableAllSpawnersInStructure();
         var spawners = getSpawnersInStructure();
         if (!spawners.isEmpty()){

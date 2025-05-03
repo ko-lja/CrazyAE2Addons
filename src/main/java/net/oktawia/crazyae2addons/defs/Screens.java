@@ -108,6 +108,12 @@ public final class Screens {
                 "/screens/spawner_controller.json"
         );
 
+        InitScreens.register(
+                CrazyMenuRegistrar.AUTO_ENCHANTER_MENU.get(),
+                AutoEnchanterScreen<AutoEnchanterMenu>::new,
+                "/screens/auto_enchanter.json"
+        );
+
         if (IsModLoaded.isGTCEuLoaded() && CrazyMenuRegistrar.CIRCUITED_PATTERN_PROVIDER_MENU != null) {
             InitScreens.register(CrazyMenuRegistrar.CIRCUITED_PATTERN_PROVIDER_MENU.get(),
                     CircuitedPatternProviderScreen<CircuitedPatternProviderMenu>::new,

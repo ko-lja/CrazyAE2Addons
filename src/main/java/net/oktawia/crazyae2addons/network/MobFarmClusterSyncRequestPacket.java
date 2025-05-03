@@ -57,8 +57,7 @@ public class MobFarmClusterSyncRequestPacket {
             if (cluster == null) return;
 
             CompoundTag packetTag = new CompoundTag();
-            cluster.getInventory().writeToNBT(packetTag, "clusterinventory");
-            cluster.getUpgrades().writeToNBT(packetTag, "clusterupgrades");
+            cluster.writeToNBT(packetTag);
             cluster.writeBlockEntitiesToNBT(packetTag);
             NetworkHandler.INSTANCE.send(
                     PacketDistributor.ALL.noArg(),

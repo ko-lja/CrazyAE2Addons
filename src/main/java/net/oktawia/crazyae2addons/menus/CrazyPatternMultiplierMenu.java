@@ -32,7 +32,7 @@ public class CrazyPatternMultiplierMenu extends AEBaseMenu {
         this.mult = host.getItemStack().getTag() == null ? 0 : host.getItemStack().getTag().getDouble("mult");
         host.setMenu(this);
         for (int i = 0; i < 36; i++){
-            this.addSlot(new AppEngFilteredSlot(host.inv, i, AEItems.PROCESSING_PATTERN.stack()), SlotSemantics.ENCODED_PATTERN);
+            this.addSlot(new AppEngFilteredSlot(host.inv, i, AEItems.PROCESSING_PATTERN.asItem()), SlotSemantics.ENCODED_PATTERN);
         }
         registerClientAction(ACTION_MODIFY_PATTERNS, Double.class, this::modifyPatterns);
     }

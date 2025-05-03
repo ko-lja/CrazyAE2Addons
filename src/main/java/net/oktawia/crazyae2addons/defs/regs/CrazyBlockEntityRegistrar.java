@@ -8,6 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.IsModLoaded;
+import net.oktawia.crazyae2addons.compat.Apotheosis.ApothAutoEnchanterBE;
 import net.oktawia.crazyae2addons.compat.GregTech.*;
 import net.oktawia.crazyae2addons.entities.*;
 
@@ -119,6 +120,20 @@ public class CrazyBlockEntityRegistrar {
 
     public static final RegistryObject<BlockEntityType<SpawnerControllerBE>> SPAWNER_CONTROLLER_BE =
             reg("spawner_controller", CrazyBlockRegistrar.SPAWNER_CONTROLLER_WALL_BLOCK, SpawnerControllerBE::new, SpawnerControllerBE.class);
+
+    public static final RegistryObject<BlockEntityType<? extends AutoEnchanterBE>> AUTO_ENCHANTER_BE =
+            BLOCK_ENTITIES.register("auto_enchanter", () -> {
+                var blk = CrazyBlockRegistrar.AUTO_ENCHANTER_BLOCK.get();
+                if (IsModLoaded.isApothLoaded()) {
+                    var type = BlockEntityType.Builder.of(ApothAutoEnchanterBE::new, blk).build(null);
+                    BLOCK_ENTITY_SETUP.add(() -> ((AEBaseEntityBlock) blk).setBlockEntity(ApothAutoEnchanterBE.class, type, null, null));
+                    return type;
+                } else {
+                    var type = BlockEntityType.Builder.of(AutoEnchanterBE::new, blk).build(null);
+                    BLOCK_ENTITY_SETUP.add(() -> blk.setBlockEntity(AutoEnchanterBE.class, type, null, null));
+                    return type;
+                }
+            });
 
     public static void setupBlockEntityTypes() {
         for (var runnable : BLOCK_ENTITY_SETUP) {

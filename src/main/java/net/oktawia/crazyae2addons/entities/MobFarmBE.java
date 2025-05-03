@@ -218,9 +218,9 @@ public class MobFarmBE extends AENetworkBlockEntity implements
     @Override
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
+        if (getLevel() == null) return;
         tag.putBoolean("coreblock", isCoreBlock);
         if (isCoreBlock && cluster != null) {
-            LogUtils.getLogger().info("SAVING TO NBT");
             CompoundTag clusterTag = new CompoundTag();
             cluster.writeToNBT(clusterTag);
             cluster.writeBlockEntitiesToNBT(clusterTag);

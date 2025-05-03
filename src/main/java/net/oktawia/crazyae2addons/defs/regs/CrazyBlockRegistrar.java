@@ -129,7 +129,14 @@ public class CrazyBlockRegistrar {
 
     public static final RegistryObject<BlockItem> SPAWNER_CONTROLLER_WALL_BLOCK_ITEM =
             BLOCK_ITEMS.register("spawner_controller_wall",
-                    () -> new MobFarmDamageModuleItem(SPAWNER_CONTROLLER_WALL_BLOCK.get(), new Item.Properties()));
+                    () -> new SpawnerControllerWallItem(SPAWNER_CONTROLLER_WALL_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<AutoEnchanterBlock> AUTO_ENCHANTER_BLOCK =
+            BLOCKS.register("auto_enchanter", AutoEnchanterBlock::new);
+
+    public static final RegistryObject<BlockItem> AUTO_ENCHANTER_BLOCK_ITEM =
+            BLOCK_ITEMS.register("auto_enchanter",
+                    () -> new AutoEnchanterBlockItem(AUTO_ENCHANTER_BLOCK.get(), new Item.Properties()));
 
     private CrazyBlockRegistrar() {}
 }

@@ -2,6 +2,7 @@ package net.oktawia.crazyae2addons.mobstorage;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
@@ -16,7 +17,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,6 +73,19 @@ public class MobKey extends AEKey {
         DataResult<Tag> dr = MobKey.CODEC.encodeStart(NbtOps.INSTANCE, this);
         Tag raw = dr.resultOrPartial(err -> {}).orElse(new CompoundTag());
         return raw instanceof CompoundTag ct ? ct : new CompoundTag();
+    }
+
+    public static MobKey fromTag(CompoundTag tag) {
+        return CODEC.decode(NbtOps.INSTANCE, tag)
+                .resultOrPartial(error -> {})
+                .map(pair -> pair.getFirst())
+                .orElse(null);
+    }
+
+    @Nullable
+    public ItemStack getSpawnEgg() {
+        SpawnEggItem egg = ForgeSpawnEggItem.fromEntityType(this.entityType);
+        return egg != null ? new ItemStack(egg) : ItemStack.EMPTY;
     }
 
     @Override

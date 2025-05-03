@@ -13,6 +13,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.upgrades.IUpgradeInventory;
@@ -21,10 +22,13 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.core.definitions.AEItems;
 import appeng.me.Grid;
 import appeng.me.cluster.IAECluster;
+import appeng.menu.slot.FakeSlot;
 import appeng.util.ConfigInventory;
+import appeng.util.ConfigMenuInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import com.mojang.authlib.GameProfile;
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,6 +36,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -76,9 +81,10 @@ public class MobFarmCluster implements IAECluster, IUpgradeableObject, InternalI
     public Integer damageBlocks = 0;
     public boolean isDestroyed = true;
     private MobFarmBE core;
-    private final ConfigInventory configInventory = ConfigInventory.configTypes(what -> (what instanceof MobKey), CONFIG_INV_SIZE, this::saveChanges);
+    private final ConfigInventory configInventory = ConfigInventory.configTypes((x) -> x instanceof MobKey, CONFIG_INV_SIZE, this::saveChanges);
     public IManagedGridNode gridNode;
     public FakePlayer fakePlayer;
+    public boolean initialLoad = true;
 
     public MobFarmCluster(BlockPos minPos, BlockPos maxPos) {
         this.minPos = minPos.immutable();
@@ -90,11 +96,29 @@ public class MobFarmCluster implements IAECluster, IUpgradeableObject, InternalI
         tag.putLong("clustermax", this.getBoundsMax().asLong());
         this.inventory.writeToNBT(tag, "clusterinventory");
         this.upgrades.writeToNBT(tag, "clusterupgrades");
+        ListTag conf = new ListTag();
+        for (AEKey key : this.configInventory.keySet()){
+            if (key instanceof MobKey mk){
+                conf.add(mk.toTag());
+            }
+        }
+        tag.put("clusterconfig", conf);
     }
 
     public void readFromNBT(CompoundTag tag) {
         this.inventory.readFromNBT(tag, "clusterinventory");
         this.upgrades.readFromNBT(tag, "clusterupgrades");
+        ListTag conf = tag.getList("clusterconfig", CompoundTag.TAG_COMPOUND);
+        int cnt = 0;
+        for (Tag t : conf) {
+            if (t instanceof CompoundTag ct) {
+                MobKey key = MobKey.fromTag(ct);
+                if (key != null && key.getSpawnEgg() != null){
+                    this.configInventory.setStack(cnt++, new GenericStack(key, 1L));
+                }
+            }
+        }
+        this.initialLoad = false;
     }
 
     @Override
@@ -226,7 +250,9 @@ public class MobFarmCluster implements IAECluster, IUpgradeableObject, InternalI
 
     @Override
     public void saveChanges() {
-        this.getCoreBlockEntity().saveChanges();
+        if (this.getCoreBlockEntity() != null && !this.initialLoad){
+            this.getCoreBlockEntity().saveChanges();
+        }
     }
 
     public void setCoreBlockEntity(MobFarmBE be){

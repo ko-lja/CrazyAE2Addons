@@ -15,6 +15,7 @@ public class CrazyConfig {
 
     public static class Common {
         public final ForgeConfigSpec.BooleanValue enableCPP;
+        public final ForgeConfigSpec.BooleanValue enablePeacefullSpawner;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Crazy AE2 Addons - Config").push("general");
@@ -22,6 +23,10 @@ public class CrazyConfig {
             enableCPP = builder
                     .comment("Enables Circuited Pattern Provider")
                     .define("enableCPP", true);
+
+            enablePeacefullSpawner = builder
+                    .comment("Enables Spawner Controller to work also on peacefull mode")
+                    .define("enablePeacefullSpawner", true);
 
             builder.pop();
         }

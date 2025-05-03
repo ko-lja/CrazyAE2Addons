@@ -6,4 +6,7 @@ public class IsModLoaded {
     public static boolean isGTCEuLoaded() {
         return ModList.get().isLoaded("gtceu");
     }
+    public static boolean isApothLoaded() {
+        return ModList.get().isLoaded("apotheosis");
+    }
 }

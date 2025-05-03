@@ -25,7 +25,7 @@ public class CrazyPatternModifierMenu extends AEBaseMenu {
         super(CrazyMenuRegistrar.CRAZY_PATTERN_MODIFIER_MENU.get(), id, ip, host);
         this.createPlayerInventorySlots(ip);
         host.setMenu(this);
-        this.addSlot(new AppEngFilteredSlot(host.inv, 0, AEItems.PROCESSING_PATTERN.stack()), SlotSemantics.STORAGE);
+        this.addSlot(new AppEngFilteredSlot(host.inv, 0, AEItems.PROCESSING_PATTERN.asItem()), SlotSemantics.STORAGE);
         registerClientAction(CHANGE_IGNORE_NBT, this::changeNBT);
         registerClientAction(CHANGE_CIRCUIT, Integer.class, this::changeCircuit);
     }
