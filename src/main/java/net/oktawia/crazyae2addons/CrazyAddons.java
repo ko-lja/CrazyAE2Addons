@@ -15,7 +15,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
-import net.oktawia.crazyae2addons.clusters.MobFarmClusterCalculator;
 import net.oktawia.crazyae2addons.defs.*;
 import net.oktawia.crazyae2addons.defs.regs.*;
 import net.oktawia.crazyae2addons.mobstorage.EntityTypeRenderer;

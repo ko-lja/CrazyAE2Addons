@@ -69,7 +69,7 @@ public class NetworkHandler {
     }
 
     public static void registerServerPackets() {
-        int id = 0;
+        int id = 100;
         INSTANCE.registerMessage(
                 id++,
                 MobFarmClusterSyncRequestPacket.class,
