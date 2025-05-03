@@ -17,7 +17,7 @@ The Spawner Controller is a multiblock system that simulates mob spawning from r
 
 - **W** – Spawner Controller Wall Block
 - **G** – Vibrant Quartz Glass
-- **A** – Quartz Glass
+- **A** – Air 
 - **S** – Minecraft Spawner Block
 
 #### Layer 1:

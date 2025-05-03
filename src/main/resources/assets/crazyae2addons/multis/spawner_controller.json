@@ -1,6 +1,6 @@
 {
   "symbols": {
-    "A": ["ae2:quartz_glass"],
+    "A": ["minecraft:air"],
     "G": ["ae2:quartz_vibrant_glass"],
     "W": ["crazyae2addons:spawner_controller_wall"]
   },

@@ -19,6 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import org.spongepowered.asm.mixin.Final;
@@ -101,6 +102,7 @@ public abstract class MixinGT {
 
     @Unique
     private static void setCirc(int circ, BlockPos pos, Level lvl){
+        if (!CrazyConfig.COMMON.enableCPP.get()) return;
         var machine = SimpleTieredMachine.getMachine(lvl, pos);
         NotifiableItemStackHandler inv;
         if (machine instanceof SimpleTieredMachine STM){
