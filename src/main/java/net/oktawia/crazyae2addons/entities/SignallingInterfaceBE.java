@@ -2,6 +2,7 @@ package net.oktawia.crazyae2addons.entities;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.*;
+import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigurableObject;
@@ -104,5 +105,10 @@ public class SignallingInterfaceBE extends AENetworkBlockEntity
             return logic.getUpgrades();
         }
         return super.getSubInventory(id);
+    }
+
+    @Override
+    public IUpgradeInventory getUpgrades(){
+        return logic.getUpgrades();
     }
 }

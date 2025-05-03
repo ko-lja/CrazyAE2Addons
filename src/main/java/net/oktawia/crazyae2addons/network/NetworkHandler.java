@@ -16,7 +16,7 @@ public class NetworkHandler {
             PROTOCOL_VERSION::equals
     );
 
-    public static void registerPackets() {
+    public static void registerClientPackets(){
         int id = 0;
         INSTANCE.registerMessage(
                 id++,
@@ -52,14 +52,6 @@ public class NetworkHandler {
         );
         INSTANCE.registerMessage(
                 id++,
-                MobFarmClusterSyncRequestPacket.class,
-                MobFarmClusterSyncRequestPacket::encode,
-                MobFarmClusterSyncRequestPacket::decode,
-                MobFarmClusterSyncRequestPacket::handle,
-                Optional.of(NetworkDirection.PLAY_TO_SERVER)
-        );
-        INSTANCE.registerMessage(
-                id++,
                 SpawnerControllerClusterDeletePacket.class,
                 SpawnerControllerClusterDeletePacket::encode,
                 SpawnerControllerClusterDeletePacket::decode,
@@ -73,6 +65,18 @@ public class NetworkHandler {
                 SpawnerControllerClusterSyncPacket::decode,
                 SpawnerControllerClusterSyncPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
+    }
+
+    public static void registerServerPackets() {
+        int id = 0;
+        INSTANCE.registerMessage(
+                id++,
+                MobFarmClusterSyncRequestPacket.class,
+                MobFarmClusterSyncRequestPacket::encode,
+                MobFarmClusterSyncRequestPacket::decode,
+                MobFarmClusterSyncRequestPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_SERVER)
         );
         INSTANCE.registerMessage(
                 id++,

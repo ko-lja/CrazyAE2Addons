@@ -46,6 +46,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.oktawia.crazyae2addons.Utils;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.entities.SignallingInterfaceBE;
 import net.oktawia.crazyae2addons.menus.SignallingInterfaceMenu;
 import org.jetbrains.annotations.Nullable;
@@ -89,7 +90,7 @@ public class SignallingInterfaceLogic implements ICraftingRequester, IUpgradeabl
         this.interfaceRequestSource = new InterfaceRequestSource(mainNode::getNode);
 
         gridNode.addService(ICraftingRequester.class, this);
-        this.upgrades = UpgradeInventories.forMachine(is, 3, this::onUpgradesChanged);
+        this.upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.SIGNALLING_INTERFACE_BLOCK_ITEM.get(), 3, this::onUpgradesChanged);
         this.craftingTracker = new SignallingInterfaceMultiCraftingTracker(this, slots);
         this.cm.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.plannedWork = new GenericStack[slots];
