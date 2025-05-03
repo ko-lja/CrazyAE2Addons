@@ -35,12 +35,11 @@ If you want to support me creating, consider downloading from [Modrinth](https:/
 - [x] **AE2 Mob Storage** - Adds advanced mob handling and integration with AE2.
 - [x] **Mob Annihilation Plane abd Mob Export Bus** - A way to import/export mobs from/to ME network storage.
 - [x] **Mob Farm Multiblock** - A full blown mob grinder, all inside your ME system.
+- [x] **Spawner Controller Multiblock** -  A full blown spawner, all inside your ME system.
 
 ---
 
 ## Additional Planned / Unfinished Ideas
-- [ ] spawner integration
-- [ ] xp shards      
 - [ ] **Auto Enchanter** - Automates enchanting using XP shards and lapis, supporting tier-based costs and Apotheosis integration.
 - [ ] **Demand Prediction** - Monitors resource usage to predict future needs and potentially automate expansions.
 - [ ] **Suggestions/Recommendations** - Observes resource trends to offer advice (e.g., adding more power generation).
