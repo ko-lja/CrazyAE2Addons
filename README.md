@@ -18,6 +18,7 @@ If you want to support me creating, consider downloading from [Modrinth](https:/
 - [x] **Round Robin Item P2P Tunnel** - Evenly distributes incoming item stacks across multiple outputs.
 - [x] **Chunked Fluid P2P Tunnel** - Distributes fluids in equaly sized packets, which size is configurable.
 - [x] **Right Click Provider** - Continuously right-clicks in front of it. Abble of using any items in its inventory (e.g., placing blocks).
+- [x] **Auto Enchanter** - Automates enchanting using XP shards and lapis, with Apotheosis integration.
 
 ## Energy & Redstone
 - [x] **Energy Exporter** - Exports FE (or EU with a GregTech battery installed) to adjacent blocks; speed up with acceleration cards.
@@ -40,7 +41,6 @@ If you want to support me creating, consider downloading from [Modrinth](https:/
 ---
 
 ## Additional Planned / Unfinished Ideas
-- [ ] **Auto Enchanter** - Automates enchanting using XP shards and lapis, supporting tier-based costs and Apotheosis integration.
 - [ ] **Demand Prediction** - Monitors resource usage to predict future needs and potentially automate expansions.
 - [ ] **Suggestions/Recommendations** - Observes resource trends to offer advice (e.g., adding more power generation).
 - [ ] **Goal Registering/Monitoring** - Allows players to define specific resource/production goals and track them in the network.
