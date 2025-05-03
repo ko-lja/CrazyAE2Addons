@@ -161,6 +161,15 @@ public class BlockDefs {
                 )
         );
 
+        block(
+                CrazyBlockRegistrar.SPAWNER_CONTROLLER_WALL_BLOCK.get(),
+                "WEW/ESE/WEW",
+                () -> Map.of(
+                        "W", CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get().asItem(),
+                        "E", Items.BLAZE_ROD,
+                        "S", AEItems.FLUIX_PEARL.asItem()
+                )
+        );
     }
 
 }

@@ -111,5 +111,8 @@ public class CrazyMenuRegistrar {
     public static final RegistryObject<MenuType<MobFarmMenu>> MOB_FARM_MENU =
             reg(id("mob_farm"), MobFarmMenu::new, MobFarmBE.class);
 
+    public static final RegistryObject<MenuType<SpawnerControllerMenu>> SPAWNER_CONTROLLER_MENU =
+            reg(id("spawner_controller"), SpawnerControllerMenu::new, SpawnerControllerBE.class);
+
     private CrazyMenuRegistrar() {}
 }

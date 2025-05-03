@@ -15,11 +15,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class ClusterPattern {
     private final List<List<String>> layers;
     private final Map<Character, Set<Block>> symbolMap;
-    private final ResourceLocation patternLocation;
 
     public enum Rotation {
         NONE,
@@ -29,7 +29,6 @@ public class ClusterPattern {
     }
 
     public ClusterPattern(ResourceLocation location) {
-        this.patternLocation = location;
         ClusterPattern loaded = loadFromJson(location);
         this.layers = loaded.layers;
         this.symbolMap = loaded.symbolMap;
@@ -38,7 +37,6 @@ public class ClusterPattern {
     private ClusterPattern(List<List<String>> layers, Map<Character, Set<Block>> symbolMap, ResourceLocation location) {
         this.layers = layers;
         this.symbolMap = symbolMap;
-        this.patternLocation = location;
     }
 
     public int[] rotateXZ(int x, int z, Rotation rotation) {
@@ -71,6 +69,26 @@ public class ClusterPattern {
             }
         } while (moved);
         return pos;
+    }
+
+    public List<BlockPos> getOffsets(Rotation rotation) {
+        List<BlockPos> offsets = new ArrayList<>();
+        int h = getHeight();
+        for (int y = 0; y < h; y++) {
+            List<String> layer = layers.get(y);
+            int d = layer.size();
+            for (int z = 0; z < d; z++) {
+                String row = layer.get(z);
+                int w = row.length();
+                for (int x = 0; x < w; x++) {
+                    char symbol = row.charAt(x);
+                    if (symbol == '.') continue;
+                    int[] rot = rotateXZ(x, z, rotation);
+                    offsets.add(new BlockPos(rot[0], y, rot[1]));
+                }
+            }
+        }
+        return offsets;
     }
 
     public boolean matchesWithRotation(Level level, BlockPos origin, Rotation rotation) {
@@ -180,5 +198,22 @@ public class ClusterPattern {
         } catch (Exception e) {
             throw new RuntimeException("Failed to load ClusterPattern from " + location, e);
         }
+    }
+
+    public List<BlockPos> getSymbolPositions(Level level, BlockPos origin, Rotation rotation, char symbol) {
+        List<BlockPos> result = new ArrayList<>();
+        for (int y = 0; y < layers.size(); y++) {
+            List<String> layer = layers.get(y);
+            for (int z = 0; z < layer.size(); z++) {
+                String row = layer.get(z);
+                for (int x = 0; x < row.length(); x++) {
+                    if (row.charAt(x) != symbol) continue;
+                    int[] rotated = rotateXZ(x, z, rotation);
+                    BlockPos checkPos = origin.offset(rotated[0], y, rotated[1]);
+                    result.add(checkPos);
+                }
+            }
+        }
+        return result;
     }
 }

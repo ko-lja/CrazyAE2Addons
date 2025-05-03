@@ -136,10 +136,7 @@ public class MobFarmCluster implements IAECluster, IUpgradeableObject, InternalI
     }
 
     public IGridNode getNode() {
-        var node = this.gridNode;
-        if (node.getNode() == null){
-        }
-        return node.getNode();
+        return this.gridNode.getNode();
     }
 
     public void initNode() {

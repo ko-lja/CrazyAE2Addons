@@ -124,6 +124,12 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("mob_farm_damage_module",
                     () -> new MobFarmDamageModuleItem(MOB_FARM_DAMAGE_MODULE_BLOCK.get(), new Item.Properties()));
 
+    public static final RegistryObject<SpawnerControllerWall> SPAWNER_CONTROLLER_WALL_BLOCK =
+            BLOCKS.register("spawner_controller_wall", SpawnerControllerWall::new);
+
+    public static final RegistryObject<BlockItem> SPAWNER_CONTROLLER_WALL_BLOCK_ITEM =
+            BLOCK_ITEMS.register("spawner_controller_wall",
+                    () -> new MobFarmDamageModuleItem(SPAWNER_CONTROLLER_WALL_BLOCK.get(), new Item.Properties()));
 
     private CrazyBlockRegistrar() {}
 }

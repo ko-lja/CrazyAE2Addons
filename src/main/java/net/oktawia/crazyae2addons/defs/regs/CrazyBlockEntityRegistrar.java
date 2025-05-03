@@ -117,6 +117,9 @@ public class CrazyBlockEntityRegistrar {
                     CrazyBlockRegistrar.MOB_FARM_INPUT_BLOCK
             );
 
+    public static final RegistryObject<BlockEntityType<SpawnerControllerBE>> SPAWNER_CONTROLLER_BE =
+            reg("spawner_controller", CrazyBlockRegistrar.SPAWNER_CONTROLLER_WALL_BLOCK, SpawnerControllerBE::new, SpawnerControllerBE.class);
+
     public static void setupBlockEntityTypes() {
         for (var runnable : BLOCK_ENTITY_SETUP) {
             runnable.run();

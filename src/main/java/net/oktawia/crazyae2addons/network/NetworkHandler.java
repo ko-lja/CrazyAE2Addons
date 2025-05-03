@@ -58,5 +58,29 @@ public class NetworkHandler {
                 MobFarmClusterSyncRequestPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_SERVER)
         );
+        INSTANCE.registerMessage(
+                id++,
+                SpawnerControllerClusterDeletePacket.class,
+                SpawnerControllerClusterDeletePacket::encode,
+                SpawnerControllerClusterDeletePacket::decode,
+                SpawnerControllerClusterDeletePacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
+        INSTANCE.registerMessage(
+                id++,
+                SpawnerControllerClusterSyncPacket.class,
+                SpawnerControllerClusterSyncPacket::encode,
+                SpawnerControllerClusterSyncPacket::decode,
+                SpawnerControllerClusterSyncPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
+        INSTANCE.registerMessage(
+                id++,
+                SpawnerControllerClusterSyncRequestPacket.class,
+                SpawnerControllerClusterSyncRequestPacket::encode,
+                SpawnerControllerClusterSyncRequestPacket::decode,
+                SpawnerControllerClusterSyncRequestPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_SERVER)
+        );
     }
 }

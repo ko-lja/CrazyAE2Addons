@@ -68,7 +68,9 @@ public abstract class MixinCraftingCpuLogic {
     ) {
         boolean result = instance.pushPattern(iPatternDetails, keyCounters);
         if (result) {
-            ((IPatternProviderCpu) instance).setCpuCluster(this.cluster);
+            if (instance instanceof IPatternProviderCpu provider) {
+                provider.setCpuCluster(this.cluster);
+            }
             return true;
         }
         return false;

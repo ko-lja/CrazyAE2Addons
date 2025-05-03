@@ -19,6 +19,7 @@ public class UpgradeCards {
             Upgrades.add(AEItems.SPEED_CARD, CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get(), 4, "group.mob_farm_controller.name");
             Upgrades.add(CrazyItemRegistrar.LOOTING_UPGRADE_CARD.get(), CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get(), 3, "group.mob_farm_controller.name");
             Upgrades.add(CrazyItemRegistrar.EXPERIENCE_UPGRADE_CARD.get(), CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get(), 2, "group.mob_farm_controller.name");
+            Upgrades.add(AEItems.SPEED_CARD, CrazyBlockRegistrar.SPAWNER_CONTROLLER_WALL_BLOCK.get(), 4, "group.spawner_controller_wall.name");
 
             ItemLike signalling = CrazyBlockRegistrar.SIGNALLING_INTERFACE_BLOCK_ITEM.get();
             Upgrades.add(AEItems.REDSTONE_CARD, signalling, 1, "group.signalling_interface.name");

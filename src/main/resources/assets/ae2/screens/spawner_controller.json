@@ -1,0 +1,33 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/spawner_controller.png",
+    "srcRect": [0, 0, 176, 205]
+  },
+  "text": {
+    "dialog_title": {
+      "text": "Spawner Controller",
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "info0": {
+      "text": "Speed depends on the amount",
+      "position": {
+        "left": 88,
+        "top": 40
+      },
+      "align": "CENTER"
+    },
+    "info1": {
+      "text": "of acceleration cards installed",
+      "position": {
+        "left": 88,
+        "top": 50
+      },
+      "align": "CENTER"
+    }
+  }
+}

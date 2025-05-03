@@ -102,6 +102,12 @@ public final class Screens {
                 "/screens/mob_farm.json"
         );
 
+        InitScreens.register(
+                CrazyMenuRegistrar.SPAWNER_CONTROLLER_MENU.get(),
+                SpawnerControllerScreen<SpawnerControllerMenu>::new,
+                "/screens/spawner_controller.json"
+        );
+
         if (IsModLoaded.isGTCEuLoaded() && CrazyMenuRegistrar.CIRCUITED_PATTERN_PROVIDER_MENU != null) {
             InitScreens.register(CrazyMenuRegistrar.CIRCUITED_PATTERN_PROVIDER_MENU.get(),
                     CircuitedPatternProviderScreen<CircuitedPatternProviderMenu>::new,

@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "crazyae2addons:circuited_pattern_provider"
+          "name": "crazyae2addons:spawner_controller_wall"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "crazyae2addons:blocks/circuited_pattern_provider"
+  "random_sequence": "crazyae2addons:blocks/spawner_controller_wall"
 }

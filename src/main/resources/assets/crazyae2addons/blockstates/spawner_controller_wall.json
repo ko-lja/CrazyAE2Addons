@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "crazyae2addons:block/spawner_controller_wall"
+    },
+    "formed=true": {
+      "model": "crazyae2addons:block/spawner_controller_wall_formed"
+    }
+  }
+}

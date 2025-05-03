@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "crazyae2addons:block/circuited_pattern_provider"
+    "all": "crazyae2addons:block/spawner_controller_wall"
   }
 }

@@ -2,7 +2,7 @@
 navigation:
   parent: crazyae2addons_index.md
   title: Mob Farm
-  icon: crazyae2addons:mob_farm_controller
+  icon: crazyae2addons:mob_farm_wall
 categories:
   - Mob Storage
 item_ids:
@@ -100,7 +100,7 @@ W W W W W
 
 ## Important Notes
 
-- **Requires correct multiblock structure**: If broken, the controller will stop.
-- **Only processes mobs**: You must first catch mobs using a Mob Annihilation Plane.
+- **Requires correct multiblock structure**: If broken, the farm will stop.
+- **Only processes mobs**: You must first catch mobs using a Mob Annihilation Plane or a [Spawner Controller](spawner_controller.md).
 - **No real mobs spawned**: No lag, no danger.
 - **Looting Supported**: Enhance your drops easily.

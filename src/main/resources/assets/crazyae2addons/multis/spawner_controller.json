@@ -1,0 +1,44 @@
+{
+  "symbols": {
+    "A": ["ae2:quartz_glass"],
+    "G": ["ae2:quartz_vibrant_glass"],
+    "W": ["crazyae2addons:spawner_controller_wall"]
+  },
+  "layers": [
+    [
+      "W W W W W",
+      "W W W W W",
+      "W W W W W",
+      "W W W W W",
+      "W W W W W"
+    ],
+    [
+      "W G G G W",
+      "G A A A G",
+      "G A A A G",
+      "G A A A G",
+      "W G G G W"
+    ],
+    [
+      "W G G G W",
+      "G A A A G",
+      "G A . A G",
+      "G A A A G",
+      "W G G G W"
+    ],
+    [
+      "W G G G W",
+      "G A A A G",
+      "G A A A G",
+      "G A A A G",
+      "W G G G W"
+    ],
+    [
+      "W W W W W",
+      "W W W W W",
+      "W W W W W",
+      "W W W W W",
+      "W W W W W"
+    ]
+  ]
+}
