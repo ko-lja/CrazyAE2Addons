@@ -41,6 +41,7 @@ If you want to support me creating, consider downloading from [Modrinth](https:/
 ---
 
 ## Additional Planned / Unfinished Ideas
+- [ ] **Power Gen**
 - [ ] **Demand Prediction** - Monitors resource usage to predict future needs and potentially automate expansions.
 - [ ] **Suggestions/Recommendations** - Observes resource trends to offer advice (e.g., adding more power generation).
 - [ ] **Goal Registering/Monitoring** - Allows players to define specific resource/production goals and track them in the network.
