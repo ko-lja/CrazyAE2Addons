@@ -9,6 +9,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartHelper;
 import appeng.api.parts.SelectedPart;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.InterfaceLogicHost;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
@@ -58,9 +59,9 @@ public class CrazyPatternMultiplierItem extends AEBaseItem implements IMenuItem 
             return InteractionResult.PASS;
 
         CompoundTag tag = ctx.getItemInHand().getTag();
-        if (tag == null)
-            return InteractionResult.FAIL;
+        if (tag == null) return InteractionResult.FAIL;
         double mult = tag.getDouble("mult");
+        if (ctx.getPlayer() == null) return InteractionResult.FAIL;
         IActionSource src = IActionSource.ofPlayer(ctx.getPlayer());
 
         IPart part = getClickedPart(ctx);
@@ -89,40 +90,43 @@ public class CrazyPatternMultiplierItem extends AEBaseItem implements IMenuItem 
 
     private static boolean handleInterface(InterfaceLogicHost host, double mult, IActionSource src) {
         var storage = host.getStorage();
-        for (var stack : storage.getAvailableStacks()) {
-            if (stack.getKey() instanceof AEItemKey key
+        boolean success = false;
+        for (int i = 0; i < storage.size(); i++) {
+            GenericStack gs = storage.getStack(i);
+            if (gs == null) continue;
+            if (gs.what() instanceof AEItemKey key
                     && AEItems.PROCESSING_PATTERN.isSameAs(key.toStack())) {
                 ItemStack old = key.toStack();
                 ItemStack nw  = CrazyPatternMultiplierMenu.modify(old, mult, host.getBlockEntity().getLevel());
-                long amt = stack.getLongValue();
-                storage.extract(stack.getKey(), amt, Actionable.MODULATE, src);
-                storage.insert(AEItemKey.of(nw), nw.getCount(), Actionable.MODULATE, src);
-                return true;
+                storage.setStack(i, GenericStack.fromItemStack(nw));
+                success = true;
             }
         }
-        return false;
+        return success;
     }
 
     private static boolean handlePatternProvider(PatternProviderLogicHost host, double mult) {
         var inv = host.getTerminalPatternInventory();
+        boolean success = false;
         for (int i = 0; i < inv.size(); i++) {
             ItemStack is = inv.getStackInSlot(i);
             if (AEItems.PROCESSING_PATTERN.isSameAs(is)) {
                 inv.setItemDirect(i, CrazyPatternMultiplierMenu.modify(is, mult, host.getBlockEntity().getLevel()));
-                return true;
+                success = true;
             }
         }
-        return false;
+        return success;
     }
 
     private static boolean handleContainer(Container ctn, double mult, Level level) {
+        boolean success = false;
         for (int i = 0; i < ctn.getContainerSize(); i++) {
             ItemStack is = ctn.getItem(i);
             if (AEItems.PROCESSING_PATTERN.isSameAs(is)) {
                 ctn.setItem(i, CrazyPatternMultiplierMenu.modify(is, mult, level));
-                return true;
+                success = true;
             }
         }
-        return false;
+        return success;
     }
 }

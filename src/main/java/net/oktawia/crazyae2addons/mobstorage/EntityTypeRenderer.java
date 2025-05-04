@@ -52,7 +52,6 @@ public class EntityTypeRenderer implements AEKeyRenderHandler<MobKey> {
         long   t    = mc.level.getGameTime();
         float  pt   = mc.getFrameTime();
         float  angle= (t + pt);
-        float  bob  = Mth.sin(t + pt);
 
         ent.setYRot(angle);
         ent.setYBodyRot(angle);
@@ -68,7 +67,7 @@ public class EntityTypeRenderer implements AEKeyRenderHandler<MobKey> {
 
         PoseStack pose = gui.pose();
         pose.pushPose();
-        pose.translate(x + 8.0, y + 14.0 + bob, 100.0);
+        pose.translate(x + 8.0, y + 14.0, 100.0);
         pose.mulPose(Axis.XP.rotationDegrees(-22.5f));
         pose.scale(scale, -scale, scale);
 

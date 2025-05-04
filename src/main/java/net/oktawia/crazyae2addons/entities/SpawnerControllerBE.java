@@ -212,8 +212,7 @@ public class SpawnerControllerBE extends AENetworkBlockEntity implements
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putBoolean("coreblock", isCoreBlock);
-        if (isCoreBlock && cluster != null) {
-            LogUtils.getLogger().info("SAVING TO NBT");
+        if (isCoreBlock && cluster != null && getLevel() != null) {
             CompoundTag clusterTag = new CompoundTag();
             cluster.writeToNBT(clusterTag);
             cluster.writeBlockEntitiesToNBT(clusterTag);

@@ -118,8 +118,7 @@ public class SpawnerControllerWall extends AEBaseEntityBlock<SpawnerControllerBE
         SpawnerControllerCluster cluster = be.getCluster();
         if (cluster == null) {
             if (level.isClientSide()) {
-                NetworkHandler.INSTANCE.send(
-                        PacketDistributor.SERVER.noArg(),
+                NetworkHandler.INSTANCE.sendToServer(
                         new SpawnerControllerClusterSyncRequestPacket(pos, level)
                 );
             }

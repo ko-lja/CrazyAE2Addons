@@ -120,8 +120,7 @@ public class MobFarmWall extends AEBaseEntityBlock<MobFarmBE> {
         MobFarmCluster cluster = be.getCluster();
         if (cluster == null) {
             if (level.isClientSide()) {
-                NetworkHandler.INSTANCE.send(
-                        PacketDistributor.SERVER.noArg(),
+                NetworkHandler.INSTANCE.sendToServer(
                         new MobFarmClusterSyncRequestPacket(pos, level)
                 );
             }

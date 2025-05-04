@@ -19,6 +19,7 @@ import appeng.util.ConfigInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import com.mojang.logging.LogUtils;
+import dev.shadowsoffire.apotheosis.spawn.spawner.ApothSpawnerTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,10 +33,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
+import net.minecraft.world.level.block.SpawnerBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.network.PacketDistributor;
 import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.entities.SpawnerControllerBE;
 import net.oktawia.crazyae2addons.mobstorage.MobKey;
@@ -354,37 +358,39 @@ public class SpawnerControllerCluster implements IAECluster, IUpgradeableObject,
     }
 
     public static EntityType<?> getEntityTypeFromSpawner(SpawnerBlockEntity spawner) {
-        BaseSpawner logic = spawner.getSpawner();
-        try {
-            Field nextSpawnDataField = BaseSpawner.class.getDeclaredField("nextSpawnData");
-            nextSpawnDataField.setAccessible(true);
-            Object spawnData = nextSpawnDataField.get(logic);
+        CompoundTag fullTag = spawner.getUpdateTag();
+        if (fullTag.contains("SpawnData", Tag.TAG_COMPOUND)) {
+            CompoundTag spawnData = fullTag.getCompound("SpawnData");
+            return EntityType.byString(spawnData.getCompound("entity").getString("id"))
+                    .orElse(null);
+        }
+        return null;
+    }
 
-            if (spawnData != null) {
-                Method entityToSpawnMethod = spawnData.getClass().getDeclaredMethod("entityToSpawn");
-                entityToSpawnMethod.setAccessible(true);
-                CompoundTag tag = (CompoundTag) entityToSpawnMethod.invoke(spawnData);
-
-                if (tag.contains("id")) {
-                    return EntityType.byString(tag.getString("id")).orElse(null);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static EntityType<?> getEntityTypeFromApothSpawner(ApothSpawnerTile spawner){
+        CompoundTag fullTag = spawner.serializeNBT();
+        if (fullTag.contains("SpawnData", Tag.TAG_COMPOUND)) {
+            CompoundTag spawnData = fullTag.getCompound("SpawnData");
+            return EntityType.byString(spawnData.getCompound("entity").getString("id"))
+                    .orElse(null);
         }
         return null;
     }
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        if (!CrazyConfig.COMMON.enablePeacefullSpawner.get() && (this.core != null && this.core.getLevel() != null && this.core.getLevel().getDifficulty() == Difficulty.PEACEFUL)) {
-            return TickRateModulation.IDLE;
-        }
+        if (this.core == null || this.core.getLevel() == null) return TickRateModulation.IDLE;
+        if (!CrazyConfig.COMMON.enablePeacefullSpawner.get() && this.core.getLevel().getDifficulty() == Difficulty.PEACEFUL) return TickRateModulation.IDLE;
         this.disableAllSpawnersInStructure();
         var spawners = getSpawnersInStructure();
         if (!spawners.isEmpty()){
             var spawner = spawners.get(0);
-            var type = getEntityTypeFromSpawner(spawner);
+            EntityType<?> type;
+            if (IsModLoaded.isApothLoaded() && spawner instanceof ApothSpawnerTile ast){
+                type = getEntityTypeFromApothSpawner(ast);
+            } else {
+                type = getEntityTypeFromSpawner(spawner);
+            }
             if (type != null){
                 MEStorage inv = getNode().getGrid().getStorageService().getInventory();
                 IEnergyService eng = getNode().getGrid().getEnergyService();
