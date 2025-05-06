@@ -2,29 +2,20 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:obsidian"
-    },
-    "C": {
-      "item": "minecraft:enchanting_table"
-    },
     "E": {
-      "item": "ae2:dense_energy_cell"
-    },
-    "I": {
-      "item": "ae2:import_bus"
-    },
-    "O": {
-      "item": "ae2:export_bus"
+      "item": "minecraft:blaze_rod"
     },
     "S": {
-      "item": "minecraft:nether_star"
+      "item": "ae2:fluix_pearl"
+    },
+    "W": {
+      "item": "crazyae2addons:mob_farm_wall"
     }
   },
   "pattern": [
-    " S ",
-    "ICO",
-    "BEB"
+    "WEW",
+    "ESE",
+    "WEW"
   ],
   "result": {
     "item": "crazyae2addons:spawner_controller_wall"

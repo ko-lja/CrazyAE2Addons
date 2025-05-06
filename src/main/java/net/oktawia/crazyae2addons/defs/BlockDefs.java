@@ -172,7 +172,7 @@ public class BlockDefs {
         );
 
         block(
-                CrazyBlockRegistrar.SPAWNER_CONTROLLER_WALL_BLOCK.get(),
+                CrazyBlockRegistrar.AUTO_ENCHANTER_BLOCK.get(),
                 " S /ICO/BEB",
                 () -> Map.of(
                         "S", Items.NETHER_STAR,
