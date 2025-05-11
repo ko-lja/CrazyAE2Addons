@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -103,23 +104,30 @@ public abstract class MixinGT {
     @Unique
     private static void setCirc(int circ, BlockPos pos, Level lvl){
         if (!CrazyConfig.COMMON.enableCPP.get()) return;
-        var machine = SimpleTieredMachine.getMachine(lvl, pos);
-        NotifiableItemStackHandler inv;
-        if (machine instanceof SimpleTieredMachine STM){
-            inv = STM.getCircuitInventory();
-        } else if (machine instanceof ItemBusPartMachine IBPM) {
-            inv = IBPM.getCircuitInventory();
-        } else if (machine instanceof FluidHatchPartMachine FHPM) {
-            inv = FHPM.getCircuitInventory();
-        } else {
-            return;
-        }
-        if (circ == 0){
-            inv.setStackInSlot(0, ItemStack.EMPTY);
-        } else {
-            var machineStack = GTItems.PROGRAMMED_CIRCUIT.asStack();
-            IntCircuitBehaviour.setCircuitConfiguration(machineStack, circ);
-            inv.setStackInSlot(0, machineStack);
+        try{
+            var machine = SimpleTieredMachine.getMachine(lvl, pos);
+            NotifiableItemStackHandler inv;
+            if (machine instanceof SimpleTieredMachine STM){
+                inv = STM.getCircuitInventory();
+            } else if (machine instanceof ItemBusPartMachine IBPM) {
+                inv = IBPM.getCircuitInventory();
+            } else if (machine instanceof FluidHatchPartMachine FHPM) {
+                inv = FHPM.getCircuitInventory();
+            } else {
+                return;
+            }
+            if (inv.getSlots() == 0) {
+                return;
+            }
+            if (circ == 0){
+                inv.setStackInSlot(0, ItemStack.EMPTY);
+            } else {
+                var machineStack = GTItems.PROGRAMMED_CIRCUIT.asStack();
+                IntCircuitBehaviour.setCircuitConfiguration(machineStack, circ);
+                inv.setStackInSlot(0, machineStack);
+            }
+        } catch (Throwable e) {
+            LogUtils.getLogger().info(e.toString());
         }
     }
 }
