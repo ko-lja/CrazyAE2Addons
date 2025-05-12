@@ -35,7 +35,7 @@ public class Plugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.equals("net.oktawia.crazyae2addons.mixins.MixinGT")){
-            return isModLoaded("gtceu");
+            return isModLoaded("gtceu") && !isModLoaded("mae2");
         } else if (mixinClassName.equals("net.oktawia.crazyae2addons.mixins.MixinGTMAE2")){
             return isModLoaded("mae2") && isModLoaded("gtceu");
         }

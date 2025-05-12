@@ -140,13 +140,6 @@ public class CrazyItemRegistrar {
     public static final RegistryObject<XpShardItem> XP_SHARD_ITEM =
             ITEMS.register("xp_shard", () -> new XpShardItem(new Item.Properties()));
 
-    public static final RegistryObject<CircuitUpgradeCard> CIRCUIT_UPGRADE_CARD_ITEM =
-            IsModLoaded.isGTCEuLoaded()
-                    ? ITEMS.register("circuit_upgrade_card",
-                    () -> new CircuitUpgradeCard(new Item.Properties()))
-                    : null;
-
-
     public static final RegistryObject<Item> MOB_CELL_HOUSING =
             ITEMS.register("mob_cell_housing",
                     () -> new Item(new Item.Properties()));

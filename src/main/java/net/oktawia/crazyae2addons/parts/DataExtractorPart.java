@@ -60,6 +60,7 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
     public String valueName = "";
     public int ticksWaited = 0;
     public int delay = 20;
+    public DataValuesPacket packet = null;
 
     public DataExtractorPart(IPartItem<?> partItem) {
         super(partItem);
@@ -82,8 +83,7 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
         }
         if (extra.contains("valuename"))  this.valueName  = extra.getString("valuename");
         if (!isClientSide()) {
-            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
-                    new DataValuesPacket(getBlockEntity().getBlockPos(), getSide(), available, selected, valueName));
+            packet = new DataValuesPacket(getBlockEntity().getBlockPos(), getSide(), available, selected, valueName);
         }
     }
 
@@ -226,8 +226,6 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
         throw new NoSuchFieldException(name);
     }
 
-    // --- poniżej nie zmieniane: extractNumericInfo, getBoxes, ticking itd. ---
-
     public List<String> extractNumericInfo(Object blockEntity) {
         return extractNumericInfoFromObject(blockEntity, "");
     }
@@ -291,6 +289,10 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (packet != null){
+            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), packet);
+            packet = null;
+        }
         ticksWaited++;
         if (ticksWaited < delay) return TickRateModulation.IDLE;
         ticksWaited = 0;

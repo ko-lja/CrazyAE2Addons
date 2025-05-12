@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -47,7 +46,7 @@ public abstract class MixinGT {
             method = "pushPattern(Lappeng/api/crafting/IPatternDetails;[Lappeng/api/stacks/KeyCounter;)Z",
             at = @At(
                     value = "INVOKE",
-                    target = "Lappeng/helpers/patternprovider/PatternProviderLogic;getActiveSides()Ljava/util/Set;",
+                    target = "Lappeng/helpers/patternprovider/PatternProviderLogic;onPushPatternSuccess(Lappeng/api/crafting/IPatternDetails;)V",
                     shift = At.Shift.BEFORE
             )
     )
@@ -80,16 +79,15 @@ public abstract class MixinGT {
                 InterfacePart ip = getInterfacePart(cbbe, dir.getOpposite());
                 if (ip != null) {
                     ip.getGridNode().getGrid()
-                            .getMachines(StorageBusPart.class)
-                            .forEach(bus -> {
-                                if (bus.isUpgradedWith(CrazyItemRegistrar.CIRCUIT_UPGRADE_CARD_ITEM.get())) {
-                                    BlockEntity busBe = bus.getBlockEntity();
-                                    Level busLevel = busBe.getLevel();
-                                    BlockPos nextPos = busBe.getBlockPos().relative(bus.getSide());
-                                    setCirc(circuit, nextPos, busLevel);
-                                    traverse(circuit, nextPos, busLevel, visited);
-                                }
-                            });
+                        .getMachines(StorageBusPart.class)
+                        .forEach(bus -> {
+                            BlockEntity busBe = bus.getBlockEntity();
+                            Level busLevel = busBe.getLevel();
+                            BlockPos nextPos = busBe.getBlockPos().relative(bus.getSide());
+                            setCirc(circuit, nextPos, busLevel);
+                            traverse(circuit, nextPos, busLevel, visited);
+                        }
+                    );
                 }
             }
         }
@@ -104,30 +102,23 @@ public abstract class MixinGT {
     @Unique
     private static void setCirc(int circ, BlockPos pos, Level lvl){
         if (!CrazyConfig.COMMON.enableCPP.get()) return;
-        try{
-            var machine = SimpleTieredMachine.getMachine(lvl, pos);
-            NotifiableItemStackHandler inv;
-            if (machine instanceof SimpleTieredMachine STM){
-                inv = STM.getCircuitInventory();
-            } else if (machine instanceof ItemBusPartMachine IBPM) {
-                inv = IBPM.getCircuitInventory();
-            } else if (machine instanceof FluidHatchPartMachine FHPM) {
-                inv = FHPM.getCircuitInventory();
-            } else {
-                return;
-            }
-            if (inv.getSlots() == 0) {
-                return;
-            }
-            if (circ == 0){
-                inv.setStackInSlot(0, ItemStack.EMPTY);
-            } else {
-                var machineStack = GTItems.PROGRAMMED_CIRCUIT.asStack();
-                IntCircuitBehaviour.setCircuitConfiguration(machineStack, circ);
-                inv.setStackInSlot(0, machineStack);
-            }
-        } catch (Throwable e) {
-            LogUtils.getLogger().info(e.toString());
+        var machine = SimpleTieredMachine.getMachine(lvl, pos);
+        NotifiableItemStackHandler inv;
+        if (machine instanceof SimpleTieredMachine STM){
+            inv = STM.getCircuitInventory();
+        } else if (machine instanceof ItemBusPartMachine IBPM) {
+            inv = IBPM.getCircuitInventory();
+        } else if (machine instanceof FluidHatchPartMachine FHPM) {
+            inv = FHPM.getCircuitInventory();
+        } else {
+            return;
+        }
+        if (circ == 0){
+            inv.setStackInSlot(0, ItemStack.EMPTY);
+        } else {
+            var machineStack = GTItems.PROGRAMMED_CIRCUIT.asStack();
+            IntCircuitBehaviour.setCircuitConfiguration(machineStack, circ);
+            inv.setStackInSlot(0, machineStack);
         }
     }
 }

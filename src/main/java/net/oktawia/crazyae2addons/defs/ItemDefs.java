@@ -29,17 +29,6 @@ public class ItemDefs {
     }
 
     public static void registerRecipes(){
-        if (ModList.get().isLoaded("gtceu")){
-            item(
-                CrazyItemRegistrar.CIRCUIT_UPGRADE_CARD_ITEM.get(),
-                "CT",
-                Map.of(
-                    "C", AEItems.ADVANCED_CARD.asItem(),
-                    "T", AEItems.LOGIC_PROCESSOR.asItem()
-                )
-            );
-        }
-
         item(
             CrazyItemRegistrar.LOGIC_CARD.get(),
             "AS",
