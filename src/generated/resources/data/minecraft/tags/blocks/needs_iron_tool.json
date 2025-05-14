@@ -4,7 +4,6 @@
     "crazyae2addons:me_data_controller",
     "crazyae2addons:data_processor",
     "crazyae2addons:data_tracker",
-    "crazyae2addons:circuited_pattern_provider",
     "crazyae2addons:ampere_meter",
     "crazyae2addons:isolated_data_processor",
     "crazyae2addons:impulsed_pattern_provider",

@@ -1,5 +1,6 @@
 package net.oktawia.crazyae2addons.mixins;
 
+
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.security.IActionSource;
@@ -22,18 +23,26 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderTargetCacheExt;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import stone.mae2.appeng.helpers.patternprovider.PatternProviderTargetCache;
 
 import java.util.Set;
 
-@Mixin(targets = "appeng.helpers.patternprovider.PatternProviderTargetCache", remap = false)
-public abstract class MixinGT implements IPatternProviderTargetCacheExt {
+@Mixin(value = PatternProviderTargetCache.class, remap = false)
+public abstract class MixinMAE2 implements IPatternProviderTargetCacheExt {
 
-    @Unique private BlockPos pos = null;
+    @Shadow public abstract @Nullable PatternProviderTarget find();
+
+    @Shadow @Final private IActionSource src;
+    @Unique
+    private BlockPos pos = null;
     @Unique private Level lvl = null;
     @Unique private IPatternDetails details = null;
 
@@ -47,9 +56,8 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
     }
 
     @Unique
-    public PatternProviderTarget find(IPatternDetails patternDetails) {
+    public void setDetails(IPatternDetails patternDetails) {
         this.details = patternDetails;
-        return ((PatternProviderTargetCacheAccessor) this).callFind();
     }
 
     @ModifyReturnValue(
@@ -58,13 +66,13 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
             remap = false
     )
     private PatternProviderTarget injectWrapMeStorage(PatternProviderTarget original, MEStorage storage) {
-        var self = (PatternProviderTargetCacheAccessor) this;
-        IActionSource src = self.getSrc();
+        var self = this;
+        IActionSource src = self.src;
 
         return new PatternProviderTarget() {
-            private final BlockPos pos1 = MixinGT.this.pos;
-            private final Level lvl1 = MixinGT.this.lvl;
-            private final IPatternDetails details1 = MixinGT.this.details;
+            private final BlockPos pos1 = MixinMAE2.this.pos;
+            private final Level lvl1 = MixinMAE2.this.lvl;
+            private final IPatternDetails details1 = MixinMAE2.this.details;
             @Override
             public long insert(AEKey what, long amount, Actionable type) {
                 if (details1 != null){

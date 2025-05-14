@@ -34,16 +34,6 @@ public class BlockDefs {
     }
 
     public static void registerRecipes(){
-        if(IsModLoaded.isGTCEuLoaded()){
-            block(
-                    CrazyBlockRegistrar.CIRCUITED_PATTERN_PROVIDER_BLOCK.get(),
-                    "PCC",
-                    () -> Map.of(
-                            "P", AEBlocks.PATTERN_PROVIDER.asItem(),
-                            "C", AEItems.LOGIC_PROCESSOR.asItem()
-                    )
-            );
-        }
         block(
                 CrazyBlockRegistrar.CRAFTING_CANCELER_BLOCK.get(),
                 "TM/MU",

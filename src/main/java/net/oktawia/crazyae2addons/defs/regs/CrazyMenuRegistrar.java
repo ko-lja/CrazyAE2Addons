@@ -69,11 +69,6 @@ public class CrazyMenuRegistrar {
     public static final RegistryObject<MenuType<ChunkyFluidP2PTunnelMenu>> CHUNKY_FLUID_P2P_TUNNEL_MENU =
             reg(id("chunky_p2p"), ChunkyFluidP2PTunnelMenu::new, ChunkyFluidP2PTunnelPart.class);
 
-    public static final RegistryObject<MenuType<CircuitedPatternProviderMenu>> CIRCUITED_PATTERN_PROVIDER_MENU =
-            ModList.get().isLoaded("gtceu")
-                    ? reg(id("circuited_pp"), CircuitedPatternProviderMenu::new, CircuitedPatternProviderBE.class)
-                    : null;
-
     public static final RegistryObject<MenuType<EnergyExporterMenu>> ENERGY_EXPORTER_MENU =
             ModList.get().isLoaded("gtceu")
                     ? reg(id("energy_exporter"), EnergyExporterMenu::new, GTEnergyExporterPart.class)

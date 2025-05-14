@@ -56,18 +56,6 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("data_tracker",
                     () -> new DataTrackerBlockItem(DATA_TRACKER_BLOCK.get(), new Item.Properties()));
 
-    public static final RegistryObject<CircuitedPatternProviderBlock> CIRCUITED_PATTERN_PROVIDER_BLOCK =
-            IsModLoaded.isGTCEuLoaded()
-                    ? BLOCKS.register("circuited_pattern_provider", CircuitedPatternProviderBlock::new)
-                    : null;
-
-    public static final RegistryObject<BlockItem> CIRCUITED_PATTERN_PROVIDER_BLOCK_ITEM =
-            IsModLoaded.isGTCEuLoaded()
-                    ? BLOCK_ITEMS.register("circuited_pattern_provider",
-                    () -> new CircuitedPatternProviderBlockItem(
-                            CIRCUITED_PATTERN_PROVIDER_BLOCK.get(), new Item.Properties()))
-                    : null;
-
     public static final RegistryObject<AmpereMeterBlock> AMPERE_METER_BLOCK =
             BLOCKS.register("ampere_meter", AmpereMeterBlock::new);
 

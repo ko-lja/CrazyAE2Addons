@@ -21,7 +21,7 @@ public class CrazyConfig {
             builder.comment("Crazy AE2 Addons - Config").push("general");
 
             enableCPP = builder
-                    .comment("Enables Circuited Pattern Provider")
+                    .comment("Enables The functionality of pattern providers to set the circuit of the GregTech's machine its pushing to")
                     .define("enableCPP", true);
 
             enablePeacefullSpawner = builder

@@ -11,9 +11,11 @@
     "MixinCraftingCpuLogic",
     "MixinFilterSlot",
     "MixinGT",
-    "MixinGTMAE2",
     "MixinListCraftingInventory",
-    "MixinPatternProviderLogic"
+    "MixinMAE2",
+    "MixinMAE22",
+    "MixinPatternProviderLogic",
+    "PatternProviderTargetCacheAccessor"
   ],
   "client": [
     "MixinPatternProviderLogicClient",

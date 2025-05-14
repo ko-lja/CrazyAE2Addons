@@ -89,11 +89,6 @@ public class CrazyBlockEntityRegistrar {
     public static final RegistryObject<BlockEntityType<SignallingInterfaceBE>> SIGNALLING_INTERFACE_BE =
             reg("signalling_interface_be", CrazyBlockRegistrar.SIGNALLING_INTERFACE_BLOCK, SignallingInterfaceBE::new, SignallingInterfaceBE.class);
 
-    public static final RegistryObject<BlockEntityType<CircuitedPatternProviderBE>> CIRCUITED_PATTERN_PROVIDER_BE =
-            IsModLoaded.isGTCEuLoaded()
-                    ? reg("circuited_pp_be", CrazyBlockRegistrar.CIRCUITED_PATTERN_PROVIDER_BLOCK, CircuitedPatternProviderBE::new, CircuitedPatternProviderBE.class)
-                    : null;
-
     public static final RegistryObject<BlockEntityType<? extends AmpereMeterBE>> AMPERE_METER_BE =
             BLOCK_ENTITIES.register("ampere_meter_be", () -> {
                 var blk = CrazyBlockRegistrar.AMPERE_METER_BLOCK.get();

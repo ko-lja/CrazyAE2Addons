@@ -14,6 +14,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.crafting.execution.*;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.interfaces.IIgnoreNBT;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderCpu;
 import org.spongepowered.asm.mixin.*;
@@ -66,6 +67,9 @@ public abstract class MixinCraftingCpuLogic {
     private boolean redirectPushPattern(
             ICraftingProvider instance, IPatternDetails iPatternDetails, KeyCounter[] keyCounters
     ) {
+        if (instance instanceof IPatternProviderCpu provider){
+            provider.setPatternDetails(iPatternDetails);
+        }
         boolean result = instance.pushPattern(iPatternDetails, keyCounters);
         if (result) {
             if (instance instanceof IPatternProviderCpu provider) {
