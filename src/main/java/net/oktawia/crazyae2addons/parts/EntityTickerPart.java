@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.Vec3;
 import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.EntityTickerMenu;
 import org.jetbrains.annotations.NotNull;
@@ -42,8 +43,6 @@ import static java.lang.Math.pow;
 
 
 public class EntityTickerPart extends UpgradeablePart implements IGridTickable, MenuProvider, IUpgradeableObject {
-
-    public static final float energyUsageScaleValue = 1f;
     public static final int actionsPerSec = 20;
     public EntityTickerMenu menu;
 
@@ -104,8 +103,10 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
         return TickRateModulation.IDLE;
     }
 
-    private  <T extends BlockEntity> void tickBlockEntity(@NotNull T blockEntity) {
-        int powerDraw = (int) (256 * pow(4, energyUsageScaleValue * getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD))) / 2; // convert to FE
+    private <T extends BlockEntity> void tickBlockEntity(@NotNull T blockEntity) {
+        if (!CrazyConfig.COMMON.enableEntityTicker.get()) return;
+        if (this.getGridNode() == null || this.getMainNode() == null || this.getMainNode().getGrid() == null) return;
+        int powerDraw = (int) (CrazyConfig.COMMON.EntityTickerCost.get() * pow(4, getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD))) / 2; // convert to FE
         double extractedPower = getMainNode().getGrid().getEnergyService().extractAEPower(powerDraw, Actionable.MODULATE, PowerMultiplier.CONFIG);
         if (extractedPower < powerDraw){
             return;
@@ -115,6 +116,9 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
                 (BlockEntityType<T>) blockEntity.getType());
         if (blockEntityTicker == null) return;
         int speed = (int) pow(2, (getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD) + 1));
+        if (blockEntity.getLevel() == null){
+            return;
+        }
         for (int i = 0; i < speed - 1; i++) {
             blockEntityTicker.tick(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(),
                     blockEntity);

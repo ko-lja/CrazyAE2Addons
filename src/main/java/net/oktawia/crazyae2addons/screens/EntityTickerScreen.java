@@ -4,6 +4,7 @@ import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.Utils;
 import net.oktawia.crazyae2addons.parts.EntityTickerPart;
 import net.oktawia.crazyae2addons.menus.EntityTickerMenu;
@@ -15,7 +16,7 @@ public class EntityTickerScreen<C extends EntityTickerMenu> extends UpgradeableS
     @Override
     protected void updateBeforeRender(){
         super.updateBeforeRender();
-        double powerUsage =  256 * pow(4, EntityTickerPart.energyUsageScaleValue * getMenu().upgradeNum);
+        double powerUsage =  CrazyConfig.COMMON.EntityTickerCost.get() * pow(4, getMenu().upgradeNum);
         setTextContent("energy", Component.literal(String.format("Energy Usage: %s FE/t", Utils.shortenNumber(powerUsage))));
         setTextContent("speed", Component.literal(String.format("Current multiplier: %d", (int) pow(2, (getMenu().upgradeNum + 1)))));
     }
@@ -32,7 +33,7 @@ public class EntityTickerScreen<C extends EntityTickerMenu> extends UpgradeableS
     }
 
     public void refreshGui(){
-        double powerUsage = 256 * pow(4, EntityTickerPart.energyUsageScaleValue *  getMenu().upgradeNum);
+        double powerUsage = CrazyConfig.COMMON.EntityTickerCost.get() * pow(4, getMenu().upgradeNum);
         setTextContent("energy", Component.literal(String.format("Energy Usage: %s FE/t", Utils.shortenNumber(powerUsage))));
         setTextContent("speed", Component.literal(String.format("Current multiplier: %d", (int) pow(2,  (getMenu().upgradeNum + 1)))));
     }

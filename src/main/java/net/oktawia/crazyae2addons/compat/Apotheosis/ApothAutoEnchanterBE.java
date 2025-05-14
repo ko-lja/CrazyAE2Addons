@@ -4,6 +4,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.StorageHelper;
 import dev.shadowsoffire.apotheosis.ench.objects.TreasureShelfBlock;
@@ -21,7 +22,9 @@ import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.entities.AutoEnchanterBE;
 import net.oktawia.crazyae2addons.items.XpShardItem;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ApothAutoEnchanterBE extends AutoEnchanterBE {
@@ -70,7 +73,10 @@ public class ApothAutoEnchanterBE extends AutoEnchanterBE {
     public ItemStack performEnchant(ItemStack input, int option) {
         ItemStack lapis = lapisInv.getStackInSlot(0);
 
-        if (input.isEmpty() || (!input.isEnchantable() && input.getItem() != Items.BOOK) || lapis.getCount() <= 0 || lapis.getItem() != Items.LAPIS_LAZULI) {
+        if (input.isEmpty()
+                || (!input.isEnchantable() && input.getItem() != Items.BOOK)
+                || lapis.getCount() <= 0
+                || lapis.getItem() != Items.LAPIS_LAZULI) {
             return input;
         }
 
@@ -78,39 +84,91 @@ public class ApothAutoEnchanterBE extends AutoEnchanterBE {
         RandomSource random = RandomSource.create();
 
         int enchantLevel = getXpCostForEnchant(input);
+        int fullXpRequired = levelToXp(enchantLevel);
+        int xpToConsume = Math.max(1, fullXpRequired / 10);
 
-        int wantExtract = Math.round((float) levelToXp(enchantLevel) / XpShardItem.XP_VAL);
-        long toExtract = StorageHelper.poweredExtraction(
-                getGridNode().getGrid().getEnergyService(),
-                getGridNode().getGrid().getStorageService().getInventory(),
+        var grid = getGridNode().getGrid();
+        var energy = grid.getEnergyService();
+        var storage = grid.getStorageService().getInventory();
+        var source = IActionSource.ofMachine(this);
+
+        long shardCount = storage.extract(
                 AEItemKey.of(CrazyItemRegistrar.XP_SHARD_ITEM.get()),
-                wantExtract,
-                IActionSource.ofMachine(this),
-                Actionable.SIMULATE
+                Integer.MAX_VALUE,
+                Actionable.SIMULATE,
+                source
         );
-        if (toExtract < wantExtract) {
+        int xpFromShards = (int) Math.min(shardCount, Integer.MAX_VALUE) * XpShardItem.XP_VAL;
+
+        int xpFromFluids = 0;
+        Map<AEFluidKey, Long> candidateFluids = new HashMap<>();
+
+        for (AEFluidKey fluid : getAvailableXpFluids()) {
+            long mB = storage.extract(fluid, Integer.MAX_VALUE, Actionable.SIMULATE, source);
+            xpFromFluids += (int) (mB / 20);
+            candidateFluids.put(fluid, mB);
+        }
+
+        int totalXpAvailable = xpFromShards + xpFromFluids;
+
+        if (totalXpAvailable < fullXpRequired) {
             return input;
         }
 
-        StorageHelper.poweredExtraction(
-                getGridNode().getGrid().getEnergyService(),
-                getGridNode().getGrid().getStorageService().getInventory(),
+        int xpLeft = xpToConsume;
+
+        int shardsToExtract = Math.min(xpLeft / XpShardItem.XP_VAL, (int) shardCount);
+        long extractedShards = StorageHelper.poweredExtraction(
+                energy,
+                storage,
                 AEItemKey.of(CrazyItemRegistrar.XP_SHARD_ITEM.get()),
-                wantExtract,
-                IActionSource.ofMachine(this),
+                shardsToExtract,
+                source,
                 Actionable.MODULATE
         );
+        xpLeft -= extractedShards * XpShardItem.XP_VAL;
 
-        if (this.menu != null) {
-            this.menu.xp = Math.toIntExact(getGridNode().getGrid().getStorageService().getInventory().extract(
-                    AEItemKey.of(CrazyItemRegistrar.XP_SHARD_ITEM.get()),
-                    Integer.MAX_VALUE,
-                    Actionable.SIMULATE,
-                    IActionSource.ofMachine(this)
-            ));
+        if (xpLeft > 0) {
+            int fluidMbLeft = xpLeft * 20;
+
+            for (Map.Entry<AEFluidKey, Long> entry : candidateFluids.entrySet()) {
+                AEFluidKey fluidKey = entry.getKey();
+                long availableMb = entry.getValue();
+
+                long toExtractMb = Math.min(fluidMbLeft, availableMb);
+                long extractedMb = StorageHelper.poweredExtraction(
+                        energy,
+                        storage,
+                        fluidKey,
+                        toExtractMb,
+                        source,
+                        Actionable.MODULATE
+                );
+
+                fluidMbLeft -= extractedMb;
+                if (fluidMbLeft <= 0) break;
+            }
         }
 
-        List<EnchantmentInstance> enchantments = RealEnchantmentHelper.selectEnchantment(random, input, enchantLevel, stats.quanta(), stats.arcana(), stats.eterna(), stats.treasure(), Set.of());
+        if (this.menu != null) {
+            long totalXp = shardCount * XpShardItem.XP_VAL;
+            for (Map.Entry<AEFluidKey, Long> entry : candidateFluids.entrySet()) {
+                totalXp += entry.getValue() / 20;
+            }
+            this.xp = (int) Math.min(totalXp, Integer.MAX_VALUE);
+            this.menu.xp = this.xp;
+        }
+
+        List<EnchantmentInstance> enchantments = RealEnchantmentHelper.selectEnchantment(
+                random,
+                input,
+                enchantLevel,
+                stats.quanta(),
+                stats.arcana(),
+                stats.eterna(),
+                stats.treasure(),
+                Set.of()
+        );
 
         if (enchantments.isEmpty()) {
             return input;

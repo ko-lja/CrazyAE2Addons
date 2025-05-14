@@ -163,6 +163,7 @@ dependencies {
     implementation fg.deobf("curse.maven:apotheosis-313970:6461960")
     implementation fg.deobf("curse.maven:geckolib-388172:6333474")
     implementation fg.deobf("curse.maven:advancedae-1084104:6205290")
+    implementation fg.deobf("curse.maven:mob-grinding-utils-254241:5131447")
 }
 
 tasks.named('processResources', ProcessResources).configure {

@@ -16,6 +16,8 @@ public class CrazyConfig {
     public static class Common {
         public final ForgeConfigSpec.BooleanValue enableCPP;
         public final ForgeConfigSpec.BooleanValue enablePeacefullSpawner;
+        public final ForgeConfigSpec.BooleanValue enableEntityTicker;
+        public final ForgeConfigSpec.IntValue EntityTickerCost;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Crazy AE2 Addons - Config").push("general");
@@ -27,6 +29,14 @@ public class CrazyConfig {
             enablePeacefullSpawner = builder
                     .comment("Enables Spawner Controller to work also on peacefull mode")
                     .define("enablePeacefullSpawner", true);
+
+            enableEntityTicker = builder
+                    .comment("Enables/disables the entity ticker")
+                    .define("enableEntityTicker", true);
+
+            EntityTickerCost = builder
+                    .comment("You can set the power cost multiplayer for the entity ticker here")
+                    .defineInRange("EntityTickerCost", 256, 0, 1024);
 
             builder.pop();
         }

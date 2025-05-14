@@ -9,7 +9,10 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
@@ -18,11 +21,15 @@ import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.util.inv.AppEngInternalInventory;
+import com.mojang.logging.LogUtils;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -35,10 +42,13 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.oktawia.crazyae2addons.Utils;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
@@ -49,7 +59,8 @@ import net.oktawia.crazyae2addons.menus.AutoEnchanterMenu;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AutoEnchanterBE extends AENetworkInvBlockEntity implements MenuProvider, IUpgradeableObject, IGridTickable {
 
@@ -64,6 +75,11 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements MenuProv
     public Boolean autoSupplyLapis = false;
     public Boolean autoSupplyBooks = false;
     public String levelCost = "";
+
+    public static final Set<TagKey<Fluid>> XP_FLUID_TAGS = Set.of(
+            TagKey.create(Registries.FLUID, new ResourceLocation("forge", "experience")),
+            TagKey.create(Registries.FLUID, new ResourceLocation("forge", "xpjuice"))
+    );
 
     public AutoEnchanterBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.AUTO_ENCHANTER_BE.get(), pos, blockState);
@@ -211,7 +227,10 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements MenuProv
     public ItemStack performEnchant(ItemStack input, int option) {
         ItemStack lapis = lapisInv.getStackInSlot(0);
 
-        if (input.isEmpty() || (!input.isEnchantable() && input.getItem() != Items.BOOK) || lapis.getCount() <= 0 || lapis.getItem() != Items.LAPIS_LAZULI) {
+        if (input.isEmpty()
+                || (!input.isEnchantable() && input.getItem() != Items.BOOK)
+                || lapis.getCount() <= 0
+                || lapis.getItem() != Items.LAPIS_LAZULI) {
             return input;
         }
 
@@ -223,36 +242,85 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements MenuProv
             return input;
         }
 
-        int wantExtract = Math.round((float) levelToXp(enchantLevel) / XpShardItem.XP_VAL);
-        long toExtract = StorageHelper.poweredExtraction(
-                getGridNode().getGrid().getEnergyService(),
-                getGridNode().getGrid().getStorageService().getInventory(),
+        int fullXpAmount = levelToXp(enchantLevel);
+        int xpToConsume = Math.max(1, fullXpAmount / 10);
+
+        var grid = getGridNode().getGrid();
+        var energy = grid.getEnergyService();
+        var storage = grid.getStorageService().getInventory();
+        IActionSource source = IActionSource.ofMachine(this);
+
+        long shardCount = storage.extract(
                 AEItemKey.of(CrazyItemRegistrar.XP_SHARD_ITEM.get()),
-                wantExtract,
-                IActionSource.ofMachine(this),
-                Actionable.SIMULATE
+                Integer.MAX_VALUE,
+                Actionable.SIMULATE,
+                source
         );
-        if (toExtract < wantExtract){
+        int xpFromShards = (int) Math.min(shardCount, Integer.MAX_VALUE) * XpShardItem.XP_VAL;
+
+        int xpFromFluids = 0;
+        Map<AEFluidKey, Long> candidateFluids = new HashMap<>();
+
+        for (AEFluidKey fluid : getAvailableXpFluids()) {
+            long mB = storage.extract(fluid, Integer.MAX_VALUE, Actionable.SIMULATE, source);
+            xpFromFluids += (int) (mB / 20);
+            candidateFluids.put(fluid, mB);
+        }
+
+        int totalXpAvailable = xpFromShards + xpFromFluids;
+
+        if (totalXpAvailable < fullXpAmount) {
             return input;
         }
-        StorageHelper.poweredExtraction(
-                getGridNode().getGrid().getEnergyService(),
-                getGridNode().getGrid().getStorageService().getInventory(),
+
+        int xpLeft = xpToConsume;
+
+        int shardsToExtract = Math.min(xpLeft / XpShardItem.XP_VAL, (int) shardCount);
+        long extractedShards = StorageHelper.poweredExtraction(
+                energy,
+                storage,
                 AEItemKey.of(CrazyItemRegistrar.XP_SHARD_ITEM.get()),
-                wantExtract,
-                IActionSource.ofMachine(this),
+                shardsToExtract,
+                source,
                 Actionable.MODULATE
         );
-        if (this.menu != null){
-            this.menu.xp = Math.toIntExact(getGridNode().getGrid().getStorageService().getInventory().extract(AEItemKey.of(CrazyItemRegistrar.XP_SHARD_ITEM.get()), Integer.MAX_VALUE, Actionable.SIMULATE, IActionSource.ofMachine(this)));
+        xpLeft -= (int) (extractedShards * XpShardItem.XP_VAL);
+
+        if (xpLeft > 0) {
+            int fluidMbLeft = xpLeft * 20;
+
+            for (Map.Entry<AEFluidKey, Long> entry : candidateFluids.entrySet()) {
+                AEFluidKey fluidKey = entry.getKey();
+                long availableMb = entry.getValue();
+
+                long toExtractMb = Math.min(fluidMbLeft, availableMb);
+                long extractedMb = StorageHelper.poweredExtraction(
+                        energy,
+                        storage,
+                        fluidKey,
+                        toExtractMb,
+                        source,
+                        Actionable.MODULATE
+                );
+
+                fluidMbLeft -= (int) extractedMb;
+                if (fluidMbLeft <= 0) break;
+            }
         }
+
+        if (this.menu != null) {
+            long totalXp = shardCount * XpShardItem.XP_VAL;
+            for (Map.Entry<AEFluidKey, Long> entry : candidateFluids.entrySet()) {
+                totalXp += entry.getValue() / 20;
+            }
+            this.xp = (int) Math.min(totalXp, Integer.MAX_VALUE);
+            this.menu.xp = this.xp;
+        }
+
         List<EnchantmentInstance> enchantments = EnchantmentHelper.selectEnchantment(random, input, enchantLevel, false);
-        if (enchantments.isEmpty()) {
-            return input;
-        }
+        if (enchantments.isEmpty()) return input;
 
         ItemStack result;
-
         if (input.getItem() == Items.BOOK) {
             result = new ItemStack(Items.ENCHANTED_BOOK);
             for (EnchantmentInstance inst : enchantments) {
@@ -270,16 +338,47 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements MenuProv
     }
 
 
+
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(40, 40, false, false);
     }
 
+    public Set<AEFluidKey> getAvailableXpFluids() {
+        if (this.getGridNode() == null || this.getGridNode().getGrid() == null) return Set.of();
+        Set<Fluid> validXpFluids = XP_FLUID_TAGS.stream()
+                .flatMap(tag -> ForgeRegistries.FLUIDS.tags()
+                        .getTag(tag)
+                        .stream())
+                .collect(Collectors.toSet());
+
+        Set<AEFluidKey> availableFluids = new HashSet<>();
+
+        this.getGridNode().getGrid().getStorageService().getInventory().getAvailableStacks().forEach(key -> {
+            if (key.getKey() instanceof AEFluidKey fkey) {
+                Fluid fluid = fkey.getFluid();
+                if (validXpFluids.contains(fluid)) {
+                    availableFluids.add(fkey);
+                }
+            }
+        });
+
+        return availableFluids;
+    }
+
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (this.getLevel() == null || this.getLevel().getBlockState(this.getBlockPos().above().above()).getBlock() != Blocks.ENCHANTING_TABLE || this.option == 0) return TickRateModulation.IDLE;
-        if (this.menu != null && this.getGridNode() != null){
-            this.xp = Math.toIntExact(getGridNode().getGrid().getStorageService().getInventory().extract(AEItemKey.of(CrazyItemRegistrar.XP_SHARD_ITEM.get()), Integer.MAX_VALUE, Actionable.SIMULATE, IActionSource.ofMachine(this)));
+        if (this.menu != null && this.getGridNode() != null) {
+            var storage = getGridNode().getGrid().getStorageService().getInventory();
+            long totalXp = 0;
+            totalXp += storage.extract(AEItemKey.of(CrazyItemRegistrar.XP_SHARD_ITEM.get()), Integer.MAX_VALUE, Actionable.SIMULATE, IActionSource.ofMachine(this)) * XpShardItem.XP_VAL;
+            for (AEFluidKey fluid : getAvailableXpFluids()) {
+                long fluidAmount = storage.extract(fluid, Integer.MAX_VALUE, Actionable.SIMULATE, IActionSource.ofMachine(this));
+                int xpFromFluid = Math.toIntExact(fluidAmount / 20);
+                totalXp += xpFromFluid;
+            }
+            this.xp = (int) Math.min(totalXp, Integer.MAX_VALUE);
             this.menu.xp = this.xp;
         }
         var outStack = this.outputInv.getStackInSlot(0);
@@ -325,7 +424,7 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity implements MenuProv
                 EnchantmentHelper.getEnchantmentCost(
                         RandomSource.create(),
                         this.option,
-                        countBookshelves(this.getBlockPos().relative(Direction.UP)),
+                        countBookshelves(this.getBlockPos().above().above()),
                         this.inputInv.getStackInSlot(0)
                 )
         ));

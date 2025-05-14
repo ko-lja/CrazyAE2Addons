@@ -77,8 +77,8 @@ public class AutoEnchanterScreen<C extends AutoEnchanterMenu> extends Upgradeabl
             default -> "None";
         };
         this.setTextContent("option", Component.literal("Selected option: " + label));
-        this.setTextContent("xpval", Component.literal(Utils.shortenNumber(getMenu().xp * XpShardItem.XP_VAL)));
-        this.setTextContent("estval", Component.literal(String.format("~Cost: %s", getMenu().levelCost)));
+        this.setTextContent("xpval", Component.literal(Utils.shortenNumber(getMenu().xp)));
+        this.setTextContent("estval", Component.literal(String.format("~Required: %s", getMenu().levelCost)));
         this.autoSupplyLapis.setState(getMenu().autoSupplyLapis);
         this.autoSupplyBooks.setState(getMenu().autoSupplyBooks);
     }
