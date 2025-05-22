@@ -289,6 +289,9 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        try {
+            extractPossibleData();
+        } catch (Exception ignored) {}
         if (packet != null){
             NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), packet);
             packet = null;

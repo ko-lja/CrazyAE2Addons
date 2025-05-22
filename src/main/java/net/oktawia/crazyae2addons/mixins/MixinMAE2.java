@@ -6,7 +6,10 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
+import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.helpers.patternprovider.PatternProviderTarget;
+import appeng.parts.misc.InterfacePart;
+import appeng.parts.storagebus.StorageBusPart;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -21,7 +24,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderTargetCacheExt;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -41,6 +46,7 @@ public abstract class MixinMAE2 implements IPatternProviderTargetCacheExt {
     @Shadow public abstract @Nullable PatternProviderTarget find();
 
     @Shadow @Final private IActionSource src;
+    @Shadow @Final private Direction direction;
     @Unique
     private BlockPos pos = null;
     @Unique private Level lvl = null;
@@ -78,6 +84,7 @@ public abstract class MixinMAE2 implements IPatternProviderTargetCacheExt {
                 if (details1 != null){
                     CompoundTag tag = details1.getDefinition().getTag();
                     int c = (tag != null && tag.contains("circuit")) ? tag.getInt("circuit") : 0;
+                    traverseGridIfInterface(c, pos1, lvl1);
                     setCirc(c, pos1, lvl1);
                 }
                 return storage.insert(what, amount, type, src);
@@ -93,6 +100,27 @@ public abstract class MixinMAE2 implements IPatternProviderTargetCacheExt {
                 return false;
             }
         };
+    }
+
+    @Unique
+    private void traverseGridIfInterface(int circuit, BlockPos pos, Level level) {
+        BlockEntity be = level.getBlockEntity(pos);
+        if (!(be instanceof CableBusBlockEntity cbbe)) return;
+        var part = cbbe.getPart(this.direction);
+        if (!(part instanceof InterfacePart ip)) return;
+
+        ip.getGridNode().getGrid()
+            .getMachines(StorageBusPart.class)
+            .forEach(bus -> {
+                if (bus.isUpgradedWith(CrazyItemRegistrar.CIRCUIT_UPGRADE_CARD_ITEM.get())) {
+                    BlockEntity busBe = bus.getBlockEntity();
+                    if (busBe == null) return;
+
+                    Level busLevel = busBe.getLevel();
+                    BlockPos targetPos = busBe.getBlockPos().relative(bus.getSide());
+                    setCirc(circuit, targetPos, busLevel);
+                }
+            });
     }
 
     @Unique

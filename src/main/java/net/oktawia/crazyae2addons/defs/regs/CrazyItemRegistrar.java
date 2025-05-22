@@ -122,6 +122,10 @@ public class CrazyItemRegistrar {
                             ? new GTEnergyExporterPartItem(new Item.Properties())
                             : new EnergyExporterPartItem(new Item.Properties()));
 
+    public static final RegistryObject<CircuitUpgradeCard> CIRCUIT_UPGRADE_CARD_ITEM =
+            ITEMS.register("circuit_upgrade_card",
+                    () -> new CircuitUpgradeCard(new Item.Properties()));
+
     public static final RegistryObject<EntityTickerPartItem> ENTITY_TICKER_PART_ITEM =
             ITEMS.register("entity_ticker",
                     () -> new EntityTickerPartItem(new Item.Properties()));
