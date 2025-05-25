@@ -34,7 +34,7 @@ public class AmpereMeterBE extends AEBaseBlockEntity implements MenuProvider {
     public String transfer = "-";
     public String unit = "-";
     public Integer numTransfer = 0;
-    public HashMap<Integer, Integer> average = new HashMap<>();
+    public HashMap<Integer, Integer> maxTrans = new HashMap<>();
 
     public AmpereMeterBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.AMPERE_METER_BE.get(), pos, blockState);
@@ -99,20 +99,20 @@ public class AmpereMeterBE extends AEBaseBlockEntity implements MenuProvider {
                 transferred.set(out.receiveEnergy(maxReceive, simulate));
             });
             if (!Objects.equals(AmpereMeterBE.this.unit, "FE/t")){
-                AmpereMeterBE.this.average.clear();
+                AmpereMeterBE.this.maxTrans.clear();
                 AmpereMeterBE.this.unit = "FE/t";
             }
-            if (AmpereMeterBE.this.average.size() >= 5){
-                int trans = AmpereMeterBE.this.average.values().stream().reduce(0, Integer::sum)/AmpereMeterBE.this.average.size();
+            if (AmpereMeterBE.this.maxTrans.size() >= 5){
+                int trans = AmpereMeterBE.this.maxTrans.values().stream().reduce(0, Integer::sum)/AmpereMeterBE.this.maxTrans.size();
                 AmpereMeterBE.this.transfer = Utils.shortenNumber(trans);
                 AmpereMeterBE.this.numTransfer = trans;
-                AmpereMeterBE.this.average.clear();
+                AmpereMeterBE.this.maxTrans.clear();
                 if (AmpereMeterBE.this.getMenu() != null){
                     AmpereMeterBE.this.getMenu().unit = AmpereMeterBE.this.unit;
                     AmpereMeterBE.this.getMenu().transfer = AmpereMeterBE.this.transfer;
                 }
             }
-            AmpereMeterBE.this.average.put(AmpereMeterBE.this.average.size(), transferred.get());
+            AmpereMeterBE.this.maxTrans.put(AmpereMeterBE.this.maxTrans.size(), transferred.get());
             return transferred.get();
         }
         @Override public int extractEnergy(int maxExtract, boolean simulate) { return 0; }
@@ -134,20 +134,20 @@ public class AmpereMeterBE extends AEBaseBlockEntity implements MenuProvider {
                 transferred.set(out.receiveEnergy(maxExtract, simulate));
             });
             if (!Objects.equals(AmpereMeterBE.this.unit, "FE/t")){
-                AmpereMeterBE.this.average.clear();
+                AmpereMeterBE.this.maxTrans.clear();
                 AmpereMeterBE.this.unit = "FE/t";
             }
-            if (AmpereMeterBE.this.average.size() >= 5){
-                int trans = AmpereMeterBE.this.average.values().stream().reduce(0, Integer::sum)/AmpereMeterBE.this.average.size();
+            if (AmpereMeterBE.this.maxTrans.size() >= 5){
+                int trans = AmpereMeterBE.this.maxTrans.values().stream().reduce(0, Integer::sum)/AmpereMeterBE.this.maxTrans.size();
                 AmpereMeterBE.this.transfer = Utils.shortenNumber(trans);
                 AmpereMeterBE.this.numTransfer = trans;
-                AmpereMeterBE.this.average.clear();
+                AmpereMeterBE.this.maxTrans.clear();
                 if (AmpereMeterBE.this.getMenu() != null){
                     AmpereMeterBE.this.getMenu().unit = AmpereMeterBE.this.unit;
                     AmpereMeterBE.this.getMenu().transfer = AmpereMeterBE.this.transfer;
                 }
             }
-            AmpereMeterBE.this.average.put(AmpereMeterBE.this.average.size(), transferred.get());
+            AmpereMeterBE.this.maxTrans.put(AmpereMeterBE.this.maxTrans.size(), transferred.get());
             return transferred.get();
         }
         @Override public int getEnergyStored() { return Integer.MAX_VALUE; }
