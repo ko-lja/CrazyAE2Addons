@@ -11,7 +11,7 @@ import java.util.stream.StreamSupport;
 
 public class Utils {
 
-    public static Map<Long, String> voltagesMap = Map.ofEntries(
+    public static NavigableMap<Long, String> voltagesMap = new TreeMap<>(Map.ofEntries(
             Map.entry((long) Math.pow(2, 3), "ULV"),
             Map.entry((long) Math.pow(2, 5), "LV"),
             Map.entry((long) Math.pow(2, 7), "MV"),
@@ -27,7 +27,7 @@ public class Utils {
             Map.entry((long) Math.pow(2, 27), "UXV"),
             Map.entry((long) Math.pow(2, 29), "OpV"),
             Map.entry((long) Math.pow(2, 31), "MAX")
-    );
+    ));
 
     public static <T> List<T> rotate(List<T> inputList, int offset) {
         if (inputList.isEmpty()) {

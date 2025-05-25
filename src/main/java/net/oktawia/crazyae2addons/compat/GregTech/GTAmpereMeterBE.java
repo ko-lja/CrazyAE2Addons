@@ -13,6 +13,9 @@ import net.oktawia.crazyae2addons.Utils;
 import net.oktawia.crazyae2addons.entities.AmpereMeterBE;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -46,21 +49,33 @@ public class GTAmpereMeterBE extends AmpereMeterBE{
             output.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, outputSide.getOpposite()).ifPresent(out -> {
                 transferred.set(out.acceptEnergyFromNetwork(outputSide.getOpposite(), volt, amp));
             });
-            if (!Objects.equals(GTAmpereMeterBE.this.unit, "A (%s)".formatted(Utils.voltagesMap.get(volt)))){
+            Map.Entry<Long, String> voltageTier = Utils.voltagesMap.ceilingEntry(volt);
+            String tierName = voltageTier != null ? voltageTier.getValue() : "???";
+            String unitLabel = "A (%s)".formatted(tierName);
+            if (!Objects.equals(GTAmpereMeterBE.this.unit, unitLabel)) {
                 GTAmpereMeterBE.this.average.clear();
-                GTAmpereMeterBE.this.unit = "A (%s)".formatted(Utils.voltagesMap.get(volt));
-            }
-            if (GTAmpereMeterBE.this.average.size() >= 5){
-                int trans = GTAmpereMeterBE.this.average.values().stream().reduce(0, Integer::sum)/ GTAmpereMeterBE.this.average.size();
-                GTAmpereMeterBE.this.transfer = Utils.shortenNumber(trans);
-                GTAmpereMeterBE.this.numTransfer = trans;
-                GTAmpereMeterBE.this.average.clear();
-                if (GTAmpereMeterBE.this.getMenu() != null){
-                    GTAmpereMeterBE.this.getMenu().unit = GTAmpereMeterBE.this.unit;
-                    GTAmpereMeterBE.this.getMenu().transfer = GTAmpereMeterBE.this.transfer;
-                }
+                GTAmpereMeterBE.this.unit = unitLabel;
             }
             GTAmpereMeterBE.this.average.put(GTAmpereMeterBE.this.average.size(), (int) transferred.get());
+            if (GTAmpereMeterBE.this.average.size() > 5) {
+                GTAmpereMeterBE.this.average.remove(0);
+                HashMap<Integer, Integer> newMap = new HashMap<>();
+                int i = 0;
+                for (int value : GTAmpereMeterBE.this.average.values()) {
+                    newMap.put(i++, value);
+                }
+                GTAmpereMeterBE.this.average = newMap;
+            }
+
+            int max = GTAmpereMeterBE.this.average.values().stream().max(Integer::compare).orElse(0);
+            GTAmpereMeterBE.this.transfer = Utils.shortenNumber(max);
+            GTAmpereMeterBE.this.numTransfer = max;
+
+            if (GTAmpereMeterBE.this.getMenu() != null) {
+                GTAmpereMeterBE.this.getMenu().unit = GTAmpereMeterBE.this.unit;
+                GTAmpereMeterBE.this.getMenu().transfer = GTAmpereMeterBE.this.transfer;
+            }
+
             return transferred.get();
         }
         @Override public boolean inputsEnergy(Direction direction) { return true; }
