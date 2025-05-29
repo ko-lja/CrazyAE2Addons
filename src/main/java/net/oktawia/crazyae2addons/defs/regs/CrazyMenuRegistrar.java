@@ -12,6 +12,8 @@ import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.compat.GregTech.GTAmpereMeterBE;
 import net.oktawia.crazyae2addons.compat.GregTech.GTDataExtractorPart;
 import net.oktawia.crazyae2addons.compat.GregTech.GTEnergyExporterPart;
+import net.oktawia.crazyae2addons.items.CrazyEmitterMultiplierItem;
+import net.oktawia.crazyae2addons.logic.CrazyEmitterMultiplierHost;
 import net.oktawia.crazyae2addons.logic.CrazyPatternModifierHost;
 import net.oktawia.crazyae2addons.logic.CrazyPatternMultiplierHost;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBus;
@@ -111,6 +113,9 @@ public class CrazyMenuRegistrar {
 
     public static final RegistryObject<MenuType<AutoEnchanterMenu>> AUTO_ENCHANTER_MENU =
             reg(id("auto_enchanter"), AutoEnchanterMenu::new, AutoEnchanterBE.class);
+
+    public static final RegistryObject<MenuType<CrazyEmitterMultiplierMenu>> CRAZY_EMITTER_MULTIPLIER_MENU =
+            reg(id("crazy_emitter_multiplier"), CrazyEmitterMultiplierMenu::new, CrazyEmitterMultiplierHost.class);
 
     private CrazyMenuRegistrar() {}
 }

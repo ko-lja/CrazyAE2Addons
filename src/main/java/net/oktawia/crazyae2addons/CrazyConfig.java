@@ -3,6 +3,8 @@ package net.oktawia.crazyae2addons;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.List;
+
 public class CrazyConfig {
     public static final ForgeConfigSpec COMMON_SPEC;
     public static final Common COMMON;
@@ -18,25 +20,34 @@ public class CrazyConfig {
         public final ForgeConfigSpec.BooleanValue enablePeacefullSpawner;
         public final ForgeConfigSpec.BooleanValue enableEntityTicker;
         public final ForgeConfigSpec.IntValue EntityTickerCost;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> EntityTickerBlackList;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Crazy AE2 Addons - Config").push("general");
 
             enableCPP = builder
-                    .comment("Enables The functionality of pattern providers to set the circuit of the GregTech's machine its pushing to")
-                    .define("enableCPP", true);
+                .comment("Enables The functionality of pattern providers to set the circuit of the GregTech's machine its pushing to")
+                .define("enableCPP", true);
 
             enablePeacefullSpawner = builder
-                    .comment("Enables Spawner Controller to work also on peacefull mode")
-                    .define("enablePeacefullSpawner", true);
+                .comment("Enables Spawner Controller to work also on peacefull mode")
+                .define("enablePeacefullSpawner", true);
 
             enableEntityTicker = builder
-                    .comment("Enables/disables the entity ticker")
-                    .define("enableEntityTicker", true);
+                .comment("Enables/disables the entity ticker")
+                .define("enableEntityTicker", true);
 
             EntityTickerCost = builder
-                    .comment("You can set the power cost multiplayer for the entity ticker here")
-                    .defineInRange("EntityTickerCost", 256, 0, 1024);
+                .comment("You can set the power cost multiplayer for the entity ticker here")
+                .defineInRange("EntityTickerCost", 256, 0, 1024);
+
+            EntityTickerBlackList = builder
+                .comment("Blocks on which entity ticker should not work")
+                    .defineList(
+                        "EntityTickerBlackList",
+                        List.of(),
+                        o -> o instanceof String
+                    );
 
             builder.pop();
         }

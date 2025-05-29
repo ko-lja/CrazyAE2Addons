@@ -15,7 +15,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.logging.Logger;
 
 public class ClusterPattern {
     private final List<List<String>> layers;
@@ -53,21 +52,40 @@ public class ClusterPattern {
 
     public static BlockPos findOrigin(Level level, BlockPos startPos, Set<Block> validBlocks) {
         BlockPos pos = startPos;
-        while (validBlocks.contains(level.getBlockState(pos.below()).getBlock())) {
-            pos = pos.below();
+
+        final int MAX_VERTICAL = 16;
+        final int MAX_HORIZONTAL = 16;
+        int verticalTries = 0;
+
+        while (verticalTries++ < MAX_VERTICAL) {
+            BlockPos below = pos.below();
+            if (!level.hasChunkAt(below)) break;
+
+            Block block = level.getBlockState(below).getBlock();
+            if (!validBlocks.contains(block)) break;
+
+            pos = below;
         }
+
         boolean moved;
+        int horizontalTries = 0;
         do {
             moved = false;
+            if (horizontalTries++ >= MAX_HORIZONTAL) break;
+
             for (Direction dir : List.of(Direction.NORTH, Direction.WEST)) {
                 BlockPos next = pos.relative(dir);
-                if (validBlocks.contains(level.getBlockState(next).getBlock())) {
+                if (!level.hasChunkAt(next)) continue;
+
+                Block block = level.getBlockState(next).getBlock();
+                if (validBlocks.contains(block)) {
                     pos = next;
                     moved = true;
                     break;
                 }
             }
         } while (moved);
+
         return pos;
     }
 

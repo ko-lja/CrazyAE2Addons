@@ -113,6 +113,12 @@ public final class Screens {
                 AutoEnchanterScreen<AutoEnchanterMenu>::new,
                 "/screens/auto_enchanter.json"
         );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.CRAZY_EMITTER_MULTIPLIER_MENU.get(),
+                CrazyEmitterMultiplierScreen<CrazyEmitterMultiplierMenu>::new,
+                "/screens/crazy_emitter_multiplier.json"
+        );
     }
 
     private Screens() {}

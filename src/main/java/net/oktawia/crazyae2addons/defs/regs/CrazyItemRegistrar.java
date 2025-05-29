@@ -175,6 +175,10 @@ public class CrazyItemRegistrar {
             ITEMS.register("experience_upgrade_card",
                     () -> new ExperienceUpgradeCard(new Item.Properties()));
 
+    public static final RegistryObject<CrazyEmitterMultiplierItem> CRAZY_EMITTER_MULTIPLIER_ITEM =
+            ITEMS.register("crazy_emitter_multiplier",
+                    () -> new CrazyEmitterMultiplierItem(new Item.Properties()));
+
     private CrazyItemRegistrar() {}
 
 }

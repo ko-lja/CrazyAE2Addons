@@ -387,5 +387,14 @@ public class ItemDefs {
                 )
         );
 
+        item(
+                CrazyItemRegistrar.CRAZY_EMITTER_MULTIPLIER_ITEM.get(),
+                "AC",
+                Map.of(
+                        "A", AEParts.LEVEL_EMITTER.asItem(),
+                        "C", AEItems.LOGIC_PROCESSOR.asItem()
+                )
+        );
+
     }
 }

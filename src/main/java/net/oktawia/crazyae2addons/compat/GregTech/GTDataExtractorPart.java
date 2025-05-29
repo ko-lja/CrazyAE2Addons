@@ -2,7 +2,9 @@ package net.oktawia.crazyae2addons.compat.GregTech;
 
 import appeng.api.parts.IPartItem;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.network.PacketDistributor;
@@ -67,12 +69,10 @@ public class GTDataExtractorPart extends DataExtractorPart {
                 data.add("fluidPercentFilled");
             }
         }
-        // energy
         if (target.getCapability(ForgeCapabilities.ENERGY).isPresent()) {
             data.add("storedEnergy");
         }
 
-        // zachowaj selected, valueName
         if (!data.equals(this.available)) {
             this.available = data;
             if (selected >= available.size()) {

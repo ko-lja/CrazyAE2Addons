@@ -55,11 +55,18 @@ public class CrazyPatternMultiplierMenu extends AEBaseMenu {
     public static ItemStack modify(ItemStack stack, double multiplier, Level level) {
         if (!(stack.getItem() instanceof EncodedPatternItem pattern))
             return stack;
+
+        var originalTag = stack.getTag();
+        var ignoreNbtTag = originalTag != null && originalTag.contains("ignorenbt") ? originalTag.get("ignorenbt").copy() : null;
+        var circuitTag = originalTag != null && originalTag.contains("circuit") ? originalTag.get("circuit").copy() : null;
+
         var detail = pattern.decode(stack, level, false);
         if (!(detail instanceof AEProcessingPattern process))
             return stack;
+
         GenericStack[] input  = process.getSparseInputs();
         GenericStack[] output = process.getOutputs();
+
         if (multiplier < 1) {
             for (GenericStack gs : input) {
                 if (gs != null && !(gs.what() instanceof AEFluidKey) && gs.amount() == 1)
@@ -70,20 +77,33 @@ public class CrazyPatternMultiplierMenu extends AEBaseMenu {
                     return stack;
             }
         }
+
         GenericStack[] newInputs  = new GenericStack[input.length];
         GenericStack[] newOutputs = new GenericStack[output.length];
+
         for (int i = 0; i < input.length; i++) {
             if (input[i] != null) {
                 int amt = (int) Math.max(Math.floor(input[i].amount() * multiplier), 1);
                 newInputs[i] = new GenericStack(input[i].what(), amt);
             }
         }
+
         for (int i = 0; i < output.length; i++) {
             if (output[i] != null) {
                 int amt = (int) Math.max(Math.floor(output[i].amount() * multiplier), 1);
                 newOutputs[i] = new GenericStack(output[i].what(), amt);
             }
         }
-        return PatternDetailsHelper.encodeProcessingPattern(newInputs, newOutputs);
+
+        ItemStack modifiedStack = PatternDetailsHelper.encodeProcessingPattern(newInputs, newOutputs);
+
+        if (ignoreNbtTag != null) {
+            modifiedStack.getTag().put("ignorenbt", ignoreNbtTag);
+        }
+        if (circuitTag != null) {
+            modifiedStack.getTag().put("circuit", circuitTag);
+        }
+
+        return modifiedStack;
     }
 }

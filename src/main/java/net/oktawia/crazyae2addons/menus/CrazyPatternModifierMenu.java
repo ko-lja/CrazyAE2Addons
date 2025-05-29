@@ -60,12 +60,12 @@ public class CrazyPatternModifierMenu extends AEBaseMenu {
             ItemStack item = this.getSlots(SlotSemantics.STORAGE).get(0).getItem();
             CompoundTag tag = item.getOrCreateTag();
             if (tag.contains("circuit")) {
-                if (val == 0) {
+                if (val == -1) {
                     tag.remove("circuit");
                     this.textCirc = "No circuit selected";
                 }
             }
-            if (val != 0){
+            if (val != -1){
                 tag.putInt("circuit", val);
                 this.textCirc = "Selected circuit " + val;
             }

@@ -105,6 +105,8 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
 
     private <T extends BlockEntity> void tickBlockEntity(@NotNull T blockEntity) {
         if (!CrazyConfig.COMMON.enableEntityTicker.get()) return;
+        String block = blockEntity.getBlockState().getBlock().toString();
+        if (CrazyConfig.COMMON.EntityTickerBlackList.get().contains(block.substring(block.indexOf("{") + 1, block.indexOf("}")))) return;
         if (this.getGridNode() == null || this.getMainNode() == null || this.getMainNode().getGrid() == null) return;
         int powerDraw = (int) (CrazyConfig.COMMON.EntityTickerCost.get() * pow(4, getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD))) / 2; // convert to FE
         double extractedPower = getMainNode().getGrid().getEnergyService().extractAEPower(powerDraw, Actionable.MODULATE, PowerMultiplier.CONFIG);

@@ -83,9 +83,11 @@ public abstract class MixinMAE2 implements IPatternProviderTargetCacheExt {
             public long insert(AEKey what, long amount, Actionable type) {
                 if (details1 != null){
                     CompoundTag tag = details1.getDefinition().getTag();
-                    int c = (tag != null && tag.contains("circuit")) ? tag.getInt("circuit") : 0;
-                    traverseGridIfInterface(c, pos1, lvl1);
-                    setCirc(c, pos1, lvl1);
+                    int c = (tag != null && tag.contains("circuit")) ? tag.getInt("circuit") : -1;
+                    if (c != -1){
+                        traverseGridIfInterface(c, pos1, lvl1);
+                        setCirc(c, pos1, lvl1);
+                    }
                 }
                 return storage.insert(what, amount, type, src);
             }
@@ -138,12 +140,12 @@ public abstract class MixinMAE2 implements IPatternProviderTargetCacheExt {
             } else {
                 return;
             }
-            if (circ == 0){
-                inv.setStackInSlot(0, ItemStack.EMPTY);
-            } else {
+            if (circ != 0){
                 var machineStack = GTItems.PROGRAMMED_CIRCUIT.asStack();
                 IntCircuitBehaviour.setCircuitConfiguration(machineStack, circ);
                 inv.setStackInSlot(0, machineStack);
+            } else {
+                inv.setStackInSlot(0, ItemStack.EMPTY);
             }
         } catch (Exception e){
             LogUtils.getLogger().info(e.toString());

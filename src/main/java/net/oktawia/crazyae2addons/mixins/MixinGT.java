@@ -5,7 +5,10 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
+import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.helpers.patternprovider.PatternProviderTarget;
+import appeng.parts.misc.InterfacePart;
+import appeng.parts.storagebus.StorageBusPart;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -20,9 +23,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderTargetCacheExt;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,6 +43,9 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
     @Unique private BlockPos pos = null;
     @Unique private Level lvl = null;
     @Unique private IPatternDetails details = null;
+    @Shadow
+    @Final
+    private Direction direction;
 
     @Inject(
             method = "<init>(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;Lappeng/api/networking/security/IActionSource;)V",
@@ -69,8 +79,11 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
             public long insert(AEKey what, long amount, Actionable type) {
                 if (details1 != null){
                     CompoundTag tag = details1.getDefinition().getTag();
-                    int c = (tag != null && tag.contains("circuit")) ? tag.getInt("circuit") : 0;
-                    setCirc(c, pos1, lvl1);
+                    int c = (tag != null && tag.contains("circuit")) ? tag.getInt("circuit") : -1;
+                    if (c != -1) {
+                        traverseGridIfInterface(c, pos1, lvl1);
+                        setCirc(c, pos1, lvl1);
+                    }
                 }
                 return storage.insert(what, amount, type, src);
             }
@@ -88,6 +101,27 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
     }
 
     @Unique
+    private void traverseGridIfInterface(int circuit, BlockPos pos, Level level) {
+        BlockEntity be = level.getBlockEntity(pos);
+        if (!(be instanceof CableBusBlockEntity cbbe)) return;
+        var part = cbbe.getPart(this.direction);
+        if (!(part instanceof InterfacePart ip)) return;
+
+        ip.getGridNode().getGrid()
+                .getMachines(StorageBusPart.class)
+                .forEach(bus -> {
+                    if (bus.isUpgradedWith(CrazyItemRegistrar.CIRCUIT_UPGRADE_CARD_ITEM.get())) {
+                        BlockEntity busBe = bus.getBlockEntity();
+                        if (busBe == null) return;
+
+                        Level busLevel = busBe.getLevel();
+                        BlockPos targetPos = busBe.getBlockPos().relative(bus.getSide());
+                        setCirc(circuit, targetPos, busLevel);
+                    }
+                });
+    }
+
+    @Unique
     private static void setCirc(int circ, BlockPos pos, Level lvl){
         if (!CrazyConfig.COMMON.enableCPP.get()) return;
         try {
@@ -102,12 +136,12 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
             } else {
                 return;
             }
-            if (circ == 0){
-                inv.setStackInSlot(0, ItemStack.EMPTY);
-            } else {
+            if (circ != 0){
                 var machineStack = GTItems.PROGRAMMED_CIRCUIT.asStack();
                 IntCircuitBehaviour.setCircuitConfiguration(machineStack, circ);
                 inv.setStackInSlot(0, machineStack);
+            } else {
+                inv.setStackInSlot(0, ItemStack.EMPTY);
             }
         } catch (Exception e){
             LogUtils.getLogger().info(e.toString());
