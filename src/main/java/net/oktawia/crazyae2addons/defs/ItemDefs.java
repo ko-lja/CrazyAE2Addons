@@ -396,5 +396,15 @@ public class ItemDefs {
                 )
         );
 
+        item(
+                CrazyItemRegistrar.CRAZY_CALCULATOR_ITEM.get(),
+                "ABC",
+                Map.of(
+                        "A", AEItems.ENGINEERING_PROCESSOR.asItem(),
+                        "B", AEItems.CALCULATION_PROCESSOR.asItem(),
+                        "C", AEItems.LOGIC_PROCESSOR.asItem()
+                )
+        );
+
     }
 }

@@ -173,6 +173,15 @@ public class BlockDefs {
                         "E", AEBlocks.DENSE_ENERGY_CELL.asItem()
                 )
         );
+
+        block(
+                CrazyBlockRegistrar.EJECTOR_BLOCK.get(),
+                "PR",
+                () -> Map.of(
+                        "P", AEBlocks.PATTERN_PROVIDER.asItem(),
+                        "R", Items.REDSTONE.asItem()
+                )
+        );
     }
 
 }

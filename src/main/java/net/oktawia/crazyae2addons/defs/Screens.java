@@ -119,6 +119,18 @@ public final class Screens {
                 CrazyEmitterMultiplierScreen<CrazyEmitterMultiplierMenu>::new,
                 "/screens/crazy_emitter_multiplier.json"
         );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.CRAZY_CALCULATOR_MENU.get(),
+                CrazyCalculatorScreen<CrazyCalculatorMenu>::new,
+                "/screens/crazy_calculator.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.EJECTOR_MENU.get(),
+                EjectorScreen<EjectorMenu>::new,
+                "/screens/ejector.json"
+        );
     }
 
     private Screens() {}

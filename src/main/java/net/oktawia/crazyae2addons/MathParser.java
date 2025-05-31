@@ -1,9 +1,20 @@
 package net.oktawia.crazyae2addons;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class MathParser {
     public static double parse(String input) {
         input = normalize(input);
-        return new Parser(input).parse();
+        double result = new Parser(input).parse();
+        return round(result, 10);
+    }
+
+    private static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     private static String normalize(String input) {
@@ -11,7 +22,7 @@ public class MathParser {
 
         input = input.replaceAll("([0-9.]+)k", "$1e3");
         input = input.replaceAll("([0-9.]+)m", "$1e6");
-        input = input.replaceAll("([0-9.]+)b", "$1e9");
+        input = input.replaceAll("([0-9.]+)g", "$1e9");
         input = input.replaceAll("([0-9.]+)t", "$1e12");
 
         return input;

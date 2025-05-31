@@ -49,20 +49,20 @@
       "height": 16
     },
     "down": {
-      "left": 140,
+      "left": 142,
       "top": 78,
       "width": 16,
       "height": 16
     },
     "up": {
-      "left": 140,
+      "left": 142,
       "top": 62,
       "width": 16,
       "height": 16
     },
     "data": {
-      "left": 130,
-      "top": 46,
+      "left": 132,
+      "top": 45,
       "width": 35,
       "height": 16
     },
@@ -73,8 +73,8 @@
       "height": 16
     },
     "save": {
-      "left": 135,
-      "top": 30,
+      "left": 142,
+      "top": 28,
       "width": 16,
       "height": 16
     },

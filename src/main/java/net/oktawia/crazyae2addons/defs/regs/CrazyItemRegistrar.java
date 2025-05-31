@@ -179,6 +179,10 @@ public class CrazyItemRegistrar {
             ITEMS.register("crazy_emitter_multiplier",
                     () -> new CrazyEmitterMultiplierItem(new Item.Properties()));
 
+    public static final RegistryObject<CrazyCalculatorItem> CRAZY_CALCULATOR_ITEM =
+            ITEMS.register("crazy_calculator",
+                    () -> new CrazyCalculatorItem(new Item.Properties()));
+
     private CrazyItemRegistrar() {}
 
 }

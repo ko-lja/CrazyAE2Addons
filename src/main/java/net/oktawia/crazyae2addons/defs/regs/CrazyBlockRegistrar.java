@@ -126,5 +126,12 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("auto_enchanter",
                     () -> new AutoEnchanterBlockItem(AUTO_ENCHANTER_BLOCK.get(), new Item.Properties()));
 
+    public static final RegistryObject<EjectorBlock> EJECTOR_BLOCK =
+            BLOCKS.register("ejector", EjectorBlock::new);
+
+    public static final RegistryObject<BlockItem> EJECTOR_BLOCK_ITEM =
+            BLOCK_ITEMS.register("ejector",
+                    () -> new EjectorBlockItem(EJECTOR_BLOCK.get(), new Item.Properties()));
+
     private CrazyBlockRegistrar() {}
 }

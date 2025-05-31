@@ -13,6 +13,7 @@ import net.oktawia.crazyae2addons.compat.GregTech.GTAmpereMeterBE;
 import net.oktawia.crazyae2addons.compat.GregTech.GTDataExtractorPart;
 import net.oktawia.crazyae2addons.compat.GregTech.GTEnergyExporterPart;
 import net.oktawia.crazyae2addons.items.CrazyEmitterMultiplierItem;
+import net.oktawia.crazyae2addons.logic.CrazyCalculatorHost;
 import net.oktawia.crazyae2addons.logic.CrazyEmitterMultiplierHost;
 import net.oktawia.crazyae2addons.logic.CrazyPatternModifierHost;
 import net.oktawia.crazyae2addons.logic.CrazyPatternMultiplierHost;
@@ -116,6 +117,12 @@ public class CrazyMenuRegistrar {
 
     public static final RegistryObject<MenuType<CrazyEmitterMultiplierMenu>> CRAZY_EMITTER_MULTIPLIER_MENU =
             reg(id("crazy_emitter_multiplier"), CrazyEmitterMultiplierMenu::new, CrazyEmitterMultiplierHost.class);
+
+    public static final RegistryObject<MenuType<CrazyCalculatorMenu>> CRAZY_CALCULATOR_MENU =
+            reg(id("crazy_calculator"), CrazyCalculatorMenu::new, CrazyCalculatorHost.class);
+
+    public static final RegistryObject<MenuType<EjectorMenu>> EJECTOR_MENU =
+            reg(id("ejector"), EjectorMenu::new, EjectorBE.class);
 
     private CrazyMenuRegistrar() {}
 }
