@@ -8,18 +8,20 @@ If you want to support me creating, consider downloading from [Modrinth](https:/
 ## Pattern & Crafting Tools
 - [x] **Crazy Pattern Modifier** - Adjusts processing patterns, including NBT ignore settings and programmed circuit values.
 - [x] **Crazy Pattern Multiplier** - Performs mathematical operations (e.g. multiplying, dividing, scaling) on processing patterns.
+- [x] **Crazy Emitter Multiplier** - The same as above but for level emitters.
 - [x] **Impulsed Pattern Provider** - Sends items for processing also in response to redstone pulses; ideal for probability-based recipes.
 - [x] **Signalling Interface** - Emits redstone signals based on item filters, fuzzy matching, or upgrades (Redstone/Inverter cards).
-- [x] **Circuited Pattern Provider** - Integrates with GregTech to set machine circuits automatically based on pattern data.
+- [x] **Pattern Provider GT integration** - Integrates with GregTech to set machine circuits automatically based on pattern data.
 - [x] **Pattern NBT Ignore Option** - Allows processing patterns to ignore NBT data on returned/crafted items.
 
-## Utility & Automation Blocks
+## Utility & Automation 
 - [x] **Crafting Canceller** - Detects stalled crafts and cancels them, then automatically resubmits the tasks.
 - [x] **Round Robin Item P2P Tunnel** - Evenly distributes incoming item stacks across multiple outputs.
 - [x] **Chunked Fluid P2P Tunnel** - Distributes fluids in equaly sized packets, which size is configurable.
 - [x] **Right Click Provider** - Continuously right-clicks in front of it. Abble of using any items in its inventory (e.g., placing blocks).
 - [x] **Auto Enchanter** - Automates enchanting using XP shards and lapis, with Apotheosis integration.
-- [x] **Ejector** - Export selected items from your system on a redstone pulse. 
+- [x] **Ejector** - Export selected items from your system on a redstone pulse.
+- [x] **Calculator** - Evaluates math expresions in game.
 
 ## Energy 
 - [x] **Energy Exporter** - Exports FE (or EU with a GregTech battery installed) to adjacent blocks; speed up with acceleration cards.
