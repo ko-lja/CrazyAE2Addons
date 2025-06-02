@@ -145,6 +145,35 @@ public class BlockDefs {
         );
 
         block(
+                CrazyBlockRegistrar.MOB_FARM_INPUT.get(),
+                "WWW/WEW/WWW",
+                () -> Map.of(
+                        "W", CrazyBlockRegistrar.MOB_FARM_WALL.get().asItem(),
+                        "E", CrazyItemRegistrar.MOB_EXPORT_BUS.get()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.MOB_FARM_COLLECTOR.get(),
+                "WHW/HEH/WHW",
+                () -> Map.of(
+                        "W", CrazyBlockRegistrar.MOB_FARM_WALL.get().asItem(),
+                        "H", AEParts.IMPORT_BUS.asItem(),
+                        "E", AEItems.FLUIX_PEARL.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.MOB_FARM_DAMAGE.get(),
+                "DND/NEN/DND",
+                () -> Map.of(
+                        "D", AEBlocks.DENSE_ENERGY_CELL.asItem(),
+                        "N", Items.NETHERITE_INGOT,
+                        "E", Items.ECHO_SHARD
+                )
+        );
+
+        block(
                 CrazyBlockRegistrar.SPAWNER_EXTRACTOR_WALL.get(),
                 "WEW/ESE/WEW",
                 () -> Map.of(
@@ -159,6 +188,15 @@ public class BlockDefs {
                 "WE",
                 () -> Map.of(
                         "W", CrazyBlockRegistrar.SPAWNER_EXTRACTOR_WALL.get().asItem(),
+                        "E", Items.NETHER_STAR
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.MOB_FARM_CONTROLLER.get(),
+                "WE",
+                () -> Map.of(
+                        "W", CrazyBlockRegistrar.MOB_FARM_WALL.get().asItem(),
                         "E", Items.NETHER_STAR
                 )
         );
