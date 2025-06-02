@@ -19,8 +19,9 @@ If you want to support me creating, consider downloading from [Modrinth](https:/
 - [x] **Chunked Fluid P2P Tunnel** - Distributes fluids in equaly sized packets, which size is configurable.
 - [x] **Right Click Provider** - Continuously right-clicks in front of it. Abble of using any items in its inventory (e.g., placing blocks).
 - [x] **Auto Enchanter** - Automates enchanting using XP shards and lapis, with Apotheosis integration.
+- [x] **Ejector** - Export selected items from your system on a redstone pulse. 
 
-## Energy & Redstone
+## Energy 
 - [x] **Energy Exporter** - Exports FE (or EU with a GregTech battery installed) to adjacent blocks; speed up with acceleration cards.
 - [x] **Ampere Meter** - Monitors FE/EU throughput between two faces, works also like a diode.
 
@@ -34,19 +35,9 @@ If you want to support me creating, consider downloading from [Modrinth](https:/
 
 ## Mob Storage
 - [x] **AE2 Mob Storage** - Adds advanced mob handling and integration with AE2.
-- [x] **Mob Annihilation Plane abd Mob Export Bus** - A way to import/export mobs from/to ME network storage.
+- [x] **Mob Annihilation/Formation Plane, Mob Export Bus** - A way to import/export mobs from/to ME network storage.
 - [x] **Mob Farm Multiblock** - A full blown mob grinder, all inside your ME system.
-- [x] **Spawner Controller Multiblock** -  A full blown spawner, all inside your ME system.
-
----
-
-## Additional Planned / Unfinished Ideas
-- [ ] **Power Gen**
-- [ ] **Demand Prediction** - Monitors resource usage to predict future needs and potentially automate expansions.
-- [ ] **Suggestions/Recommendations** - Observes resource trends to offer advice (e.g., adding more power generation).
-- [ ] **Goal Registering/Monitoring** - Allows players to define specific resource/production goals and track them in the network.
-- [ ] **ETA Calculations** - Computes time estimates for ongoing tasks and shares that data with other systems or triggers.
-- [ ] **Scripting Integration** - Connects to external scripting mods (like ComputerCraft or OpenComputers) for full automation.
+- [x] **Spawner Extractor Multiblock** -  A full blown spawner, all inside your ME system.
 
 ---
 
