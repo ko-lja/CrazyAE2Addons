@@ -40,7 +40,7 @@ import stone.mae2.appeng.helpers.patternprovider.PatternProviderTargetCache;
 
 import java.util.Set;
 
-@Mixin(value = PatternProviderTargetCache.class, remap = false)
+@Mixin(value = PatternProviderTargetCache.class)
 public abstract class MixinMAE2 implements IPatternProviderTargetCacheExt {
 
     @Shadow public abstract @Nullable PatternProviderTarget find();

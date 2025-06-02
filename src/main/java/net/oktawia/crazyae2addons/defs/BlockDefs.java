@@ -113,55 +113,6 @@ public class BlockDefs {
         );
 
         block(
-                CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get(),
-                "BIB/IRI/BIB",
-                () -> Map.of(
-                        "I", Blocks.IRON_BLOCK.asItem(),
-                        "B", Blocks.IRON_BARS.asItem(),
-                        "R", Items.ROTTEN_FLESH
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.MOB_FARM_INPUT_BLOCK.get(),
-                "WWW/WEW/WWW",
-                () -> Map.of(
-                        "W", CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get().asItem(),
-                        "E", CrazyItemRegistrar.MOB_EXPORT_BUS.get()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.MOB_FARM_COLLECTOR_BLOCK.get(),
-                "WHW/HEH/WHW",
-                () -> Map.of(
-                        "W", CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get().asItem(),
-                        "H", AEParts.IMPORT_BUS.asItem(),
-                        "E", AEItems.FLUIX_PEARL.asItem()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.MOB_FARM_DAMAGE_MODULE_BLOCK.get(),
-                "DND/NEN/DND",
-                () -> Map.of(
-                        "D", AEBlocks.DENSE_ENERGY_CELL.asItem(),
-                        "N", Items.NETHERITE_INGOT,
-                        "E", Items.ECHO_SHARD
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.SPAWNER_CONTROLLER_WALL_BLOCK.get(),
-                "WEW/ESE/WEW",
-                () -> Map.of(
-                        "W", CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get().asItem(),
-                        "E", Items.BLAZE_ROD,
-                        "S", AEItems.FLUIX_PEARL.asItem()
-                )
-        );
-
-        block(
                 CrazyBlockRegistrar.AUTO_ENCHANTER_BLOCK.get(),
                 " S /ICO/BEB",
                 () -> Map.of(
@@ -180,6 +131,35 @@ public class BlockDefs {
                 () -> Map.of(
                         "P", AEBlocks.PATTERN_PROVIDER.asItem(),
                         "R", Items.REDSTONE.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.MOB_FARM_WALL.get(),
+                "BIB/IRI/BIB",
+                () -> Map.of(
+                        "I", Blocks.IRON_BLOCK.asItem(),
+                        "B", Blocks.IRON_BARS.asItem(),
+                        "R", Items.ROTTEN_FLESH
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.SPAWNER_EXTRACTOR_WALL.get(),
+                "WEW/ESE/WEW",
+                () -> Map.of(
+                        "W", CrazyBlockRegistrar.MOB_FARM_WALL.get().asItem(),
+                        "E", Items.BLAZE_ROD,
+                        "S", AEItems.FLUIX_PEARL.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER.get(),
+                "WE",
+                () -> Map.of(
+                        "W", CrazyBlockRegistrar.SPAWNER_EXTRACTOR_WALL.get().asItem(),
+                        "E", Items.NETHER_STAR
                 )
         );
     }

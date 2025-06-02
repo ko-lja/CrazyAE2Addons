@@ -40,34 +40,6 @@ public class CrazyBlockEntityRegistrar {
         });
     }
 
-    private static <T extends AEBaseBlockEntity> RegistryObject<BlockEntityType<T>> reg(
-            String id,
-            BlockEntityType.BlockEntitySupplier<T> factory,
-            Class<T> blockEntityClass,
-            RegistryObject<? extends AEBaseEntityBlock<?>>... blocks
-    ) {
-        return BLOCK_ENTITIES.register(id, () -> {
-            AEBaseEntityBlock<?>[] blkArray = Arrays.stream(blocks)
-                    .map(RegistryObject::get)
-                    .toArray(AEBaseEntityBlock<?>[]::new);
-
-            var type = BlockEntityType.Builder.of(factory, blkArray).build(null);
-
-            BLOCK_ENTITY_SETUP.add(() -> {
-                for (AEBaseEntityBlock<?> blk : blkArray) {
-                    blk.setBlockEntity(
-                            (Class) blockEntityClass,
-                            (BlockEntityType) type,
-                            null,
-                            null
-                    );
-                }
-            });
-
-            return type;
-        });
-    }
-
     public static final RegistryObject<BlockEntityType<CraftingCancelerBE>> CRAFTING_CANCELER_BE =
             reg("crafting_canceler_be", CrazyBlockRegistrar.CRAFTING_CANCELER_BLOCK, CraftingCancelerBE::new, CraftingCancelerBE.class);
 
@@ -92,6 +64,18 @@ public class CrazyBlockEntityRegistrar {
     public static final RegistryObject<BlockEntityType<EjectorBE>> EJECTOR_BE =
             reg("ejector_be", CrazyBlockRegistrar.EJECTOR_BLOCK, EjectorBE::new, EjectorBE.class);
 
+    public static final RegistryObject<BlockEntityType<SpawnerExtractorControllerBE>> SPAWNER_EXTRACTOR_CONTROLLER_BE =
+            reg("spawner_extractor_controller_be", CrazyBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER, SpawnerExtractorControllerBE::new, SpawnerExtractorControllerBE.class);
+
+    public static final RegistryObject<BlockEntityType<SpawnerExtractorWallBE>> SPAWNER_EXTRACTOR_WALL_BE =
+            reg("spawner_extractor_wall_be", CrazyBlockRegistrar.SPAWNER_EXTRACTOR_WALL, SpawnerExtractorWallBE::new, SpawnerExtractorWallBE.class);
+
+    public static final RegistryObject<BlockEntityType<MobFarmControllerBE>> MOB_FARM_CONTROLLER_BE =
+            reg("mob_farm_controller_be", CrazyBlockRegistrar.MOB_FARM_CONTROLLER, MobFarmControllerBE::new, MobFarmControllerBE.class);
+
+    public static final RegistryObject<BlockEntityType<MobFarmWallBE>> MOB_FARM_WALL_BE =
+            reg("mob_farm_wall_be", CrazyBlockRegistrar.MOB_FARM_WALL, MobFarmWallBE::new, MobFarmWallBE.class);
+
     public static final RegistryObject<BlockEntityType<? extends AmpereMeterBE>> AMPERE_METER_BE =
             BLOCK_ENTITIES.register("ampere_meter_be", () -> {
                 var blk = CrazyBlockRegistrar.AMPERE_METER_BLOCK.get();
@@ -105,19 +89,6 @@ public class CrazyBlockEntityRegistrar {
                     return type;
                 }
             });
-
-    public static final RegistryObject<BlockEntityType<MobFarmBE>> MOB_FARM_BE =
-            reg("mob_farm",
-                    MobFarmBE::new,
-                    MobFarmBE.class,
-                    CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK,
-                    CrazyBlockRegistrar.MOB_FARM_DAMAGE_MODULE_BLOCK,
-                    CrazyBlockRegistrar.MOB_FARM_COLLECTOR_BLOCK,
-                    CrazyBlockRegistrar.MOB_FARM_INPUT_BLOCK
-            );
-
-    public static final RegistryObject<BlockEntityType<SpawnerControllerBE>> SPAWNER_CONTROLLER_BE =
-            reg("spawner_controller", CrazyBlockRegistrar.SPAWNER_CONTROLLER_WALL_BLOCK, SpawnerControllerBE::new, SpawnerControllerBE.class);
 
     public static final RegistryObject<BlockEntityType<? extends AutoEnchanterBE>> AUTO_ENCHANTER_BE =
             BLOCK_ENTITIES.register("auto_enchanter", () -> {

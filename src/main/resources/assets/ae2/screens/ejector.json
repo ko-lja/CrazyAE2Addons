@@ -3,13 +3,13 @@
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
     "texture": "guis/ejector.png",
-    "srcRect": [0, 0, 176, 213]
+    "srcRect": [0, 0, 176, 243]
   },
   "slots": {
-    "ENCODED_PATTERN": {
-      "left": 80,
-      "top": 45,
-      "grid": "HORIZONTAL"
+    "CONFIG": {
+      "left": 8,
+      "top": 42,
+      "grid": "BREAK_AFTER_9COLS"
     }
   },
   "text": {
@@ -23,12 +23,11 @@
       }
     },
     "interface_config": {
-      "text": "Pattern",
+      "text": "Config",
       "position": {
-        "left": 88,
-        "top": 34
-      },
-      "align": "CENTER"
+        "left": 8,
+        "top": 31
+      }
     }
   }
 }

@@ -16,8 +16,10 @@ public class CrazyBlockStateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         for (var block : CrazyBlockRegistrar.getBlocks()){
             if (block != CrazyBlockRegistrar.AMPERE_METER_BLOCK.get()
-                    && block != CrazyBlockRegistrar.MOB_FARM_WALL_BLOCK.get()
-                    && block != CrazyBlockRegistrar.SPAWNER_CONTROLLER_WALL_BLOCK.get()
+                    && block != CrazyBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER.get()
+                    && block != CrazyBlockRegistrar.SPAWNER_EXTRACTOR_WALL.get()
+                    && block != CrazyBlockRegistrar.MOB_FARM_CONTROLLER.get()
+                    && block != CrazyBlockRegistrar.MOB_FARM_WALL.get()
                     && block != CrazyBlockRegistrar.EJECTOR_BLOCK.get()){
                 simpleBlockWithItem(block);
             }

@@ -153,17 +153,18 @@ dependencies {
     compileOnly fg.deobf("dev.shadowsoffire:Apotheosis:1.20.1-7.4.8")
     implementation fg.deobf("curse.maven:jei-238222:6075247")
     implementation fg.deobf("curse.maven:jade-324717:6106101")
-    implementation fg.deobf("curse.maven:mekanism-268560:6258796")
-    implementation fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:1.6.4") { transitive = false }
-    implementation fg.deobf("curse.maven:modern-ae2-additions-1028068:6342203")
-    implementation fg.deobf("curse.maven:ex-pattern-provider-892005:6167228")
-    implementation fg.deobf("curse.maven:glodium-957920:5226922")
-    implementation fg.deobf("curse.maven:apothic-attributes-898963:5634071")
-    implementation fg.deobf("curse.maven:placebo-283644:6274231")
-    implementation fg.deobf("curse.maven:apotheosis-313970:6461960")
-    implementation fg.deobf("curse.maven:geckolib-388172:6333474")
-    implementation fg.deobf("curse.maven:advancedae-1084104:6205290")
-    implementation fg.deobf("curse.maven:mob-grinding-utils-254241:5131447")
+    implementation fg.deobf("curse.maven:guideme-1173950:6489464")
+//    implementation fg.deobf("curse.maven:mekanism-268560:6258796")
+//    implementation fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:1.6.4") { transitive = false }
+//    implementation fg.deobf("curse.maven:modern-ae2-additions-1028068:6342203")
+//    implementation fg.deobf("curse.maven:ex-pattern-provider-892005:6167228")
+//    implementation fg.deobf("curse.maven:glodium-957920:5226922")
+//    implementation fg.deobf("curse.maven:apothic-attributes-898963:5634071")
+//    implementation fg.deobf("curse.maven:placebo-283644:6274231")
+//    implementation fg.deobf("curse.maven:apotheosis-313970:6461960")
+//    implementation fg.deobf("curse.maven:geckolib-388172:6333474")
+//    implementation fg.deobf("curse.maven:advancedae-1084104:6205290")
+//    implementation fg.deobf("curse.maven:mob-grinding-utils-254241:5131447")
 }
 
 tasks.named('processResources', ProcessResources).configure {

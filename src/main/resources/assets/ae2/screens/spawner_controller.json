@@ -7,7 +7,9 @@
   },
   "text": {
     "dialog_title": {
-      "text": "Spawner Controller",
+      "text": {
+        "translate": "block.crazyae2addons.spawner_extractor_controller"
+      },
       "position": {
         "left": 8,
         "top": 6

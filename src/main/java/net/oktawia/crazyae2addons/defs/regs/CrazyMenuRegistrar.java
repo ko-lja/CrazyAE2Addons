@@ -19,6 +19,8 @@ import net.oktawia.crazyae2addons.logic.CrazyPatternModifierHost;
 import net.oktawia.crazyae2addons.logic.CrazyPatternMultiplierHost;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBus;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBusMenu;
+import net.oktawia.crazyae2addons.mobstorage.MobFormationPlane;
+import net.oktawia.crazyae2addons.mobstorage.MobFormationPlaneMenu;
 import net.oktawia.crazyae2addons.parts.*;
 import net.oktawia.crazyae2addons.entities.*;
 import net.oktawia.crazyae2addons.menus.*;
@@ -106,12 +108,6 @@ public class CrazyMenuRegistrar {
     public static final RegistryObject<MenuType<MobExportBusMenu>> MOB_EXPORT_BUS_MENU =
             reg(id("mob_export_bus"), MobExportBusMenu::new, MobExportBus.class);
 
-    public static final RegistryObject<MenuType<MobFarmMenu>> MOB_FARM_MENU =
-            reg(id("mob_farm"), MobFarmMenu::new, MobFarmBE.class);
-
-    public static final RegistryObject<MenuType<SpawnerControllerMenu>> SPAWNER_CONTROLLER_MENU =
-            reg(id("spawner_controller"), SpawnerControllerMenu::new, SpawnerControllerBE.class);
-
     public static final RegistryObject<MenuType<AutoEnchanterMenu>> AUTO_ENCHANTER_MENU =
             reg(id("auto_enchanter"), AutoEnchanterMenu::new, AutoEnchanterBE.class);
 
@@ -123,6 +119,15 @@ public class CrazyMenuRegistrar {
 
     public static final RegistryObject<MenuType<EjectorMenu>> EJECTOR_MENU =
             reg(id("ejector"), EjectorMenu::new, EjectorBE.class);
+
+    public static final RegistryObject<MenuType<MobFormationPlaneMenu>> MOB_FORMATION_PLANE_MENU =
+            reg(id("mob_formation_plane"), MobFormationPlaneMenu::new, MobFormationPlane.class);
+
+    public static final RegistryObject<MenuType<SpawnerExtractorControllerMenu>> SPAWNER_EXTRACTOR_CONTROLLER_MENU =
+            reg(id("spawner_extractor_controller"), SpawnerExtractorControllerMenu::new, SpawnerExtractorControllerBE.class);
+
+    public static final RegistryObject<MenuType<MobFarmControllerMenu>> MOB_FARM_CONTROLLER_MENU =
+            reg(id("mob_farm_controller"), MobFarmControllerMenu::new, MobFarmControllerBE.class);
 
     private CrazyMenuRegistrar() {}
 }

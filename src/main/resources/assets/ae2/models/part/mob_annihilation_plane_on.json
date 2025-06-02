@@ -2,7 +2,7 @@
   "parent": "ae2:item/part_base",
   "textures": {
     "sides": "ae2:part/plane_sides",
-    "plane": "crazyae2addons:part/annihilation_plane_on"
+    "plane": "crazyae2addons:part/mob_annihilation_plane_on"
   },
   "elements": [
     {

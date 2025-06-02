@@ -359,6 +359,15 @@ public class ItemDefs {
         );
 
         item(
+                CrazyItemRegistrar.MOB_FORMATION_PLANE.get(),
+                "AE",
+                Map.of(
+                        "A", AEParts.FORMATION_PLANE.asItem(),
+                        "E", Items.ECHO_SHARD.asItem()
+                )
+        );
+
+        item(
                 CrazyItemRegistrar.MOB_EXPORT_BUS.get(),
                 "BE",
                 Map.of(

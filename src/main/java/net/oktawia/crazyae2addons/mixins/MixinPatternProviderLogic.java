@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Mixin(value = PatternProviderLogic.class, priority = 1100, remap = false)
+@Mixin(value = PatternProviderLogic.class, priority = 1100)
 public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
 
     @Shadow @Final private PatternProviderLogicHost host;

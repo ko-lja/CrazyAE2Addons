@@ -163,6 +163,11 @@ public class CrazyItemRegistrar {
     public static final RegistryObject<MobAnnihilationPlaneItem> MOB_ANNIHILATION_PLANE =
             ITEMS.register("mob_annihilation_plane",
                     () -> new MobAnnihilationPlaneItem(new Item.Properties()));
+
+    public static final RegistryObject<MobFormationPlaneItem> MOB_FORMATION_PLANE =
+            ITEMS.register("mob_formation_plane",
+                    () -> new MobFormationPlaneItem(new Item.Properties()));
+
     public static final RegistryObject<MobExportBusItem> MOB_EXPORT_BUS =
             ITEMS.register("mob_export_bus",
                     () -> new MobExportBusItem(new Item.Properties()));
@@ -182,6 +187,7 @@ public class CrazyItemRegistrar {
     public static final RegistryObject<CrazyCalculatorItem> CRAZY_CALCULATOR_ITEM =
             ITEMS.register("crazy_calculator",
                     () -> new CrazyCalculatorItem(new Item.Properties()));
+
 
     private CrazyItemRegistrar() {}
 

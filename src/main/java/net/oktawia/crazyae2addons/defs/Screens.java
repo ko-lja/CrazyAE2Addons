@@ -1,11 +1,13 @@
 package net.oktawia.crazyae2addons.defs;
 
 import appeng.init.client.InitScreens;
-import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
+import net.oktawia.crazyae2addons.entities.MobFarmControllerBE;
 import net.oktawia.crazyae2addons.menus.*;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBusMenu;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBusScreen;
+import net.oktawia.crazyae2addons.mobstorage.MobFormationPlaneMenu;
+import net.oktawia.crazyae2addons.mobstorage.MobFormationPlaneScreen;
 import net.oktawia.crazyae2addons.screens.*;
 
 public final class Screens {
@@ -97,18 +99,6 @@ public final class Screens {
                 "/screens/mob_export_bus.json");
 
         InitScreens.register(
-                CrazyMenuRegistrar.MOB_FARM_MENU.get(),
-                MobFarmScreen<MobFarmMenu>::new,
-                "/screens/mob_farm.json"
-        );
-
-        InitScreens.register(
-                CrazyMenuRegistrar.SPAWNER_CONTROLLER_MENU.get(),
-                SpawnerControllerScreen<SpawnerControllerMenu>::new,
-                "/screens/spawner_controller.json"
-        );
-
-        InitScreens.register(
                 CrazyMenuRegistrar.AUTO_ENCHANTER_MENU.get(),
                 AutoEnchanterScreen<AutoEnchanterMenu>::new,
                 "/screens/auto_enchanter.json"
@@ -130,6 +120,24 @@ public final class Screens {
                 CrazyMenuRegistrar.EJECTOR_MENU.get(),
                 EjectorScreen<EjectorMenu>::new,
                 "/screens/ejector.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.MOB_FORMATION_PLANE_MENU.get(),
+                MobFormationPlaneScreen<MobFormationPlaneMenu>::new,
+                "/screens/mob_formation_plane.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.SPAWNER_EXTRACTOR_CONTROLLER_MENU.get(),
+                SpawnerExtractorControllerScreen<SpawnerExtractorControllerMenu>::new,
+                "/screens/spawner_controller.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.MOB_FARM_CONTROLLER_MENU.get(),
+                MobFarmControllerScreen<MobFarmControllerMenu>::new,
+                "/screens/mob_farm_controller.json"
         );
     }
 

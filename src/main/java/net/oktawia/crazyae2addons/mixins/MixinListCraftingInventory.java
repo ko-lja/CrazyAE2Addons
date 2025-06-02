@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(value = ListCraftingInventory.class, remap = false)
+@Mixin(value = ListCraftingInventory.class)
 public class MixinListCraftingInventory implements IIgnoreNBT {
 
     @Shadow private KeyCounter list;

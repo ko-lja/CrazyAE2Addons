@@ -4,7 +4,6 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.LoadingModList;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import org.objectweb.asm.tree.ClassNode;
-import org.spongepowered.asm.mixin.Mixins;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
@@ -34,6 +33,8 @@ public class Plugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        System.out.println("[MixinPlugin] Checking mixin: " + mixinClassName + " → " + targetClassName);
+
         if (mixinClassName.equals("net.oktawia.crazyae2addons.mixins.MixinGT")){
             return isModLoaded("gtceu");
         } else if (mixinClassName.equals("net.oktawia.crazyae2addons.mixins.MixinMAE2")){

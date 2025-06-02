@@ -22,7 +22,7 @@ import stone.mae2.parts.p2p.PatternP2PTunnel;
 import java.lang.reflect.Field;
 import java.util.List;
 
-@Mixin(value = PatternProviderLogic.class, remap = false)
+@Mixin(value = PatternProviderLogic.class)
 public abstract class MixinMAE22 implements IPatternProviderCpu {
 
 

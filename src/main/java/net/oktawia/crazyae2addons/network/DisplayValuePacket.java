@@ -1,24 +1,15 @@
 package net.oktawia.crazyae2addons.network;
 
-import appeng.api.parts.IPartHost;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkEvent;
-import net.oktawia.crazyae2addons.parts.DisplayPart;
-
-import java.util.HashMap;
-import java.util.function.Supplier;
 
 public class DisplayValuePacket {
-    private final BlockPos pos;
-    private final String textValue;
-    private final Direction direction;
-    private final byte spin;
-    private final String variables;
+    public final BlockPos pos;
+    public final String textValue;
+    public final Direction direction;
+    public final byte spin;
+    public final String variables;
 
     public DisplayValuePacket(BlockPos blockPos, String textValue, Direction partsDirection, byte spin, String variables) {
         this.pos = blockPos;
@@ -52,28 +43,5 @@ public class DisplayValuePacket {
             case "east" -> partsDirection = Direction.EAST;
         }
         return new DisplayValuePacket(pos, textValue, partsDirection, spin, variables);
-    }
-
-    public static void handle(DisplayValuePacket packet, Supplier<NetworkEvent.Context> ctxSupplier) {
-        NetworkEvent.Context ctx = ctxSupplier.get();
-        ctx.enqueueWork(() -> {
-             ClientLevel level = Minecraft.getInstance().level;
-             if(level != null) {
-                 BlockEntity te = level.getBlockEntity(packet.pos);
-                 IPartHost host = (IPartHost) te;
-                 DisplayPart displayPart = (DisplayPart) host.getPart(packet.direction);
-                 if(displayPart != null) {
-                     displayPart.textValue = packet.textValue;
-                     displayPart.spin = packet.spin;
-                     HashMap<String, Integer> variablesMap = new HashMap<>();
-                     for (String s : packet.variables.split("\\|")) {
-                         String[] arr = s.split(":", 2);
-                         variablesMap.put(arr[0], Integer.parseInt(arr[1]));
-                     }
-                     displayPart.variables = variablesMap;
-                 }
-             }
-        });
-        ctx.setPacketHandled(true);
     }
 }

@@ -1,11 +1,13 @@
 package net.oktawia.crazyae2addons;
 
 import appeng.api.stacks.AEKeyTypes;
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -27,6 +29,7 @@ public class CrazyAddons {
     public static final String MODID = "crazyae2addons";
 
     public CrazyAddons() {
+        LogUtils.getLogger().info("Loading Crazy AE2 Addons");
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModLoadingContext.get().registerConfig(

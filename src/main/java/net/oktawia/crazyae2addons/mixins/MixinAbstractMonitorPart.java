@@ -1,7 +1,7 @@
 package net.oktawia.crazyae2addons.mixins;
 
 import appeng.parts.reporting.AbstractMonitorPart;
-import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.logging.LogUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(value = appeng.parts.reporting.AbstractMonitorPart.class, remap = false)
+@Mixin(value = appeng.parts.reporting.AbstractMonitorPart.class)
 public abstract class MixinAbstractMonitorPart {
     @Inject(
             method = "onPartActivate(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/Vec3;)Z",

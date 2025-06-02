@@ -1,8 +1,6 @@
 package net.oktawia.crazyae2addons.mixins;
 
-import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.menu.slot.FakeSlot;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -13,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = appeng.menu.slot.FakeSlot.class, remap = false)
+@Mixin(value = appeng.menu.slot.FakeSlot.class)
 public abstract class MixinFilterSlot extends Slot {
 
     public MixinFilterSlot(Container pContainer, int pSlot, int pX, int pY) {

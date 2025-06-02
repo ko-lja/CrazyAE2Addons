@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Set;
 
-@Mixin(targets = "appeng.helpers.patternprovider.PatternProviderTargetCache", remap = false)
+@Mixin(targets = "appeng.helpers.patternprovider.PatternProviderTargetCache")
 public abstract class MixinGT implements IPatternProviderTargetCacheExt {
 
     @Unique private BlockPos pos = null;

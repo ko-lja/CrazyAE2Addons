@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Pseudo
-@Mixin(targets = "appeng.helpers.patternprovider.PatternProviderTargetCache", remap = false)
+@Mixin(targets = "appeng.helpers.patternprovider.PatternProviderTargetCache")
 public interface PatternProviderTargetCacheAccessor {
     @Accessor("src")
     IActionSource getSrc();

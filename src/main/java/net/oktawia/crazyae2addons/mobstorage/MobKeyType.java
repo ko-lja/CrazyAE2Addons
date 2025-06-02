@@ -8,6 +8,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import com.google.common.collect.Streams;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -65,9 +66,14 @@ public class MobKeyType extends AEKeyType {
             MobKeyType.TYPE,
             MobKey.class,
                 new ContainerItemStrategy() {
-                    @Override public @Nullable GenericStack getContainedStack(ItemStack stack) {
+                    @Override
+                    public @Nullable GenericStack getContainedStack(ItemStack stack) {
                         if (!(stack.getItem() instanceof SpawnEggItem egg)) return null;
-                        MobKey key = MobKey.of(egg.getType(stack.getTag()));
+
+                        EntityType<?> type = egg.getType(stack.getTag());
+                        if (type == null) return null;
+
+                        MobKey key = MobKey.of(type);
                         return new GenericStack(key, 1L);
                     }
                     @Override public @Nullable MobKey findCarriedContext(Player player, AbstractContainerMenu menu) { return null; }

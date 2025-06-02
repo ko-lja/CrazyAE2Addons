@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(value = PatternProviderLogic.class, priority = 1400, remap = false)
+@Mixin(value = PatternProviderLogic.class, priority = 1400)
 public abstract class MixinPatternProviderLogicClient implements PatternProviderLogicClientAccessor {
 
     @Shadow @Final
