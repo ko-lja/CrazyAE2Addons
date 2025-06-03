@@ -17,6 +17,9 @@ import appeng.core.definitions.AEItems;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.parts.AEBasePart;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.filter.AEItemFilters;
+import appeng.util.inv.filter.IAEItemFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -42,7 +45,22 @@ import java.util.*;
 
 public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGridTickable, MenuProvider, IUpgradeableObject {
 
-    public AppEngCellInventory inv = new AppEngCellInventory(this, 6);
+    public IAEItemFilter filter = new IAEItemFilter() {
+        @Override
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
+            return true;
+        }
+
+        @Override
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
+            return stack.getItem() == AEItems.CELL_COMPONENT_1K.asItem() ||
+                    stack.getItem() == AEItems.CELL_COMPONENT_4K.asItem() ||
+                    stack.getItem() == AEItems.CELL_COMPONENT_16K.asItem() ||
+                    stack.getItem() == AEItems.CELL_COMPONENT_64K.asItem() ||
+                    stack.getItem() == AEItems.CELL_COMPONENT_256K.asItem();
+        }
+    };
+    public AppEngInternalInventory inv = new AppEngInternalInventory(this, 6, 1, filter);
     public MEDataControllerMenu menu;
     public IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.ME_DATA_CONTROLLER_BLOCK.get(), 0, this::saveChanges);
     public NBTContainer variables = new NBTContainer();
@@ -68,6 +86,7 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
             menu.maxVariables = menu.getMaxVariables();
             menu.variableNum = menu.getVariableNum();
         }
+        this.setChanged();
     }
 
     @Nullable
@@ -84,6 +103,8 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
     @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
+        this.inv.writeToNBT(data, "inv");
+        this.upgrades.writeToNBT(data, "upgrades");
         data.putByteArray("variables", variables.serialize(true));
         data.putByteArray("tonotify", toNotify.serialize(true));
     }
@@ -91,6 +112,12 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
     @Override
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
+        if (data.contains("inv")){
+            this.inv.readFromNBT(data, "inv");
+        }
+        if (data.contains("upgrades")){
+            this.upgrades.readFromNBT(data, "upgrades");
+        }
         try{
             if (data.contains("variables")) {
                 variables.deserialize(data.getByteArray("variables"));

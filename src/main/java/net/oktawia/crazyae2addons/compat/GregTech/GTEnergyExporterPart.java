@@ -55,6 +55,11 @@ public class GTEnergyExporterPart extends EnergyExporterPart {
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (!initialized){
+            upgradesChanged();
+            onChangeInventory(this.inv, 0);
+            initialized = true;
+        }
         BlockEntity neighbor = getLevel().getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         transfered = "0";
         if (neighbor != null){

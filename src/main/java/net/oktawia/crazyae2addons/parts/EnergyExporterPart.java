@@ -56,6 +56,7 @@ public class EnergyExporterPart extends UpgradeablePart implements
     public int maxAmps;
     public int voltage;
     public String transfered;
+    public boolean initialized = false;
 
     @PartModels
     public static List<IPartModel> getModels() {
@@ -195,6 +196,8 @@ public class EnergyExporterPart extends UpgradeablePart implements
         return super.getCapability(cap);
     }
 
+
+
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(1, 1, false, false);
@@ -202,6 +205,10 @@ public class EnergyExporterPart extends UpgradeablePart implements
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (!initialized){
+            upgradesChanged();
+            initialized = true;
+        }
         BlockEntity neighbor = getLevel().getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         transfered = "0";
         if (neighbor != null){
