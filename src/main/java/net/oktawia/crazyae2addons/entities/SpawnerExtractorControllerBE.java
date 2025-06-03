@@ -56,6 +56,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
@@ -73,6 +74,7 @@ public class SpawnerExtractorControllerBE extends AENetworkBlockEntity implement
 
     public IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER.get(), 4, this::saveChanges);
     public SpawnerExtractorValidator validator;
+    public boolean spawnerDissabled = false;
 
     public SpawnerExtractorControllerBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.SPAWNER_EXTRACTOR_CONTROLLER_BE.get(), pos, blockState);
@@ -145,12 +147,13 @@ public class SpawnerExtractorControllerBE extends AENetworkBlockEntity implement
         BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof SpawnerBlockEntity spawner) {
             BaseSpawner logic = spawner.getSpawner();
-            try {
-                Field field = BaseSpawner.class.getDeclaredField("requiredPlayerRange");
-                field.setAccessible(true);
-                field.setInt(logic, 0);
-                spawner.setChanged();
-            } catch (NoSuchFieldException | IllegalAccessException ignored) {}
+            ObfuscationReflectionHelper.setPrivateValue(
+                    BaseSpawner.class,
+                    logic,
+                    Integer.MAX_VALUE,
+                    "f_45442_"
+            );
+            spawner.setChanged();
         }
     }
 
@@ -158,33 +161,22 @@ public class SpawnerExtractorControllerBE extends AENetworkBlockEntity implement
         BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof SpawnerBlockEntity spawner) {
             BaseSpawner logic = spawner.getSpawner();
-            try {
-                Field field = BaseSpawner.class.getDeclaredField("requiredPlayerRange");
-                field.setAccessible(true);
-                field.setInt(logic, 16);
-                spawner.setChanged();
-            } catch (NoSuchFieldException | IllegalAccessException ignored) {}
+            ObfuscationReflectionHelper.setPrivateValue(
+                    BaseSpawner.class,
+                    logic,
+                    200,
+                    "f_45442_"
+            );
+            spawner.setChanged();
         }
     }
 
     public static EntityType<?> getEntityTypeFromSpawner(SpawnerBlockEntity spawner) {
-        CompoundTag fullTag = spawner.getUpdateTag();
-        if (fullTag.contains("SpawnData", Tag.TAG_COMPOUND)) {
-            CompoundTag spawnData = fullTag.getCompound("SpawnData");
-            return EntityType.byString(spawnData.getCompound("entity").getString("id"))
-                    .orElse(null);
-        }
-        return null;
+        return spawner.getSpawner().getSpawnerEntity() == null ? null : spawner.getSpawner().getSpawnerEntity().getType();
     }
 
     public static EntityType<?> getEntityTypeFromApothSpawner(ApothSpawnerTile spawner) {
-        CompoundTag fullTag = spawner.serializeNBT();
-        if (fullTag.contains("SpawnData", Tag.TAG_COMPOUND)) {
-            CompoundTag spawnData = fullTag.getCompound("SpawnData");
-            return EntityType.byString(spawnData.getCompound("entity").getString("id"))
-                    .orElse(null);
-        }
-        return null;
+        return spawner.getSpawner().getSpawnerEntity() == null ? null : spawner.getSpawner().getSpawnerEntity().getType();
     }
 
     public static BlockPos getSpawnerPos(Direction facing) {
@@ -203,10 +195,16 @@ public class SpawnerExtractorControllerBE extends AENetworkBlockEntity implement
         BlockPos spawnerPos = getBlockPos().offset(getSpawnerPos(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)));
         var spawner = getLevel().getBlockEntity(spawnerPos);
         if (!validator.matchesStructure(getLevel(), getBlockPos(), getBlockState())){
-            enableSpawner(getLevel(), spawnerPos);
+            if (spawnerDissabled){
+                enableSpawner(getLevel(), spawnerPos);
+                spawnerDissabled = false;
+            }
             return TickRateModulation.IDLE;
         }
-        this.disableSpawner(getLevel(), spawnerPos);
+        if (!spawnerDissabled){
+            this.disableSpawner(getLevel(), spawnerPos);
+            spawnerDissabled = true;
+        }
         EntityType<?> type = null;
 
         if (IsModLoaded.isApothLoaded() && spawner instanceof ApothSpawnerTile ast){
