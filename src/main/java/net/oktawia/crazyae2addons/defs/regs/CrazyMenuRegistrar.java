@@ -48,6 +48,9 @@ public class CrazyMenuRegistrar {
     public static final RegistryObject<MenuType<NBTExportBusMenu>> NBT_EXPORT_BUS_MENU =
             reg(id("nbt_export_bus"), NBTExportBusMenu::new, NBTExportBusPart.class);
 
+    public static final RegistryObject<MenuType<NBTStorageBusMenu>> NBT_STORAGE_BUS_MENU =
+            reg(id("nbt_storage_bus"), NBTStorageBusMenu::new, NBTStorageBusPart.class);
+
     public static final RegistryObject<MenuType<CrazyPatternModifierMenu>> CRAZY_PATTERN_MODIFIER_MENU =
             reg(id("crazy_pattern_modifier"), CrazyPatternModifierMenu::new, CrazyPatternModifierHost.class);
 

@@ -99,9 +99,15 @@ public class CrazyItemRegistrar {
     public static final RegistryObject<RRItemP2PTunnelPartItem> RR_ITEM_P2P_TUNNEL_PART =
             ITEMS.register("round_robin_item_p2p_tunnel",
                     () -> new RRItemP2PTunnelPartItem(new Item.Properties()));
+
     public static final RegistryObject<NBTExportBusPartItem> NBT_EXPORT_BUS_PART_ITEM =
             ITEMS.register("nbt_export_bus",
                     () -> new NBTExportBusPartItem(new Item.Properties()));
+
+    public static final RegistryObject<NBTStorageBusPartItem> NBT_STORAGE_BUS_PART_ITEM =
+            ITEMS.register("nbt_storage_bus",
+                    () -> new NBTStorageBusPartItem(new Item.Properties()));
+
     public static final RegistryObject<DisplayPartItem> DISPLAY_MONITOR_PART_ITEM =
             ITEMS.register("display_monitor",
                     () -> new DisplayPartItem(new Item.Properties()));

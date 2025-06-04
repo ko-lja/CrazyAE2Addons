@@ -14,20 +14,21 @@ import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.parts.automation.IOBusPart;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import appeng.parts.automation.StackWorldBehaviors;
+import appeng.util.ConfigInventory;
+import appeng.util.SettingsFrom;
+import appeng.util.prioritylist.DefaultPriorityList;
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.TagParser;
-import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
-import net.oktawia.crazyae2addons.implementations.StackTransferContextImplementation;
-import appeng.parts.automation.StackWorldBehaviors;
-import appeng.util.prioritylist.DefaultPriorityList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
+import net.oktawia.crazyae2addons.implementations.StackTransferContextImplementation;
 import net.oktawia.crazyae2addons.menus.NBTExportBusMenu;
+import net.oktawia.crazyae2addons.misc.NBTMatcher;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Collectors;
@@ -35,6 +36,8 @@ import java.util.stream.Collectors;
 public class NBTExportBusPart extends IOBusPart {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/export_bus_base");
+
+    public final ConfigInventory inv = ConfigInventory.configTypes(1, () -> {});
 
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
@@ -50,145 +53,27 @@ public class NBTExportBusPart extends IOBusPart {
 
     @Nullable
     private StackExportStrategy exportStrategy;
-    public boolean matchmode;
     public String data;
+
     private NBTExportBusMenu menu;
 
     public NBTExportBusPart(IPartItem<?> partItem) {
         super(TickRates.ExportBus, StackWorldBehaviors.hasExportStrategyFilter(), partItem);
-        matchmode = false;
-        data = "";
-    }
-
-    public boolean doesItemMatch(AEItemKey item, CompoundTag criteria, boolean matchAll) {
-        if (item == null || item.getTag() == null) {
-            return false;
-        }
-        CompoundTag itemTag = item.getTag();
-
-        if (isSingleAny(criteria)) {
-            return matchAll ? false : true;
-        }
-
-        boolean allowExtraTags = containsAnyTag(criteria);
-
-        return matchAll
-                ? matchesAll(itemTag, criteria, allowExtraTags)
-                : matchesAny(itemTag, criteria);
-    }
-
-    private boolean isSingleAny(CompoundTag criteria) {
-        if (criteria.getAllKeys().size() == 1 && criteria.contains("ANY")) {
-            Tag tag = criteria.get("ANY");
-            return isAny(tag);
-        }
-        return false;
-    }
-
-    private boolean containsAnyTag(CompoundTag criteria) {
-        for (String key : criteria.getAllKeys()) {
-            Tag tag = criteria.get(key);
-            if ("ANY".equals(key) && isAny(tag)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean matchesAll(CompoundTag itemTag, CompoundTag criteria, boolean allowExtraTags) {
-        if (!allowExtraTags && itemTag.getAllKeys().size() != criteria.getAllKeys().size()) {
-            return false;
-        }
-        for (String critKey : criteria.getAllKeys()) {
-            Tag critValue = criteria.get(critKey);
-            if (critKey.equals("ANY")) {
-                if (!existsAnyMatch(itemTag, critValue)) {
-                    return false;
-                }
-            } else if (isAny(critValue)) {
-                if (!itemTag.contains(critKey)) {
-                    return false;
-                }
-            } else {
-                if (!itemTag.contains(critKey) || !itemTag.get(critKey).equals(critValue)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private boolean matchesAny(CompoundTag itemTag, CompoundTag criteria) {
-        for (String critKey : criteria.getAllKeys()) {
-            Tag critValue = criteria.get(critKey);
-            if (critKey.equals("ANY") && existsAnyMatch(itemTag, critValue)) {
-                return true;
-            } else if (isAny(critValue) && itemTag.contains(critKey)) {
-                return true;
-            } else if (itemTag.contains(critKey) && itemTag.get(critKey).equals(critValue)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean existsAnyMatch(CompoundTag itemTag, Tag critValue) {
-        for (String itemKey : itemTag.getAllKeys()) {
-            if (itemTag.get(itemKey).equals(critValue)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isAny(Tag tag) {
-        return tag instanceof StringTag && ((StringTag) tag).getAsString().equals("ANY");
-    }
-
-
-
-    public NonNullList<AEItemKey> getItemKeys(KeyCounter keyCounter){
-        NonNullList<AEItemKey> keys = NonNullList.create();
-        keyCounter.forEach(
-                key -> {
-                    if (key.getKey() instanceof AEItemKey){
-                        keys.add((AEItemKey) key.getKey());
-                    }
-                }
-        );
-        return keys;
-    }
-
-    public static CompoundTag strToNBT(String input) {
-        try {
-            return TagParser.parseTag(input);
-        } catch (CommandSyntaxException e) {
-            return new CompoundTag();
-        }
-    }
-
-    protected final StackExportStrategy getExportStrategy() {
-        if (exportStrategy == null) {
-            var self = this.getHost().getBlockEntity();
-            var fromPos = self.getBlockPos().relative(this.getSide());
-            var fromSide = getSide().getOpposite();
-            exportStrategy = StackWorldBehaviors.createExportFacade((ServerLevel) getLevel(), fromPos, fromSide);
-        }
-        return exportStrategy;
+        this.data = "";
     }
 
     @Override
     protected boolean doBusWork(IGrid grid) {
         var storageService = grid.getStorageService();
         var context = createTransferContext(storageService, grid.getEnergyService());
-        var stacks = grid.getStorageService().getInventory().getAvailableStacks();
+        var stacks = storageService.getInventory().getAvailableStacks();
         if (stacks.isEmpty()) {
             return false;
         }
 
         var availableKeys = getItemKeys(stacks);
-        NonNullList<AEItemKey> matchingKeys = availableKeys.stream()
-                .filter(item -> doesItemMatch(item, strToNBT(this.data), !this.matchmode))
+        var matchingKeys = availableKeys.stream()
+                .filter(item -> NBTMatcher.doesItemMatch(item, this.data))
                 .collect(Collectors.toCollection(NonNullList::create));
 
         if (matchingKeys.isEmpty()) {
@@ -212,20 +97,47 @@ public class NBTExportBusPart extends IOBusPart {
         return didWork;
     }
 
-
-    private StackTransferContextImplementation createTransferContext(IStorageService storageService, IEnergyService energyService) {
+    private StackTransferContextImplementation createTransferContext(IStorageService storageService,
+                                                                     IEnergyService energyService) {
         return new StackTransferContextImplementation(
                 storageService,
                 energyService,
                 this.source,
                 getOperationsPerTick(),
-                DefaultPriorityList.INSTANCE) {
-        };
+                DefaultPriorityList.INSTANCE);
+    }
+
+    private StackExportStrategy getExportStrategy() {
+        if (exportStrategy == null) {
+            var self = this.getHost().getBlockEntity();
+            var fromPos = self.getBlockPos().relative(this.getSide());
+            var fromSide = getSide().getOpposite();
+            exportStrategy = StackWorldBehaviors.createExportFacade((ServerLevel) getLevel(), fromPos, fromSide);
+        }
+        return exportStrategy;
+    }
+
+    public NonNullList<AEItemKey> getItemKeys(KeyCounter keyCounter) {
+        NonNullList<AEItemKey> keys = NonNullList.create();
+        keyCounter.forEach(key -> {
+            if (key.getKey() instanceof AEItemKey) {
+                keys.add((AEItemKey) key.getKey());
+            }
+        });
+        return keys;
     }
 
     @Override
     protected MenuType<?> getMenuType() {
         return CrazyMenuRegistrar.NBT_EXPORT_BUS_MENU.get();
+    }
+
+    public void setMenu(NBTExportBusMenu menu) {
+        this.menu = menu;
+    }
+
+    public NBTExportBusMenu getMenu() {
+        return this.menu;
     }
 
     @Override
@@ -247,18 +159,13 @@ public class NBTExportBusPart extends IOBusPart {
         }
     }
 
-    public void setMenu(NBTExportBusMenu menu){
-        this.menu = menu;
-    }
-
     @Override
     public void readFromNBT(CompoundTag extra) {
         super.readFromNBT(extra);
-        if(extra.contains("filter")){
+        if (extra.contains("filter")) {
             this.data = extra.getString("filter");
-        }
-        if(extra.contains("matchmode")){
-            this.matchmode = extra.getBoolean("matchmode");
+        } else {
+            this.data = "";
         }
     }
 
@@ -266,6 +173,23 @@ public class NBTExportBusPart extends IOBusPart {
     public void writeToNBT(CompoundTag extra) {
         super.writeToNBT(extra);
         extra.putString("filter", this.data);
-        extra.putBoolean("matchmode", this.matchmode);
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
+        if (input.contains("filter")) {
+            this.data = input.getString("filter");
+        } else {
+            this.data = "";
+        }
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        super.exportSettings(mode, output);
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            output.putString("filter", this.data);
+        }
     }
 }

@@ -149,13 +149,23 @@ public class ItemDefs {
         );
 
         item(
-            CrazyItemRegistrar.NBT_EXPORT_BUS_PART_ITEM.get(),
-            "ET/TL",
-            Map.of(
-                "E", AEParts.EXPORT_BUS.asItem(),
-                "T", Items.NAME_TAG,
-                "L", AEItems.LOGIC_PROCESSOR.asItem()
-            )
+                CrazyItemRegistrar.NBT_EXPORT_BUS_PART_ITEM.get(),
+                "ET/TL",
+                Map.of(
+                        "E", AEParts.EXPORT_BUS.asItem(),
+                        "T", Items.NAME_TAG,
+                        "L", AEItems.LOGIC_PROCESSOR.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.NBT_STORAGE_BUS_PART_ITEM.get(),
+                "ET/TL",
+                Map.of(
+                        "E", AEParts.STORAGE_BUS.asItem(),
+                        "T", Items.NAME_TAG,
+                        "L", AEItems.LOGIC_PROCESSOR.asItem()
+                )
         );
 
         item(

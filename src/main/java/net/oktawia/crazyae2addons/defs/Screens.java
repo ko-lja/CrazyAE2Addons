@@ -2,7 +2,6 @@ package net.oktawia.crazyae2addons.defs;
 
 import appeng.init.client.InitScreens;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
-import net.oktawia.crazyae2addons.entities.MobFarmControllerBE;
 import net.oktawia.crazyae2addons.menus.*;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBusMenu;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBusScreen;
@@ -25,6 +24,10 @@ public final class Screens {
         InitScreens.register(CrazyMenuRegistrar.NBT_EXPORT_BUS_MENU.get(),
                 NBTExportBusScreen<NBTExportBusMenu>::new,
                 "/screens/nbt_export_bus.json");
+
+        InitScreens.register(CrazyMenuRegistrar.NBT_STORAGE_BUS_MENU.get(),
+                NBTStorageBusScreen<NBTStorageBusMenu>::new,
+                "/screens/nbt_storage_bus.json");
 
         InitScreens.register(CrazyMenuRegistrar.CRAZY_PATTERN_MODIFIER_MENU.get(),
                 CrazyPatternModifierScreen<CrazyPatternModifierMenu>::new,

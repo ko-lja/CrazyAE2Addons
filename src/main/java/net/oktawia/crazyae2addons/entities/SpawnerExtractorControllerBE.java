@@ -172,11 +172,23 @@ public class SpawnerExtractorControllerBE extends AENetworkBlockEntity implement
     }
 
     public static EntityType<?> getEntityTypeFromSpawner(SpawnerBlockEntity spawner) {
-        return spawner.getSpawner().getSpawnerEntity() == null ? null : spawner.getSpawner().getSpawnerEntity().getType();
+        CompoundTag fullTag = spawner.getUpdateTag();
+        if (fullTag.contains("SpawnData", Tag.TAG_COMPOUND)) {
+            CompoundTag spawnData = fullTag.getCompound("SpawnData");
+            return EntityType.byString(spawnData.getCompound("entity").getString("id"))
+                    .orElse(null);
+        }
+        return null;
     }
 
     public static EntityType<?> getEntityTypeFromApothSpawner(ApothSpawnerTile spawner) {
-        return spawner.getSpawner().getSpawnerEntity() == null ? null : spawner.getSpawner().getSpawnerEntity().getType();
+        CompoundTag fullTag = spawner.serializeNBT();
+        if (fullTag.contains("SpawnData", Tag.TAG_COMPOUND)) {
+            CompoundTag spawnData = fullTag.getCompound("SpawnData");
+            return EntityType.byString(spawnData.getCompound("entity").getString("id"))
+                    .orElse(null);
+        }
+        return null;
     }
 
     public static BlockPos getSpawnerPos(Direction facing) {

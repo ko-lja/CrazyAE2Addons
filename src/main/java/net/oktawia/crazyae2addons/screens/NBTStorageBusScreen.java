@@ -1,24 +1,32 @@
 package net.oktawia.crazyae2addons.screens;
 
-import appeng.client.gui.AEBaseScreen;
+import appeng.api.config.*;
 import appeng.client.gui.Icon;
+import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.Scrollbar;
-import com.lowdragmc.lowdraglib.gui.editor.Icons;
+import appeng.client.gui.widgets.ServerSettingToggleButton;
+import appeng.client.gui.widgets.SettingToggleButton;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.Utils;
-import net.oktawia.crazyae2addons.menus.NBTExportBusMenu;
+import net.oktawia.crazyae2addons.menus.NBTStorageBusMenu;
 import net.oktawia.crazyae2addons.misc.IconButton;
 import net.oktawia.crazyae2addons.misc.MultilineTextFieldWidget;
 
-public class NBTExportBusScreen<C extends NBTExportBusMenu> extends AEBaseScreen<C> {
+public class NBTStorageBusScreen<C extends NBTStorageBusMenu> extends UpgradeableScreen<C> {
     private static IconButton confirm;
     private static MultilineTextFieldWidget input;
-    private static Scrollbar scrollbar;
     public static boolean initialized;
+    private static Scrollbar scrollbar;
     public static IconButton load;
+    private final SettingToggleButton<AccessRestriction> rwMode;
+    private final SettingToggleButton<StorageFilter> storageFilter;
+    private final SettingToggleButton<YesNo> filterOnExtract;
     private int lastScroll = -1;
 
     @Override
@@ -32,9 +40,13 @@ public class NBTExportBusScreen<C extends NBTExportBusMenu> extends AEBaseScreen
             input.setValue(getMenu().data);
             getMenu().newData = false;
         }
+
+        this.storageFilter.set(this.menu.getStorageFilter());
+        this.rwMode.set(this.menu.getReadWriteMode());
+        this.filterOnExtract.set(this.menu.getFilterOnExtract());
     }
 
-    public NBTExportBusScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
+    public NBTStorageBusScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
         setupGui();
         this.widgets.add("confirm", confirm);
@@ -42,6 +54,15 @@ public class NBTExportBusScreen<C extends NBTExportBusMenu> extends AEBaseScreen
         this.widgets.add("scroll", scrollbar);
         this.widgets.add("load", load);
         initialized = false;
+        widgets.addOpenPriorityButton();
+
+        this.rwMode = new ServerSettingToggleButton<>(Settings.ACCESS, AccessRestriction.READ_WRITE);
+        this.storageFilter = new ServerSettingToggleButton<>(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
+        this.filterOnExtract = new ServerSettingToggleButton<>(Settings.FILTER_ON_EXTRACT, YesNo.YES);
+
+        this.addToLeftToolbar(this.storageFilter);
+        this.addToLeftToolbar(this.filterOnExtract);
+        this.addToLeftToolbar(this.rwMode);
     }
 
     @Override
