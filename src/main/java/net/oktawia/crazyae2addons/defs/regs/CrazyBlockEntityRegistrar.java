@@ -76,6 +76,9 @@ public class CrazyBlockEntityRegistrar {
     public static final RegistryObject<BlockEntityType<MobFarmWallBE>> MOB_FARM_WALL_BE =
             reg("mob_farm_wall_be", CrazyBlockRegistrar.MOB_FARM_WALL, MobFarmWallBE::new, MobFarmWallBE.class);
 
+    public static final RegistryObject<BlockEntityType<CraftingGuardBE>> CRAFTING_GUARD_BE =
+            reg("crafting_guard_be", CrazyBlockRegistrar.CRAFTING_GUARD_BLOCK, CraftingGuardBE::new, CraftingGuardBE.class);
+
     public static final RegistryObject<BlockEntityType<? extends AmpereMeterBE>> AMPERE_METER_BE =
             BLOCK_ENTITIES.register("ampere_meter_be", () -> {
                 var blk = CrazyBlockRegistrar.AMPERE_METER_BLOCK.get();

@@ -200,6 +200,16 @@ public class BlockDefs {
                         "E", Items.NETHER_STAR
                 )
         );
+
+        block(
+                CrazyBlockRegistrar.CRAFTING_GUARD_BLOCK.get(),
+                "PEL",
+                () -> Map.of(
+                        "P", AEBlocks.PATTERN_PROVIDER.asItem(),
+                        "E", AEItems.ENGINEERING_PROCESSOR.asItem(),
+                        "L", AEItems.LOGIC_PROCESSOR.asItem()
+                )
+        );
     }
 
 }

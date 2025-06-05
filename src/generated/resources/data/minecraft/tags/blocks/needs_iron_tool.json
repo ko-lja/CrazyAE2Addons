@@ -16,6 +16,7 @@
     "crazyae2addons:mob_farm_controller",
     "crazyae2addons:mob_farm_collector",
     "crazyae2addons:mob_farm_damage",
-    "crazyae2addons:mob_farm_input"
+    "crazyae2addons:mob_farm_input",
+    "crazyae2addons:crafting_guard"
   ]
 }

@@ -33,16 +33,13 @@ public class Plugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        System.out.println("[MixinPlugin] Checking mixin: " + mixinClassName + " → " + targetClassName);
-
-        if (mixinClassName.equals("net.oktawia.crazyae2addons.mixins.MixinGT")){
-            return isModLoaded("gtceu");
-        } else if (mixinClassName.equals("net.oktawia.crazyae2addons.mixins.MixinMAE2")){
-            return isModLoaded("gtceu") && isModLoaded("mae2");
-        } else if (mixinClassName.equals("net.oktawia.crazyae2addons.mixins.MixinMAE22")){
-            return isModLoaded("gtceu") && isModLoaded("mae2");
-        }
-        return true;
+        return switch (mixinClassName) {
+            case "net.oktawia.crazyae2addons.mixins.MixinGT" -> isModLoaded("gtceu");
+            case "net.oktawia.crazyae2addons.mixins.MixinGTMAE2" -> isModLoaded("gtceu") && isModLoaded("mae2");
+            case "net.oktawia.crazyae2addons.mixins.MixinMAE2" -> isModLoaded("mae2");
+            case "net.oktawia.crazyae2addons.mixins.MixinMAE22" -> isModLoaded("mae2");
+            default -> true;
+        };
     }
 
     @Override

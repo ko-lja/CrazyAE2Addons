@@ -1,5 +1,6 @@
 package net.oktawia.crazyae2addons.mixins;
 
+
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.security.IActionSource;
@@ -15,6 +16,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,6 +29,7 @@ import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.entities.CraftingGuardBE;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderTargetCacheExt;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,17 +37,21 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import stone.mae2.appeng.helpers.patternprovider.PatternProviderTargetCache;
 
 import java.util.Set;
 
-@Mixin(targets = "appeng.helpers.patternprovider.PatternProviderTargetCache", priority = 900)
-public abstract class MixinGT implements IPatternProviderTargetCacheExt {
+@Mixin(value = PatternProviderTargetCache.class, priority = 920)
+public abstract class MixinGTMAE2 implements IPatternProviderTargetCacheExt {
 
-    @Unique private BlockPos pos = null;
+    @Shadow public abstract @Nullable PatternProviderTarget find();
+
+    @Shadow @Final private IActionSource src;
+    @Shadow @Final private Direction direction;
+    @Unique
+    private BlockPos pos = null;
     @Unique private Level lvl = null;
     @Unique private IPatternDetails details = null;
-    @Shadow @Final private Direction direction;
     @Unique private CraftingGuardBE guard = null;
     @Unique private boolean exclusiveMode = false;
 
@@ -66,32 +73,31 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
     }
 
     @Unique
-    public PatternProviderTarget find(IPatternDetails patternDetails) {
+    public void setDetails(IPatternDetails patternDetails) {
         this.details = patternDetails;
-        return ((PatternProviderTargetCacheAccessor) this).callFind();
     }
 
-    @Inject(
+    @ModifyReturnValue(
             method = "wrapMeStorage(Lappeng/api/storage/MEStorage;)Lappeng/helpers/patternprovider/PatternProviderTarget;",
             at = @At("RETURN"),
-            cancellable = true
+            remap = false
     )
-    private void injectWrapMeStorage(MEStorage storage, CallbackInfoReturnable<PatternProviderTarget> cir) {
-        var self = (PatternProviderTargetCacheAccessor) this;
-        IActionSource src = self.getSrc();
+    private PatternProviderTarget injectWrapMeStorage(PatternProviderTarget original, MEStorage storage) {
+        var self = this;
+        IActionSource src = self.src;
 
-        cir.setReturnValue(new PatternProviderTarget() {
-            private final BlockPos pos1 = MixinGT.this.pos;
-            private final Level lvl1 = MixinGT.this.lvl;
-            private final IPatternDetails details1 = MixinGT.this.details;
-            private final CraftingGuardBE guard1 = MixinGT.this.guard;
-            private final boolean exclusiveMode1 = MixinGT.this.exclusiveMode;
+        return new PatternProviderTarget() {
+            private final BlockPos pos1 = MixinGTMAE2.this.pos;
+            private final Level lvl1 = MixinGTMAE2.this.lvl;
+            private final IPatternDetails details1 = MixinGTMAE2.this.details;
+            private final CraftingGuardBE guard1 = MixinGTMAE2.this.guard;
+            private final boolean exclusiveMode1 = MixinGTMAE2.this.exclusiveMode;
             @Override
             public long insert(AEKey what, long amount, Actionable type) {
                 if (details1 != null){
                     CompoundTag tag = details1.getDefinition().getTag();
                     int c = (tag != null && tag.contains("circuit")) ? tag.getInt("circuit") : -1;
-                    if (c != -1) {
+                    if (c != -1){
                         traverseGridIfInterface(c, pos1, lvl1);
                         setCirc(c, pos1, lvl1);
                     }
@@ -112,11 +118,11 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
                 }
                 var server = this.lvl1.getServer();
                 if (server != null && this.guard1 != null && this.guard1.excluded.get(this.pos1) != null){
-                    return (this.guard1.excluded.get(this.pos1) == server.getTickCount() && this.exclusiveMode1);
+                    return this.guard1.excluded.get(this.pos1) == server.getTickCount() && this.exclusiveMode1;
                 }
                 return false;
             }
-        });
+        };
     }
 
     @Unique
@@ -127,17 +133,17 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
         if (!(part instanceof InterfacePart ip)) return;
 
         ip.getGridNode().getGrid()
-                .getMachines(StorageBusPart.class)
-                .forEach(bus -> {
-                    if (bus.isUpgradedWith(CrazyItemRegistrar.CIRCUIT_UPGRADE_CARD_ITEM.get())) {
-                        BlockEntity busBe = bus.getBlockEntity();
-                        if (busBe == null) return;
+            .getMachines(StorageBusPart.class)
+            .forEach(bus -> {
+                if (bus.isUpgradedWith(CrazyItemRegistrar.CIRCUIT_UPGRADE_CARD_ITEM.get())) {
+                    BlockEntity busBe = bus.getBlockEntity();
+                    if (busBe == null) return;
 
-                        Level busLevel = busBe.getLevel();
-                        BlockPos targetPos = busBe.getBlockPos().relative(bus.getSide());
-                        setCirc(circuit, targetPos, busLevel);
-                    }
-                });
+                    Level busLevel = busBe.getLevel();
+                    BlockPos targetPos = busBe.getBlockPos().relative(bus.getSide());
+                    setCirc(circuit, targetPos, busLevel);
+                }
+            });
     }
 
     @Unique

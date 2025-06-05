@@ -1,6 +1,5 @@
 package net.oktawia.crazyae2addons.mixins;
 
-
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.security.IActionSource;
@@ -13,26 +12,18 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.oktawia.crazyae2addons.entities.CraftingGuardBE;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderTargetCacheExt;
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import stone.mae2.appeng.helpers.patternprovider.PatternProviderTargetCache;
 
 import java.util.Set;
 
-@Mixin(value = PatternProviderTargetCache.class, priority = 910)
-public abstract class MixinMAE22 implements IPatternProviderTargetCacheExt {
+@Mixin(targets = "appeng.helpers.patternprovider.PatternProviderTargetCache")
+public abstract class MixinPatternProviderTargetCache implements IPatternProviderTargetCacheExt {
 
-    @Shadow public abstract @Nullable PatternProviderTarget find();
-
-    @Shadow @Final private IActionSource src;
-    @Shadow @Final private Direction direction;
     @Unique
     private BlockPos pos = null;
     @Unique private Level lvl = null;
@@ -58,8 +49,9 @@ public abstract class MixinMAE22 implements IPatternProviderTargetCacheExt {
     }
 
     @Unique
-    public void setDetails(IPatternDetails patternDetails) {
+    public PatternProviderTarget find(IPatternDetails patternDetails) {
         this.details = patternDetails;
+        return ((PatternProviderTargetCacheAccessor) this).callFind();
     }
 
     @Inject(
@@ -68,15 +60,14 @@ public abstract class MixinMAE22 implements IPatternProviderTargetCacheExt {
             cancellable = true
     )
     private void injectWrapMeStorage(MEStorage storage, CallbackInfoReturnable<PatternProviderTarget> cir) {
-        var self = this;
-        IActionSource src = self.src;
+        var self = (PatternProviderTargetCacheAccessor) this;
+        IActionSource src = self.getSrc();
 
         cir.setReturnValue(new PatternProviderTarget() {
-            private final BlockPos pos1 = MixinMAE22.this.pos;
-            private final Level lvl1 = MixinMAE22.this.lvl;
-            private final IPatternDetails details1 = MixinMAE22.this.details;
-            private final CraftingGuardBE guard1 = MixinMAE22.this.guard;
-            private final boolean exclusiveMode1 = MixinMAE22.this.exclusiveMode;
+            private final BlockPos pos1 = MixinPatternProviderTargetCache.this.pos;
+            private final Level lvl1 = MixinPatternProviderTargetCache.this.lvl;
+            private final CraftingGuardBE guard1 = MixinPatternProviderTargetCache.this.guard;
+            private final boolean exclusiveMode1 = MixinPatternProviderTargetCache.this.exclusiveMode;
             @Override
             public long insert(AEKey what, long amount, Actionable type) {
                 var result = storage.insert(what, amount, type, src);

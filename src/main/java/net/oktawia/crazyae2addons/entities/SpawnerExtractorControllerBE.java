@@ -94,6 +94,11 @@ public class SpawnerExtractorControllerBE extends AENetworkBlockEntity implement
         if (data.contains("upgrades")) {
             this.upgrades.readFromNBT(data, "upgrades");
         }
+        if (!isClientSide() && getLevel() != null){
+            BlockPos spawnerPos = getBlockPos().offset(getSpawnerPos(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)));
+            this.disableSpawner(getLevel(), spawnerPos);
+            this.spawnerDissabled = true;
+        }
     }
 
     @Override
@@ -208,7 +213,7 @@ public class SpawnerExtractorControllerBE extends AENetworkBlockEntity implement
         var spawner = getLevel().getBlockEntity(spawnerPos);
         if (!validator.matchesStructure(getLevel(), getBlockPos(), getBlockState())){
             if (spawnerDissabled){
-                enableSpawner(getLevel(), spawnerPos);
+                this.enableSpawner(getLevel(), spawnerPos);
                 spawnerDissabled = false;
             }
             return TickRateModulation.IDLE;

@@ -5,8 +5,10 @@ import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.CraftingBlockEntity;
@@ -20,6 +22,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
+import net.oktawia.crazyae2addons.entities.CraftingGuardBE;
+import net.oktawia.crazyae2addons.interfaces.IExclusivePatternProvider;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderCpu;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderTargetCacheExt;
 import net.oktawia.crazyae2addons.misc.PatternDetailsSerializer;
@@ -28,16 +32,18 @@ import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Mixin(value = PatternProviderLogic.class, priority = 1100)
-public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
+public abstract class MixinPatternProviderLogic implements IPatternProviderCpu, IExclusivePatternProvider {
 
     @Shadow @Final private PatternProviderLogicHost host;
 
@@ -94,11 +100,27 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
     @Unique
     private boolean ignoreNBT = false;
 
+    @Unique
+    private boolean exclusiveMode = false;
+
+    @Unique
+    public void setExclusiveMode(boolean mode){
+        this.exclusiveMode = mode;
+    }
+
+    @Unique
+    public boolean getExclusiveMode(){
+        return this.exclusiveMode;
+    }
+
     @Shadow
     public abstract boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder);
 
     @Shadow public abstract boolean isClientSide();
 
+    @Shadow @Nullable public abstract IGrid getGrid();
+
+    @Shadow private Direction sendDirection;
     @Unique
     private YesNo realRedstoneState = YesNo.NO;
 
@@ -118,7 +140,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
     }
 
     @Inject(
-            method = "Lappeng/helpers/patternprovider/PatternProviderLogic;<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/patternprovider/PatternProviderLogicHost;I)V",
+            method = "<init>(Lappeng/api/networking/IManagedGridNode;Lappeng/helpers/patternprovider/PatternProviderLogicHost;I)V",
             at = @At("RETURN")
     )
     private void onCtorTail(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize, CallbackInfo ci) {
@@ -129,7 +151,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
     }
 
     @Inject(
-            method = "Lappeng/helpers/patternprovider/PatternProviderLogic;onStackReturnedToNetwork(Lappeng/api/stacks/GenericStack;)V",
+            method = "onStackReturnedToNetwork(Lappeng/api/stacks/GenericStack;)V",
             at = @At(
                     value  = "FIELD",
                     target = "Lappeng/helpers/patternprovider/PatternProviderLogic;unlockEvent:Lappeng/helpers/patternprovider/UnlockCraftingEvent;",
@@ -169,7 +191,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
     }
 
     @Inject(
-            method = "Lappeng/helpers/patternprovider/PatternProviderLogic;writeToNBT(Lnet/minecraft/nbt/CompoundTag;)V",
+            method = "writeToNBT(Lnet/minecraft/nbt/CompoundTag;)V",
             at = @At("RETURN")
     )
     private void afterWriteToNBT(CompoundTag tag, CallbackInfo ci) {
@@ -189,10 +211,15 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
         } else {
             tag.remove("pdetails");
         }
+        if (this.getExclusiveMode()){
+            tag.putBoolean("exclusive", getExclusiveMode());
+        } else {
+            tag.remove("exclusive");
+        }
     }
 
     @Inject(
-            method = "Lappeng/helpers/patternprovider/PatternProviderLogic;readFromNBT(Lnet/minecraft/nbt/CompoundTag;)V",
+            method = "readFromNBT(Lnet/minecraft/nbt/CompoundTag;)V",
             at = @At("RETURN")
     )
     private void afterReadFromNBT(CompoundTag tag, CallbackInfo ci) {
@@ -205,10 +232,13 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
         if (tag.contains("pdetails")){
             this.setPatternDetails(PatternDetailsSerializer.deserialize((CompoundTag) tag.get("pdetails")));
         }
+        if (tag.contains("exclusive")){
+            this.setExclusiveMode(tag.getBoolean("exclusive"));
+        }
     }
 
     @ModifyExpressionValue(
-            method = "Lappeng/helpers/patternprovider/PatternProviderLogic;pushPattern(Lappeng/api/crafting/IPatternDetails;[Lappeng/api/stacks/KeyCounter;)Z",
+            method = "pushPattern(Lappeng/api/crafting/IPatternDetails;[Lappeng/api/stacks/KeyCounter;)Z",
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/util/List;contains(Ljava/lang/Object;)Z"
@@ -241,8 +271,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
     @Inject(
             method = "findAdapter",
             at = @At("RETURN"),
-            cancellable = true,
-            remap = false
+            cancellable = true
     )
     private void redirectFind(Direction side, CallbackInfoReturnable<PatternProviderTarget> cir) {
         IPatternDetails pattern = this.getPatternDetails();
@@ -250,6 +279,14 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
             Object rawCache = getTargetCache(this, side.get3DDataValue());
             PatternProviderTarget result;
             if (rawCache instanceof IPatternProviderTargetCacheExt ext){
+                ext.setExclusiveMode(this.getExclusiveMode());
+                var grid = this.getGrid();
+                if (grid != null){
+                    var guard = grid.getMachines(CraftingGuardBE.class).stream().findFirst().orElse(null);
+                    if (guard != null){
+                        ext.setGuard(guard);
+                    }
+                }
                 result = ext.find(this.getPatternDetails());
                 cir.setReturnValue(result);
             }
@@ -271,7 +308,13 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
 
     @Unique
     public void repeat() {
-        if (host.getBlockEntity() != null && this.cpuCluster == null && this.cpuClusterPos != null) {
+        if (
+                host.getBlockEntity() != null
+                && this.cpuCluster == null
+                && this.cpuClusterPos != null
+                && host.getBlockEntity().getLevel() != null
+                && host.getBlockEntity().getLevel().getBlockEntity(this.cpuClusterPos) != null
+        ) {
             this.cpuCluster = ((CraftingBlockEntity) host.getBlockEntity()
                     .getLevel()
                     .getBlockEntity(this.cpuClusterPos))
