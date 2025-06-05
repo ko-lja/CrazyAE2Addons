@@ -13,7 +13,6 @@ import net.oktawia.crazyae2addons.compat.GregTech.*;
 import net.oktawia.crazyae2addons.entities.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CrazyBlockEntityRegistrar {
@@ -78,6 +77,9 @@ public class CrazyBlockEntityRegistrar {
 
     public static final RegistryObject<BlockEntityType<CraftingGuardBE>> CRAFTING_GUARD_BE =
             reg("crafting_guard_be", CrazyBlockRegistrar.CRAFTING_GUARD_BLOCK, CraftingGuardBE::new, CraftingGuardBE.class);
+
+    public static final RegistryObject<BlockEntityType<CraftingSchedulerBE>> CRAFTING_SHEDULER_BE =
+            reg("crafting_scheduler_be", CrazyBlockRegistrar.CRAFTING_SCHEDULER_BLOCK, CraftingSchedulerBE::new, CraftingSchedulerBE.class);
 
     public static final RegistryObject<BlockEntityType<? extends AmpereMeterBE>> AMPERE_METER_BE =
             BLOCK_ENTITIES.register("ampere_meter_be", () -> {

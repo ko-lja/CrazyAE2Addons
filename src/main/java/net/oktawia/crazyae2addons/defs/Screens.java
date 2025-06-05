@@ -142,6 +142,12 @@ public final class Screens {
                 MobFarmControllerScreen<MobFarmControllerMenu>::new,
                 "/screens/mob_farm_controller.json"
         );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.CRAFTING_SCHEDULER_MENU.get(),
+                CraftingSchedulerScreen<CraftingSchedulerMenu>::new,
+                "/screens/crafting_scheduler.json"
+        );
     }
 
     private Screens() {}

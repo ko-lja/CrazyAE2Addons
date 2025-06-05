@@ -132,5 +132,8 @@ public class CrazyMenuRegistrar {
     public static final RegistryObject<MenuType<MobFarmControllerMenu>> MOB_FARM_CONTROLLER_MENU =
             reg(id("mob_farm_controller"), MobFarmControllerMenu::new, MobFarmControllerBE.class);
 
+    public static final RegistryObject<MenuType<CraftingSchedulerMenu>> CRAFTING_SCHEDULER_MENU =
+            reg(id("crafting_scheduler"), CraftingSchedulerMenu::new, CraftingSchedulerBE.class);
+
     private CrazyMenuRegistrar() {}
 }

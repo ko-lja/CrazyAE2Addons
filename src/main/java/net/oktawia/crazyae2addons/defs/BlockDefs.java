@@ -210,6 +210,16 @@ public class BlockDefs {
                         "L", AEItems.LOGIC_PROCESSOR.asItem()
                 )
         );
+
+        block(
+                CrazyBlockRegistrar.CRAFTING_SCHEDULER_BLOCK.get(),
+                "PRE",
+                () -> Map.of(
+                        "P", AEBlocks.PATTERN_PROVIDER.asItem(),
+                        "R", Items.REDSTONE,
+                        "E", AEParts.LEVEL_EMITTER.asItem()
+                )
+        );
     }
 
 }

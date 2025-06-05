@@ -153,5 +153,12 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("crafting_guard",
                     () -> new CraftingGuardBlockItem(CRAFTING_GUARD_BLOCK.get(), new Item.Properties()));
 
+    public static final RegistryObject<CraftingSchedulerBlock> CRAFTING_SCHEDULER_BLOCK =
+            BLOCKS.register("crafting_scheduler", CraftingSchedulerBlock::new);
+
+    public static final RegistryObject<BlockItem> CRAFTING_SCHEDULER_BLOCK_ITEM =
+            BLOCK_ITEMS.register("crafting_scheduler",
+                    () -> new CraftingSchedulerBlockItem(CRAFTING_SCHEDULER_BLOCK.get(), new Item.Properties()));
+
     private CrazyBlockRegistrar() {}
 }
