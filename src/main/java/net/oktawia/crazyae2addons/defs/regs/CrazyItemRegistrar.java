@@ -194,6 +194,14 @@ public class CrazyItemRegistrar {
             ITEMS.register("crazy_calculator",
                     () -> new CrazyCalculatorItem(new Item.Properties()));
 
+    public static final RegistryObject<RedstoneEmitterPartItem> REDSTONE_EMITTER =
+            ITEMS.register("redstone_emitter",
+                    () -> new RedstoneEmitterPartItem(new Item.Properties()));
+
+    public static final RegistryObject<RedstoneTerminalPartItem> REDSTONE_TERMINAL =
+            ITEMS.register("redstone_terminal",
+                    () -> new RedstoneTerminalPartItem(new Item.Properties()));
+
 
     private CrazyItemRegistrar() {}
 

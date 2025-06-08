@@ -67,9 +67,6 @@ public class DataExtractorScreen<C extends DataExtractorMenu> extends Upgradeabl
         btn3 = Button.builder(Component.literal("3 "), (btn) -> {
             setSelected(Integer.valueOf(Arrays.stream(btn.getMessage().getString().split(" ")).toList().get(0)));
         }).build();
-        btn4 = Button.builder(Component.literal("4 "), (btn) -> {
-            setSelected(Integer.valueOf(Arrays.stream(btn.getMessage().getString().split(" ")).toList().get(0)));
-        }).build();
         this.widgets.add("button0", btn0);
         this.widgets.add("button1", btn1);
         this.widgets.add("button2", btn2);

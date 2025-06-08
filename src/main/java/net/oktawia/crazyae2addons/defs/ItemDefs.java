@@ -425,5 +425,14 @@ public class ItemDefs {
                 )
         );
 
+        item(
+                CrazyItemRegistrar.REDSTONE_EMITTER.get(),
+                "LR",
+                Map.of(
+                        "L", AEParts.LEVEL_EMITTER.asItem(),
+                        "R", Items.REDSTONE
+                )
+        );
+
     }
 }

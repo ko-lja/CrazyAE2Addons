@@ -135,5 +135,11 @@ public class CrazyMenuRegistrar {
     public static final RegistryObject<MenuType<CraftingSchedulerMenu>> CRAFTING_SCHEDULER_MENU =
             reg(id("crafting_scheduler"), CraftingSchedulerMenu::new, CraftingSchedulerBE.class);
 
+    public static final RegistryObject<MenuType<RedstoneEmitterMenu>> REDSTONE_EMITTER_MENU =
+            reg(id("redstone_emitter"), RedstoneEmitterMenu::new, RedstoneEmitterPart.class);
+
+    public static final RegistryObject<MenuType<RedstoneTerminalMenu>> REDSTONE_TERMINAL_MENU =
+            reg(id("redstone_terminal"), RedstoneTerminalMenu::new, RedstoneTerminalPart.class);
+
     private CrazyMenuRegistrar() {}
 }

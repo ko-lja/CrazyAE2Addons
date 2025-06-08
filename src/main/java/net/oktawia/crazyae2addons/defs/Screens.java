@@ -148,6 +148,18 @@ public final class Screens {
                 CraftingSchedulerScreen<CraftingSchedulerMenu>::new,
                 "/screens/crafting_scheduler.json"
         );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.REDSTONE_EMITTER_MENU.get(),
+                RedstoneEmitterScreen<RedstoneEmitterMenu>::new,
+                "/screens/redstone_emitter.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.REDSTONE_TERMINAL_MENU.get(),
+                RedstoneTerminalScreen<RedstoneTerminalMenu>::new,
+                "/screens/redstone_terminal.json"
+        );
     }
 
     private Screens() {}

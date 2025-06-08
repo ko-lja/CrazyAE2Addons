@@ -62,7 +62,6 @@ public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTi
     public DisplayPart(IPartItem<?> partItem) {
         super(partItem);
         this.getMainNode()
-                .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(1)
                 .addService(IGridTickable.class, this);
     }

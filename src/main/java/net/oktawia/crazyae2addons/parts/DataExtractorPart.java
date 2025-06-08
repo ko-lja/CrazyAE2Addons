@@ -65,7 +65,6 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
     public DataExtractorPart(IPartItem<?> partItem) {
         super(partItem);
         this.getMainNode()
-                .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(4)
                 .addService(IGridTickable.class, this);
     }
