@@ -12,6 +12,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
@@ -195,6 +196,8 @@ public class MobFarmControllerBE extends AENetworkBlockEntity implements MenuPro
             Entity entity = type.create(level);
             if (!(entity instanceof LivingEntity livingEntity)) {
                 return new EntityDropResult(List.of(), 0);
+            } else if (entity instanceof WitherBoss){
+                return new EntityDropResult(List.of(Items.NETHER_STAR.getDefaultInstance()), 1500);
             }
 
             if (this.fakePlayer == null){
@@ -225,6 +228,7 @@ public class MobFarmControllerBE extends AENetworkBlockEntity implements MenuPro
                     .withParameter(LootContextParams.THIS_ENTITY, livingEntity)
                     .withOptionalParameter(LootContextParams.KILLER_ENTITY, this.fakePlayer)
                     .withOptionalParameter(LootContextParams.LAST_DAMAGE_PLAYER, this.fakePlayer)
+                    .withOptionalParameter(LootContextParams.DIRECT_KILLER_ENTITY, this.fakePlayer)
                     .withParameter(LootContextParams.DAMAGE_SOURCE, level.damageSources().playerAttack(this.fakePlayer))
                     .withParameter(LootContextParams.TOOL, damager)
                     .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(livingEntity.blockPosition()))
@@ -283,7 +287,7 @@ public class MobFarmControllerBE extends AENetworkBlockEntity implements MenuPro
                 StorageHelper.poweredInsert(eng, inv, AEItemKey.of(is.getItem()), is.getCount(), IActionSource.ofMachine(this), Actionable.MODULATE);
             }
             StorageHelper.poweredInsert(eng, inv, AEItemKey.of(CrazyItemRegistrar.XP_SHARD_ITEM.get()),
-                    Math.max((result.experience * getInstalledUpgrades(CrazyItemRegistrar.EXPERIENCE_UPGRADE_CARD.get()) / XpShardItem.XP_VAL), 1), IActionSource.ofMachine(this), Actionable.MODULATE);
+                    Math.max((result.experience * (getInstalledUpgrades(CrazyItemRegistrar.EXPERIENCE_UPGRADE_CARD.get()) + 1) / XpShardItem.XP_VAL), 1), IActionSource.ofMachine(this), Actionable.MODULATE);
             i++;
         }
         return TickRateModulation.IDLE;
