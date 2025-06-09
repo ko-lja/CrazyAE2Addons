@@ -6,7 +6,6 @@ import appeng.menu.implementations.UpgradeableMenu;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.parts.DataExtractorPart;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
-import net.oktawia.crazyae2addons.screens.DataExtractorScreen;
 
 public class DataExtractorMenu extends UpgradeableMenu<DataExtractorPart> implements IUpgradeableObject {
 
@@ -20,8 +19,9 @@ public class DataExtractorMenu extends UpgradeableMenu<DataExtractorPart> implem
     public Integer page = 0;
     @GuiSync(421)
     public Integer delay;
+    @GuiSync(426)
+    public Boolean updateGui = false;
 
-    public DataExtractorScreen<?> screen;
     public String ACTION_SYNC_SELECTED = "actionSyncSelected";
     public String ACTION_GET_DATA = "actionGetData";
     public String ACTION_SAVE_NAME = "actionSaveName";
@@ -52,8 +52,8 @@ public class DataExtractorMenu extends UpgradeableMenu<DataExtractorPart> implem
         getHost().extractPossibleData();
         this.available = String.join("|", getHost().available);
         this.selected = getHost().selected;
+        this.updateGui = true;
         if (isClientSide()){
-            this.screen.updateGui();
             sendClientAction(ACTION_GET_DATA);
         }
     }

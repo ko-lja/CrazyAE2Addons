@@ -24,7 +24,7 @@ public class NetworkHandler {
                 DisplayValuePacket.class,
                 DisplayValuePacket::encode,
                 DisplayValuePacket::decode,
-                ClientPacketHandlers::handleDisplayValuePacket,
+                DisplayValuePacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
         INSTANCE.registerMessage(
@@ -32,7 +32,7 @@ public class NetworkHandler {
                 DataValuesPacket.class,
                 DataValuesPacket::encode,
                 DataValuesPacket::decode,
-                ClientPacketHandlers::handleDataValuesPacket,
+                DataValuesPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
     }

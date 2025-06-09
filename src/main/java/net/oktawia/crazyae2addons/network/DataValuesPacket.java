@@ -1,11 +1,18 @@
 package net.oktawia.crazyae2addons.network;
 
+import appeng.api.parts.IPartHost;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.network.NetworkEvent;
+import net.oktawia.crazyae2addons.parts.DataExtractorPart;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class DataValuesPacket {
     public final BlockPos pos;
@@ -48,5 +55,24 @@ public class DataValuesPacket {
         buf.writeUtf(packet.data);
         buf.writeInt(packet.selected);
         buf.writeUtf(packet.valueName);
+    }
+
+    public static void handle(DataValuesPacket packet, Supplier<NetworkEvent.Context> ctxSupplier) {
+        NetworkEvent.Context ctx = ctxSupplier.get();
+        ctx.enqueueWork(() -> {
+            ClientLevel level = Minecraft.getInstance().level;
+            if (level != null) {
+                BlockEntity te = level.getBlockEntity(packet.pos);
+                if (te instanceof IPartHost host) {
+                    DataExtractorPart extractor = (DataExtractorPart) host.getPart(packet.direction);
+                    if (extractor != null) {
+                        extractor.available = Arrays.stream(packet.data.split("\\|")).toList();
+                        extractor.selected = packet.selected;
+                        extractor.valueName = packet.valueName;
+                    }
+                }
+            }
+        });
+        ctx.setPacketHandled(true);
     }
 }

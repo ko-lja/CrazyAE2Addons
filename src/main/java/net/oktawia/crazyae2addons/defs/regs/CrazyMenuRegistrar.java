@@ -9,6 +9,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.IsModLoaded;
+import net.oktawia.crazyae2addons.compat.CC.CCDataExtractorPart;
+import net.oktawia.crazyae2addons.compat.DataExtracor.CompatDataExtractorPart;
 import net.oktawia.crazyae2addons.compat.GregTech.GTAmpereMeterBE;
 import net.oktawia.crazyae2addons.compat.GregTech.GTDataExtractorPart;
 import net.oktawia.crazyae2addons.compat.GregTech.GTEnergyExporterPart;
@@ -61,9 +63,13 @@ public class CrazyMenuRegistrar {
             reg(id("me_data_controller"), MEDataControllerMenu::new, MEDataControllerBE.class);
 
     public static final RegistryObject<MenuType<DataExtractorMenu>> DATA_EXTRACTOR_MENU =
-            IsModLoaded.isGTCEuLoaded()
-                    ? reg(id("data_extractor"), DataExtractorMenu::new, GTDataExtractorPart.class)
-                    : reg(id("data_extractor"), DataExtractorMenu::new, DataExtractorPart.class);
+            IsModLoaded.isGTCEuLoaded() ? IsModLoaded.isCCLoaded()
+                    ? reg(id("data_extractor"), DataExtractorMenu::new, CompatDataExtractorPart.class)
+                    : reg(id("data_extractor"), DataExtractorMenu::new, GTDataExtractorPart.class)
+                    : IsModLoaded.isCCLoaded()
+                    ? reg(id("data_extractor"), DataExtractorMenu::new, CCDataExtractorPart.class)
+                    : reg(id("data_extractor"), DataExtractorMenu::new, DataExtractorPart.class)
+            ;
 
     public static final RegistryObject<MenuType<DataProcessorMenu>> DATA_PROCESSOR_MENU =
             reg(id("data_processor"), DataProcessorMenu::new, DataProcessorBE.class);

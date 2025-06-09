@@ -76,7 +76,7 @@ public class CrazyAddons {
             new UpgradeCards(event);
             MobKeyType.registerContainerItemStrategies();
             CrazyBlockEntityRegistrar.setupBlockEntityTypes();
-            NetworkHandler.registerServerPackets();
+            NetworkHandler.registerClientPackets();
         });
     }
 
@@ -90,7 +90,6 @@ public class CrazyAddons {
         public static void onClientSetup(FMLClientSetupEvent event) {
             EntityTypeRenderer.initialize();
             Screens.register();
-            NetworkHandler.registerClientPackets();
         }
         @SubscribeEvent
         public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders evt) {

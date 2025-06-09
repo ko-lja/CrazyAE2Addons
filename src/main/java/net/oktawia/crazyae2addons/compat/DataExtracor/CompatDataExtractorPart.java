@@ -1,21 +1,26 @@
-package net.oktawia.crazyae2addons.compat.GregTech;
+package net.oktawia.crazyae2addons.compat.DataExtracor;
 
 import appeng.api.parts.IPartItem;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.network.PacketDistributor;
+import net.oktawia.crazyae2addons.compat.CC.CCDataExtractorPart;
 import net.oktawia.crazyae2addons.network.DataValuesPacket;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.parts.DataExtractorPart;
+import org.objectweb.asm.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GTDataExtractorPart extends DataExtractorPart {
-    public GTDataExtractorPart(IPartItem<?> partItem) {
+public class CompatDataExtractorPart extends CCDataExtractorPart {
+    public CompatDataExtractorPart(IPartItem<?> partItem) {
         super(partItem);
     }
 

@@ -9,4 +9,5 @@ public class IsModLoaded {
     public static boolean isApothLoaded() {
         return ModList.get().isLoaded("apotheosis");
     }
+    public static boolean isCCLoaded() { return ModList.get().isLoaded("computercraft"); }
 }

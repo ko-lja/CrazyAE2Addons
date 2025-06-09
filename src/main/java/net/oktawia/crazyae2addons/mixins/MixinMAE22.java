@@ -80,7 +80,7 @@ public abstract class MixinMAE22 implements IPatternProviderTargetCacheExt {
             @Override
             public long insert(AEKey what, long amount, Actionable type) {
                 var result = storage.insert(what, amount, type, src);
-                if (result > 0 && this.guard1.getLevel() != null && this.guard1.getLevel().getServer() != null){
+                if (this.guard1 != null && result > 0 && this.guard1.getLevel() != null && this.guard1.getLevel().getServer() != null){
                     this.guard1.excluded.put(this.pos1, this.guard1.getLevel().getServer().getTickCount());
                 }
                 return result;

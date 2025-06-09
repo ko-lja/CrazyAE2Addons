@@ -1,6 +1,5 @@
 package net.oktawia.crazyae2addons.parts;
 
-import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -37,11 +36,15 @@ import net.oktawia.crazyae2addons.entities.MEDataControllerBE;
 import net.oktawia.crazyae2addons.menus.DataExtractorMenu;
 import net.oktawia.crazyae2addons.network.DataValuesPacket;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
+import org.objectweb.asm.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.SecureRandom;
 import java.util.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DataExtractorPart extends AEBasePart implements IGridTickable, MenuProvider, IUpgradeableObject {
 
@@ -50,11 +53,15 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
     @PartModels public static final IPartModel MODELS_ON  = new PartModel(MODEL_BASE, new ResourceLocation(AppEng.MOD_ID, "part/import_bus_on"));
     @PartModels public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, new ResourceLocation(AppEng.MOD_ID, "part/import_bus_has_channel"));
 
+    private static final Map<Class<?>, List<String>> FIELD_CACHE   = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, List<String>> METHOD_CACHE  = new ConcurrentHashMap<>();
+
+
     public BlockEntity target;
     public List<String> available = List.of();
     public int selected = 0;
     public Object resolveTarget;
-    public String identifier;
+    public String identifier = randomHexId();
 
     public DataExtractorMenu menu;
     public String valueName = "";
@@ -89,15 +96,15 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
     @Override
     public void writeToNBT(CompoundTag extra) {
         super.writeToNBT(extra);
-        extra.putString("available", String.join("|", available));
+        extra.putString("available", available.isEmpty() ? "" : String.join("|", available));
         extra.putInt("selected", selected);
         extra.putInt("delay", delay);
-        extra.putLong("target", getBlockEntity().getBlockPos().relative(getSide()).asLong());
+        extra.putLong("target", getSide() == null ? 0 : getBlockEntity().getBlockPos().relative(getSide()).asLong());
         extra.putString("identifier", identifier);
         extra.putString("valuename", valueName);
     }
 
-    private static String randomHexId() {
+    public static String randomHexId() {
         SecureRandom rand = new SecureRandom();
         StringBuilder sb = new StringBuilder(4);
         for (int i = 0; i < 4; i++) sb.append(Integer.toHexString(rand.nextInt(16)).toUpperCase());
@@ -107,6 +114,7 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
     @Override
     public void onPlacement(Player player) {
         super.onPlacement(player);
+        if (getSide() == null) return;
         target = getLevel().getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         extractPossibleData();
         if (getMenu() != null) getMenu().available = String.join("\\|", available);
@@ -114,7 +122,7 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
 
     @Override
     public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (pos.relative(getSide()).equals(neighbor)) {
+        if (getSide() != null && pos.relative(getSide()).equals(neighbor)) {
             target = level.getBlockEntity(neighbor);
             extractPossibleData();
             if (getMenu() != null) {
@@ -124,14 +132,13 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
     }
 
     public void extractPossibleData() {
-        if (target == null) {
+        if (target == null && getSide() != null) {
             target = getLevel().getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         }
         if (target == null){
             return;
         }
-        List<String> data = new ArrayList<>();
-        data.addAll(extractNumericInfo(target));
+        List<String> data = new ArrayList<>(extractNumericInfo(target));
 
         if (target.getCapability(ForgeCapabilities.ITEM_HANDLER).isPresent()) {
             data.add("percentFilled");
@@ -153,13 +160,16 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
         this.resolveTarget = target;
 
         if (!getLevel().isClientSide()) {
-            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
+            NetworkHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with( () -> getLevel().getChunkAt(getBlockEntity().getBlockPos())),
                     new DataValuesPacket(getBlockEntity().getBlockPos(), getSide(), available, selected, valueName));
         }
     }
 
     public Integer extractData() {
         if (target == null) {
+            return 0;
+        }
+        if (available == null || available.isEmpty() || selected < 0 || selected >= available.size()) {
             return 0;
         }
         String key = available.get(selected);
@@ -182,20 +192,20 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
         }
     }
 
-    private int calcPercentFilled(IItemHandler h) {
+    public int calcPercentFilled(IItemHandler h) {
         int slots = h.getSlots(), filled = 0;
         for (int i = 0; i < slots; i++) if (!h.getStackInSlot(i).isEmpty()) filled++;
         return slots == 0 ? 0 : (filled * 100) / slots;
     }
 
-    private int calcFluidPercent(IFluidHandler h) {
+    public int calcFluidPercent(IFluidHandler h) {
         if (h.getTanks() == 0) return 0;
         int amt = h.getFluidInTank(0).getAmount();
         int cap = h.getTankCapacity(0);
         return cap == 0 ? 0 : (amt * 100) / cap;
     }
 
-    public static Integer resolve(Object obj, String path) throws Exception {
+    public Integer resolve(Object obj, String path) throws Exception {
         String[] parts = path.split("\\.");
         Object current = obj;
         for (String part : parts) {
@@ -209,10 +219,17 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
                 current = f.get(current);
             }
         }
-        return current != null ? (Integer) current : 0;
+        if (current instanceof Number nmbr) {
+            return nmbr.intValue();
+        }
+        if (current instanceof Boolean bln) {
+            return bln ? 1 : 0;
+        }
+        return 0;
     }
 
-    private static Field getFieldRecursive(Class<?> c, String name) throws NoSuchFieldException {
+
+    public static Field getFieldRecursive(Class<?> c, String name) throws NoSuchFieldException {
         while (c != null) {
             try {
                 Field f = c.getDeclaredField(name);
@@ -226,47 +243,123 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
     }
 
     public List<String> extractNumericInfo(Object blockEntity) {
-        return extractNumericInfoFromObject(blockEntity, "");
+        return extractNumericInfoFromObject(blockEntity);
     }
-    private List<String> extractNumericInfoFromObject(Object obj, String prefix) {
+
+    public List<String> extractNumericInfoFromObject(Object obj) {
         if (obj == null) return List.of();
         List<String> info = new ArrayList<>();
-        info.addAll(extractFields(obj, prefix));
-        info.addAll(extractMethods(obj, prefix));
-        return info;
-    }
-    private List<String> extractFields(Object obj, String prefix) {
-        List<String> info = new ArrayList<>();
-        Class<?> cls = obj.getClass();
-        while (cls != null) {
-            for (Field f : cls.getDeclaredFields()) {
-                f.setAccessible(true);
-                try {
-                    Object val = f.get(obj);
-                    if (val instanceof Number)
-                        info.add(prefix + f.getName());
-                } catch (IllegalAccessException ignored) {}
-            }
-            cls = cls.getSuperclass();
-        }
-        return info;
-    }
-    private List<String> extractMethods(Object obj, String prefix) {
-        List<String> info = new ArrayList<>();
-        Method[] methods = obj.getClass().getDeclaredMethods();
-        for (Method m : methods) {
-            if (m.getParameterCount() > 0) continue;
-            String n = m.getName().toLowerCase();
-            if (!(n.startsWith("get")||n.startsWith("is"))) continue;
-            m.setAccessible(true);
-            try {
-                Object res = m.invoke(obj);
-                if (res instanceof Number) info.add(prefix + m.getName() + "()");
-            } catch (Exception ignored) {}
-        }
+        try {
+            info.addAll(extractFields(target));
+            info.addAll(extractMethods(target));
+            info = info.stream().distinct().toList();
+        } catch (Throwable ignored) {}
         return info;
     }
 
+    public List<String> extractFields(Object obj) {
+        if (obj == null) return List.of();
+        Class<?> cls = obj.getClass();
+
+        List<String> cached = FIELD_CACHE.get(cls);
+        if (cached != null) {
+            return cached;
+        }
+
+        List<String> info = new ArrayList<>();
+        String path = cls.getName().replace('.', '/') + ".class";
+        try (InputStream in = cls.getClassLoader().getResourceAsStream(path)) {
+            if (in == null) {
+                FIELD_CACHE.put(cls, List.of());
+                return List.of();
+            }
+            ClassReader cr = new ClassReader(in);
+            cr.accept(new ClassVisitor(Opcodes.ASM9) {
+                @Override
+                public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+                    if (!isAllowedDescriptor(descriptor)) {
+                        return super.visitField(access, name, descriptor, signature, value);
+                    }
+                    try {
+                        Field f = cls.getDeclaredField(name);
+                        f.setAccessible(true);
+                        Object val = f.get(obj);
+                        if (val instanceof Number || val instanceof Boolean) {
+                            info.add(name);
+                        }
+                    } catch (Throwable ignored) {}
+                    return super.visitField(access, name, descriptor, signature, value);
+                }
+            }, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        } catch (IOException ignored) {}
+
+        List<String> result = List.copyOf(info);
+        FIELD_CACHE.put(cls, result);
+        return result;
+    }
+
+
+    public List<String> extractMethods(Object obj) {
+        if (obj == null) return List.of();
+        Class<?> cls = obj.getClass();
+
+        List<String> cached = METHOD_CACHE.get(cls);
+        if (cached != null) {
+            return cached;
+        }
+
+        List<String> info = new ArrayList<>();
+        String path = cls.getName().replace('.', '/') + ".class";
+        try (InputStream in = cls.getClassLoader().getResourceAsStream(path)) {
+            if (in == null) {
+                METHOD_CACHE.put(cls, List.of());
+                return List.of();
+            }
+            ClassReader cr = new ClassReader(in);
+            cr.accept(new ClassVisitor(Opcodes.ASM9) {
+                @Override
+                public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+                    if (!descriptor.startsWith("()")) {
+                        return super.visitMethod(access, name, descriptor, signature, exceptions);
+                    }
+                    String retDesc = descriptor.substring(2);
+                    if (!isAllowedDescriptor(retDesc)) {
+                        return super.visitMethod(access, name, descriptor, signature, exceptions);
+                    }
+                    try {
+                        Method m = cls.getDeclaredMethod(name);
+                        m.setAccessible(true);
+                        Object val = m.invoke(obj);
+                        if (val instanceof Number || val instanceof Boolean) {
+                            info.add(name + "()");
+                        }
+                    } catch (Throwable ignored) {}
+                    return super.visitMethod(access, name, descriptor, signature, exceptions);
+                }
+            }, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        } catch (IOException ignored) {}
+
+        List<String> result = List.copyOf(info);
+        METHOD_CACHE.put(cls, result);
+        return result;
+    }
+
+    private boolean isAllowedDescriptor(String desc) {
+        return desc.equals("I")   // int
+                || desc.equals("J")   // long
+                || desc.equals("S")   // short
+                || desc.equals("B")   // byte
+                || desc.equals("F")   // float
+                || desc.equals("D")   // double
+                || desc.equals("Z")   // boolean
+                || desc.equals("Ljava/lang/Integer;")
+                || desc.equals("Ljava/lang/Long;")
+                || desc.equals("Ljava/lang/Short;")
+                || desc.equals("Ljava/lang/Byte;")
+                || desc.equals("Ljava/lang/Float;")
+                || desc.equals("Ljava/lang/Double;")
+                || desc.equals("Ljava/lang/Boolean;");
+    }
     @Override
     public void getBoxes(IPartCollisionHelper bch) {
         bch.addBox(6,6,11,10,10,13);
@@ -292,13 +385,12 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
             extractPossibleData();
         } catch (Exception ignored) {}
         if (packet != null){
-            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), packet);
+            NetworkHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with( () -> getLevel().getChunkAt(getBlockEntity().getBlockPos())), packet);
             packet = null;
         }
         ticksWaited++;
         if (ticksWaited < delay) return TickRateModulation.IDLE;
         ticksWaited = 0;
-        if (identifier == null) identifier = randomHexId();
         if (target == null)
             target = getLevel().getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         if (getGridNode()==null||getGridNode().getGrid()==null||
@@ -315,8 +407,11 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
         return new DataExtractorMenu(id, inv, this);
     }
     @Override public Component getDisplayName() { return super.getDisplayName(); }
+
     public void setMenu(DataExtractorMenu m) { this.menu = m; }
+
     public DataExtractorMenu getMenu()      { return menu; }
+
     @Override
     public boolean onPartActivate(Player p, InteractionHand h, Vec3 pos) {
         if (!isClientSide())

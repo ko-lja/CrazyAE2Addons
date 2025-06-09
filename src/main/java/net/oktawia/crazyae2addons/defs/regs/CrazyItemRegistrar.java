@@ -11,6 +11,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.IsModLoaded;
+import net.oktawia.crazyae2addons.compat.CC.CCDataExtractorPartItem;
+import net.oktawia.crazyae2addons.compat.DataExtracor.CompatDataExtractorPartItem;
 import net.oktawia.crazyae2addons.compat.GregTech.*;
 import net.oktawia.crazyae2addons.items.*;
 import net.oktawia.crazyae2addons.mobstorage.*;
@@ -114,9 +116,13 @@ public class CrazyItemRegistrar {
 
     public static final RegistryObject<PartItem<? extends DataExtractorPart>> DATA_EXTRACTOR_PART_ITEM =
             ITEMS.register("data_extractor",
-                    () -> IsModLoaded.isGTCEuLoaded()
-                            ? new GTDataExtractorPartItem(new Item.Properties())
-                            : new DataExtractorPartItem(new Item.Properties()));
+                    () -> IsModLoaded.isGTCEuLoaded() ? IsModLoaded.isCCLoaded()
+                            ? new CompatDataExtractorPartItem(new Item.Properties())
+                            : new GTDataExtractorPartItem(new Item.Properties())
+                            : IsModLoaded.isCCLoaded()
+                            ? new CCDataExtractorPartItem(new Item.Properties())
+                            : new DataExtractorPartItem(new Item.Properties())
+                    );
 
     public static final RegistryObject<ChunkyFluidP2PTunnelPartItem> CHUNKY_FLUID_P2P_TUNNEL_PART =
             ITEMS.register("chunky_fluid_p2p_tunnel",

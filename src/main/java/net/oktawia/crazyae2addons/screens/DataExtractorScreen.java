@@ -29,7 +29,6 @@ public class DataExtractorScreen<C extends DataExtractorMenu> extends Upgradeabl
     public DataExtractorScreen(
             DataExtractorMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super((C) menu, playerInventory, title, style);
-        getMenu().screen = this;
         if (!this.initialized){
             setupGui();
             this.initialized = true;
@@ -52,6 +51,10 @@ public class DataExtractorScreen<C extends DataExtractorMenu> extends Upgradeabl
             selected = "Selected: ";
         }
         setTextContent("selectedValue", Component.literal(selected));
+        if(getMenu().updateGui){
+            updateGui();
+            getMenu().updateGui = false;
+        }
     }
 
     public void setupGui(){
