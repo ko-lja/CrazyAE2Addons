@@ -2,17 +2,14 @@ package net.oktawia.crazyae2addons.parts;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
-import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
-import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 import appeng.parts.automation.AbstractLevelEmitterPart;
-import appeng.shaded.snakeyaml.emitter.Emitter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

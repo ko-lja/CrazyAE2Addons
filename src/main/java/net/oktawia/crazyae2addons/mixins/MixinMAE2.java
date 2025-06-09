@@ -86,7 +86,8 @@ public abstract class MixinMAE2 implements IPatternProviderCpu, IExclusivePatter
     @Inject(
             method = "findAdapter",
             at = @At("RETURN"),
-            cancellable = true
+            cancellable = true,
+            remap = false
     )
     private void redirectFind(Direction side, CallbackInfoReturnable<PatternProviderTarget> cir) {
         IPatternDetails pattern = this.getPatternDetails();

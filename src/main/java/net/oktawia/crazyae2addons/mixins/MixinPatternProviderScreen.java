@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-@Mixin(PatternProviderScreen.class)
+@Mixin(value = PatternProviderScreen.class)
 abstract public class MixinPatternProviderScreen {
 
     @Shadow @Final private SettingToggleButton<YesNo> blockingModeButton;
@@ -47,7 +47,8 @@ abstract public class MixinPatternProviderScreen {
 
     @Inject(
             method = "updateBeforeRender()V",
-            at = @At("RETURN")
+            at = @At("RETURN"),
+            remap = false
     )
     private void afterUpdateBeforeRender(CallbackInfo ci){
         if (((AbstractContainerScreen<?>) (Object) this).getMenu() instanceof IExclusivePatternProviderMenu eppm && eppm.getGridHasCraftingGuard() && this.blockingModeButton.getCurrentValue() == YesNo.YES){

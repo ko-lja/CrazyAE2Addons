@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
@@ -105,8 +106,8 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
 
     private <T extends BlockEntity> void tickBlockEntity(@NotNull T blockEntity) {
         if (!CrazyConfig.COMMON.enableEntityTicker.get()) return;
-        String block = blockEntity.getBlockState().getBlock().toString();
-        if (CrazyConfig.COMMON.EntityTickerBlackList.get().contains(block.substring(block.indexOf("{") + 1, block.indexOf("}")))) return;
+        String id = ForgeRegistries.BLOCKS.getKey(blockEntity.getBlockState().getBlock()).toString();
+        if (CrazyConfig.COMMON.EntityTickerBlackList.get().contains(id)) return;
         if (this.getGridNode() == null || this.getMainNode() == null || this.getMainNode().getGrid() == null) return;
         int powerDraw = (int) (CrazyConfig.COMMON.EntityTickerCost.get() * pow(4, getUpgrades().getInstalledUpgrades(AEItems.SPEED_CARD))) / 2; // convert to FE
         double extractedPower = getMainNode().getGrid().getEnergyService().extractAEPower(powerDraw, Actionable.MODULATE, PowerMultiplier.CONFIG);

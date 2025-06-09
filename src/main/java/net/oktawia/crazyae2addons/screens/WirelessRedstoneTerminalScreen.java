@@ -1,24 +1,32 @@
 package net.oktawia.crazyae2addons.screens;
 
+import appeng.client.Point;
 import appeng.client.gui.Icon;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.BackgroundPanel;
+import appeng.client.gui.widgets.VerticalButtonBar;
 import com.google.gson.reflect.TypeToken;
+import de.mari_023.ae2wtlib.wet.WETMenu;
+import de.mari_023.ae2wtlib.wut.CycleTerminalButton;
+import de.mari_023.ae2wtlib.wut.IUniversalTerminalCapable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.menus.RedstoneTerminalMenu;
+import net.oktawia.crazyae2addons.menus.WirelessRedstoneTerminalMenu;
 import net.oktawia.crazyae2addons.misc.IconButton;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.oktawia.crazyae2addons.menus.RedstoneTerminalMenu.GSON;
+import static net.oktawia.crazyae2addons.menus.WirelessRedstoneTerminalMenu.GSON;
 
-public class RedstoneTerminalScreen<C extends RedstoneTerminalMenu> extends UpgradeableScreen<C> {
+public class WirelessRedstoneTerminalScreen<C extends WirelessRedstoneTerminalMenu> extends UpgradeableScreen<C> implements IUniversalTerminalCapable {
 
     private static final int EMITTERS_PER_PAGE = 4;
     private int currentPage = 0;
@@ -28,8 +36,12 @@ public class RedstoneTerminalScreen<C extends RedstoneTerminalMenu> extends Upgr
     private boolean initialized = false;
     private String search = "";
 
-    public RedstoneTerminalScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
+    public WirelessRedstoneTerminalScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
+        if (this.getMenu().isWUT()) {
+            this.addToLeftToolbar(new CycleTerminalButton((btn) -> this.cycleTerminal()));
+        }
+        this.widgets.add("singularityBackground", new BackgroundPanel(style.getImage("singularityBackground")));
         setupGui();
     }
 
@@ -129,4 +141,7 @@ public class RedstoneTerminalScreen<C extends RedstoneTerminalMenu> extends Upgr
     private @NotNull List<RedstoneTerminalMenu.EmitterInfo> getEmitters() {
         return GSON.fromJson(getMenu().emitters, new TypeToken<List<RedstoneTerminalMenu.EmitterInfo>>() {}.getType());
     }
+
+    @Override
+    public void storeState() {}
 }

@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.function.Consumer;
 
-@Mixin(AEBaseMenu.class)
+@Mixin(value = AEBaseMenu.class)
 public interface AEBaseMenuInvoker {
     @Invoker("sendClientAction")
     <T> void invokeSendClientAction(String action, T arg);

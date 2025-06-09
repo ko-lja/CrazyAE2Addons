@@ -11,3 +11,4 @@ public class IsModLoaded {
     }
     public static boolean isCCLoaded() { return ModList.get().isLoaded("computercraft"); }
 }
+

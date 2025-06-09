@@ -57,7 +57,8 @@ public abstract class MixinPatternProviderTargetCache implements IPatternProvide
     @Inject(
             method = "wrapMeStorage(Lappeng/api/storage/MEStorage;)Lappeng/helpers/patternprovider/PatternProviderTarget;",
             at = @At("RETURN"),
-            cancellable = true
+            cancellable = true,
+            remap = false
     )
     private void injectWrapMeStorage(MEStorage storage, CallbackInfoReturnable<PatternProviderTarget> cir) {
         var self = (PatternProviderTargetCacheAccessor) this;

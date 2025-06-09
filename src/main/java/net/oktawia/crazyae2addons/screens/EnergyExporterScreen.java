@@ -8,8 +8,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.menus.EnergyExporterMenu;
 
 public class EnergyExporterScreen<C extends EnergyExporterMenu> extends UpgradeableScreen<C> {
-    public EnergyExporterScreen(EnergyExporterMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
-        super((C) menu, playerInventory, title, style);
+    public EnergyExporterScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
+        super(menu, playerInventory, title, style);
     }
 
     @Override

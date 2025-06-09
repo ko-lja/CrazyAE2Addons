@@ -34,7 +34,11 @@ public abstract class MixinCraftingCpuLogic {
     @Unique private boolean ignoreNBT = false;
 
 
-    @Inject(method = "trySubmitJob", at = @At("RETURN"))
+    @Inject(
+            method = "trySubmitJob",
+            at = @At("RETURN"),
+            remap = false
+    )
     private void trySubmitJob(IGrid grid, ICraftingPlan plan, IActionSource src, ICraftingRequester requester, CallbackInfoReturnable<ICraftingSubmitResult> cir) {
         plan.patternTimes().forEach((pattern, ignored) -> {
             if (pattern.getPrimaryOutput().what().matches(plan.finalOutput())) {
@@ -51,7 +55,8 @@ public abstract class MixinCraftingCpuLogic {
             at = @At(
                     value = "INVOKE",
                     target = "Lappeng/api/stacks/AEKey;matches(Lappeng/api/stacks/GenericStack;)Z"
-            )
+            ),
+            remap = false
     )
     private boolean modifyFinalOutputCheck(boolean originalCheck, AEKey what, long amount, Actionable type) {
         return (what.getId() == ((ExecutingCraftingJobAccessor) job).getFinalOutput().what().getId() && this.ignoreNBT || originalCheck);
@@ -62,7 +67,8 @@ public abstract class MixinCraftingCpuLogic {
             at = @At(
                     value = "INVOKE",
                     target = "Lappeng/api/networking/crafting/ICraftingProvider;pushPattern(Lappeng/api/crafting/IPatternDetails;[Lappeng/api/stacks/KeyCounter;)Z"
-            )
+            ),
+            remap = false
     )
     private boolean redirectPushPattern(
             ICraftingProvider instance, IPatternDetails iPatternDetails, KeyCounter[] keyCounters

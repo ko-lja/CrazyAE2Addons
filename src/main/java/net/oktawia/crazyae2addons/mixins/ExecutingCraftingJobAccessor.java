@@ -6,7 +6,7 @@ import appeng.crafting.inv.ListCraftingInventory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(ExecutingCraftingJob.class)
+@Mixin(value = ExecutingCraftingJob.class)
 public interface ExecutingCraftingJobAccessor {
 
     @Accessor("waitingFor")

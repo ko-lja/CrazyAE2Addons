@@ -5,7 +5,7 @@ import net.minecraft.client.gui.components.Button;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(AEBaseScreen.class)
+@Mixin(value = AEBaseScreen.class)
 public interface AEBaseScreenInvoker {
     @Invoker("addToLeftToolbar")
     <B extends Button> B invokeAddToLeftToolbar(B button);

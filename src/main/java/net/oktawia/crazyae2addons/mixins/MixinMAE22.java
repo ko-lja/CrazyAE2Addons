@@ -65,7 +65,8 @@ public abstract class MixinMAE22 implements IPatternProviderTargetCacheExt {
     @Inject(
             method = "wrapMeStorage(Lappeng/api/storage/MEStorage;)Lappeng/helpers/patternprovider/PatternProviderTarget;",
             at = @At("RETURN"),
-            cancellable = true
+            cancellable = true,
+            remap = false
     )
     private void injectWrapMeStorage(MEStorage storage, CallbackInfoReturnable<PatternProviderTarget> cir) {
         var self = this;

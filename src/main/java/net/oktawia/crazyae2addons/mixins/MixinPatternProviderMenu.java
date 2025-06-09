@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(PatternProviderMenu.class)
+@Mixin(value = PatternProviderMenu.class)
 abstract public class MixinPatternProviderMenu implements IExclusivePatternProviderMenu {
     @Shadow @Final protected PatternProviderLogic logic;
     @Unique private static String EXCLUSIVE_ACTION = "sendExclusiveMode";

@@ -20,7 +20,8 @@ public class MixinListCraftingInventory implements IIgnoreNBT {
             at = @At(
                     value = "INVOKE",
                     target = "Lappeng/api/stacks/KeyCounter;get(Lappeng/api/stacks/AEKey;)J"
-            )
+            ),
+            remap = false
     )
     private long redirectGet(KeyCounter instance, AEKey key) {
         if (getIgnoreNBT()) {

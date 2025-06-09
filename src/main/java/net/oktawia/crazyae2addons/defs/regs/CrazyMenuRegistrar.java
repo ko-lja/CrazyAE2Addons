@@ -1,5 +1,6 @@
 package net.oktawia.crazyae2addons.defs.regs;
 
+import appeng.core.AppEng;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.world.inventory.MenuType;
@@ -14,11 +15,7 @@ import net.oktawia.crazyae2addons.compat.DataExtracor.CompatDataExtractorPart;
 import net.oktawia.crazyae2addons.compat.GregTech.GTAmpereMeterBE;
 import net.oktawia.crazyae2addons.compat.GregTech.GTDataExtractorPart;
 import net.oktawia.crazyae2addons.compat.GregTech.GTEnergyExporterPart;
-import net.oktawia.crazyae2addons.items.CrazyEmitterMultiplierItem;
-import net.oktawia.crazyae2addons.logic.CrazyCalculatorHost;
-import net.oktawia.crazyae2addons.logic.CrazyEmitterMultiplierHost;
-import net.oktawia.crazyae2addons.logic.CrazyPatternModifierHost;
-import net.oktawia.crazyae2addons.logic.CrazyPatternMultiplierHost;
+import net.oktawia.crazyae2addons.logic.*;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBus;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBusMenu;
 import net.oktawia.crazyae2addons.mobstorage.MobFormationPlane;
@@ -38,6 +35,9 @@ public class CrazyMenuRegistrar {
         return MENU_TYPES.register(id,
                 () -> MenuTypeBuilder.create(factory, host).build(id));
     }
+
+    public static final RegistryObject<MenuType<WirelessRedstoneTerminalMenu>> WIRELESS_REDSTONE_TERMINAL_MENU =
+            MENU_TYPES.register(id("wireless_redstone_terminal"), () -> WirelessRedstoneTerminalMenu.TYPE);
 
     private static String id(String s) { return s; }
 

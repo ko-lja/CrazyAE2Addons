@@ -4,6 +4,7 @@
   "package": "net.oktawia.crazyae2addons.mixins",
   "compatibilityLevel": "JAVA_17",
   "plugin": "net.oktawia.crazyae2addons.mixins.Plugin",
+  "refmap": "mixins.crazyae2addons.refmap.json",
   "mixins": [
     "AEBaseMenuInvoker",
     "ExecutingCraftingJobAccessor",
@@ -22,8 +23,6 @@
   ],
   "client": [
     "AEBaseScreenInvoker",
-    "MixinPatternProviderLogicClient",
-    "MixinPatternProviderScreen",
-    "PatternProviderLogicClientAccessor"
+    "MixinPatternProviderScreen"
   ]
 }

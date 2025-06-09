@@ -1,6 +1,6 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"],
+  "includes": ["common/common.json", "common/player_inventory.json", "wtlib/universal_terminal_no_viewcells.json"],
   "background": {
     "texture": "guis/blank_background.png",
     "srcRect": [0, 0, 176, 205]

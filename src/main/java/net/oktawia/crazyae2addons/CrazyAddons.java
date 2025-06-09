@@ -1,13 +1,16 @@
 package net.oktawia.crazyae2addons;
 
+import appeng.api.features.GridLinkables;
 import appeng.api.stacks.AEKeyTypes;
+import appeng.items.tools.powered.WirelessTerminalItem;
 import com.mojang.logging.LogUtils;
+import de.mari_023.ae2wtlib.terminal.IUniversalWirelessTerminalItem;
+import de.mari_023.ae2wtlib.wut.WUTHandler;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -16,13 +19,18 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import net.oktawia.crazyae2addons.defs.*;
 import net.oktawia.crazyae2addons.defs.regs.*;
+import net.oktawia.crazyae2addons.logic.WirelessRedstoneTerminalItemLogicHost;
+import net.oktawia.crazyae2addons.menus.WirelessRedstoneTerminalMenu;
 import net.oktawia.crazyae2addons.mobstorage.EntityTypeRenderer;
 import net.oktawia.crazyae2addons.mobstorage.MobKeyType;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 @Mod(CrazyAddons.MODID)
 public class CrazyAddons {
@@ -36,6 +44,7 @@ public class CrazyAddons {
                 ModConfig.Type.COMMON,
                 CrazyConfig.COMMON_SPEC
         );
+        modEventBus.addListener(this::commonSetup);
 
         CrazyItemRegistrar.ITEMS.register(modEventBus);
 
@@ -52,11 +61,26 @@ public class CrazyAddons {
             AEKeyTypes.register(MobKeyType.TYPE);
         });
 
+        modEventBus.addListener((RegisterEvent event) -> {
+            if (event.getRegistryKey().equals(ForgeRegistries.ITEMS.getRegistryKey())) {
+                GridLinkables.register(CrazyItemRegistrar.WIRELESS_REDSTONE_TERMINAL.get(), WirelessTerminalItem.LINKABLE_HANDLER);
+                IUniversalWirelessTerminalItem term = CrazyItemRegistrar.WIRELESS_REDSTONE_TERMINAL.get();
+                Objects.requireNonNull(term);
+                LogUtils.getLogger().info(term.toString());
+                WUTHandler.addTerminal("wireless_redstone_terminal",
+                        term::tryOpen,
+                        WirelessRedstoneTerminalItemLogicHost::new,
+                        WirelessRedstoneTerminalMenu.TYPE,
+                        term,
+                        "wireless_redstone_terminal",
+                        "item.crazyae2addons.wireless_redstone_terminal"
+                );}
+            }
+        );
+
         modEventBus.addListener(this::registerCreativeTab);
 
         MinecraftForge.EVENT_BUS.register(this);
-
-        modEventBus.addListener(this::commonSetup);
     }
 
     public static @NotNull ResourceLocation makeId(String path) {

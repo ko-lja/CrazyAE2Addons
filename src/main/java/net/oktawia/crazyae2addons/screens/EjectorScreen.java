@@ -8,7 +8,7 @@ import net.oktawia.crazyae2addons.menus.EjectorMenu;
 
 public class EjectorScreen<C extends EjectorMenu> extends UpgradeableScreen<C> {
     public EjectorScreen(
-            EjectorMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
-        super((C) menu, playerInventory, title, style);
+            C menu, Inventory playerInventory, Component title, ScreenStyle style) {
+        super(menu, playerInventory, title, style);
     }
 }

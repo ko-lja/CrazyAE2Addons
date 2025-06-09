@@ -126,7 +126,8 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu, 
 
     @Inject(
             method = "pushPattern(Lappeng/api/crafting/IPatternDetails;[Lappeng/api/stacks/KeyCounter;)Z",
-            at = @At("RETURN")
+            at = @At("RETURN"),
+            remap = false
     )
     private void afterPushPatterns(IPatternDetails patternDetails, KeyCounter[] inputHolder, CallbackInfoReturnable<Boolean> cir) {
         if (host.getBlockEntity() != null && host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
@@ -157,7 +158,8 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu, 
                     target = "Lappeng/helpers/patternprovider/PatternProviderLogic;unlockEvent:Lappeng/helpers/patternprovider/UnlockCraftingEvent;",
                     opcode = Opcodes.PUTFIELD,
                     shift  = At.Shift.AFTER
-            )
+            ),
+            remap = false
     )
     private void afterUnlockCleared(GenericStack genericStack, CallbackInfo ci) {
         if(host.getBlockEntity() != null && host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
@@ -171,7 +173,8 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu, 
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/lang/Object;equals(Ljava/lang/Object;)Z"
-            )
+            ),
+            remap = false
     )
     private boolean modifyEquals(boolean originalCheck, GenericStack stack) {
         return (stack.what().getId() == this.unlockStack.what().getId() && this.ignoreNBT || originalCheck);
@@ -179,7 +182,8 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu, 
 
     @Inject(
             method = "updateRedstoneState()V",
-            at = @At("HEAD")
+            at = @At("HEAD"),
+            remap = false
     )
     private void beforeUpdateRedstoneState(CallbackInfo ci) {
         if(host.getBlockEntity() != null && host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
@@ -192,7 +196,8 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu, 
 
     @Inject(
             method = "writeToNBT(Lnet/minecraft/nbt/CompoundTag;)V",
-            at = @At("RETURN")
+            at = @At("RETURN"),
+            remap = false
     )
     private void afterWriteToNBT(CompoundTag tag, CallbackInfo ci) {
         if (this.lastPattern != null){
@@ -220,7 +225,8 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu, 
 
     @Inject(
             method = "readFromNBT(Lnet/minecraft/nbt/CompoundTag;)V",
-            at = @At("RETURN")
+            at = @At("RETURN"),
+            remap = false
     )
     private void afterReadFromNBT(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("lastpattern")){
@@ -242,7 +248,8 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu, 
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/util/List;contains(Ljava/lang/Object;)Z"
-            )
+            ),
+            remap = false
     )
     private boolean onPatternsContains(boolean originalResult, IPatternDetails pd) {
         if (pd.getClass() == PatternDetailsSerializer.PatternDetails.class) {
@@ -256,7 +263,8 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu, 
             at = @At(
                     value = "INVOKE",
                     target = "Lappeng/helpers/patternprovider/PatternProviderLogic;getCraftingLockedReason()Lappeng/api/config/LockCraftingMode;"
-            )
+            ),
+            remap = false
     )
     private LockCraftingMode onLockReason(
             LockCraftingMode original,
@@ -271,7 +279,8 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu, 
     @Inject(
             method = "findAdapter",
             at = @At("RETURN"),
-            cancellable = true
+            cancellable = true,
+            remap = false
     )
     private void redirectFind(Direction side, CallbackInfoReturnable<PatternProviderTarget> cir) {
         IPatternDetails pattern = this.getPatternDetails();
@@ -363,9 +372,6 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu, 
     @Unique
     public void failCrafting(){
         if (this.cpuCluster != null) {
-            if (net.minecraftforge.fml.loading.FMLEnvironment.dist.isClient()) {
-                ((PatternProviderLogicClientAccessor) this).failCraftingClient(this.cpuCluster.getJobStatus().crafting().what());
-            }
             this.cancelAndUnlock();
         }
     }

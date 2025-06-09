@@ -160,6 +160,12 @@ public final class Screens {
                 RedstoneTerminalScreen<RedstoneTerminalMenu>::new,
                 "/screens/redstone_terminal.json"
         );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.WIRELESS_REDSTONE_TERMINAL_MENU.get(),
+                WirelessRedstoneTerminalScreen<WirelessRedstoneTerminalMenu>::new,
+                "/screens/wireless_redstone_terminal.json"
+        );
     }
 
     private Screens() {}

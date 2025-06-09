@@ -2,6 +2,7 @@ package net.oktawia.crazyae2addons.parts;
 
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.upgrades.IUpgradeableObject;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuOpener;
@@ -18,7 +19,7 @@ import net.oktawia.crazyae2addons.menus.RedstoneTerminalMenu;
 import java.util.List;
 import java.util.Objects;
 
-public class RedstoneTerminalPart extends AbstractDisplayPart {
+public class RedstoneTerminalPart extends AbstractDisplayPart implements IUpgradeableObject {
     @PartModels
     public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/redstone_terminal_off");
     @PartModels
@@ -53,14 +54,19 @@ public class RedstoneTerminalPart extends AbstractDisplayPart {
                 .findFirst().ifPresent(emitter -> emitter.setState(!emitter.getState()));
     }
 
-    public List<RedstoneTerminalMenu.EmitterInfo> getEmitters() {
+    public List<RedstoneTerminalMenu.EmitterInfo> getEmitters(String filter) {
         var grid = getMainNode().getGrid();
         if (grid == null) return List.of();
         return grid.getActiveMachines(RedstoneEmitterPart.class)
-                .stream().map(
+                .stream().filter(emitter -> emitter.name.contains(filter.toLowerCase()))
+                .sorted((a, b) -> a.name.compareToIgnoreCase(b.name)).map(
                         part -> new RedstoneTerminalMenu.EmitterInfo(
                                 part.getBlockEntity().getBlockPos(), part.name, part.getState()
                         )
                 ).toList();
+    }
+
+    public List<RedstoneTerminalMenu.EmitterInfo> getEmitters() {
+        return getEmitters("");
     }
 }

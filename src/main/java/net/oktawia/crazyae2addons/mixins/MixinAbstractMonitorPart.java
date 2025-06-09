@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(value = appeng.parts.reporting.AbstractMonitorPart.class)
+@Mixin(value = appeng.parts.reporting.AbstractMonitorPart.class, priority = 1100)
 public abstract class MixinAbstractMonitorPart {
     @Inject(
             method = "onPartActivate(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/Vec3;)Z",
@@ -22,7 +22,8 @@ public abstract class MixinAbstractMonitorPart {
                     value = "INVOKE",
                     target = "Lappeng/api/behaviors/ContainerItemStrategies;getContainedStack(Lnet/minecraft/world/item/ItemStack;)Lappeng/api/stacks/GenericStack;"
             ),
-            locals = LocalCapture.CAPTURE_FAILHARD
+            locals = LocalCapture.CAPTURE_FAILSOFT,
+            remap = false
     )
     private void onGetContainedStack(Player player, InteractionHand hand, Vec3 pos, CallbackInfoReturnable<Boolean> cir, ItemStack eq) {
         if (eq.getItem() instanceof SpawnEggItem egg) {

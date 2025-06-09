@@ -18,6 +18,7 @@ plugins {
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
@@ -68,10 +69,15 @@ minecraft {
             args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
         }
     }
+    mixin {
+        add sourceSets.main, "mixins.crazyae2addons.json"
+        defaultObfuscationEnv 'searge'
+    }
 }
 
 sourceSets {
     main {
+        ext.refMap = "mixins.crazyae2addons.refmap.json"
         java {
             srcDirs = ['src/main/java']
         }
@@ -131,6 +137,13 @@ repositories {
             includeGroup "dev.shadowsoffire"
         }
     }
+    maven {
+        url = uri("https://modmaven.dev/")
+        content {
+            includeGroup "appeng"
+            includeGroup "de.mari_023"
+        }
+    }
 }
 
 mixin {
@@ -140,18 +153,27 @@ mixin {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    implementation fg.deobf("appeng:appliedenergistics2-forge:15.3.4")
-    compileOnly fg.deobf("appeng:appliedenergistics2-forge:15.3.4:api")
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    implementation fg.deobf("appeng:appliedenergistics2-forge:15.4.5")
+    compileOnly fg.deobf("appeng:appliedenergistics2-forge:15.4.5:api")
     compileOnly (annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
     compileOnly jarJar("io.github.llamalad7:mixinextras-forge:0.4.1") { jarJar.ranged(it, "[0.4.1,)") }
     implementation fg.deobf('org.ow2.asm:asm:9.5')
+    implementation fg.deobf("curse.maven:applied-energistics-2-wireless-terminals-459929:5217955")
     compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:1.6.4") { transitive = false }
     compileOnly fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:1.0.31") { transitive = false }
+    compileOnly fg.deobf("curse.maven:cc-tweaked-282001:5714507")
+    compileOnly fg.deobf("curse.maven:curios-309927:6418456")
+    compileOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
+    compileOnly fg.deobf("curse.maven:cloth-config-348521:5729105")
     compileOnly fg.deobf("com.tterrag.registrate:Registrate:MC1.20-1.3.3")
     compileOnly fg.deobf("curse.maven:modern-ae2-additions-1028068:6342203")
     compileOnly fg.deobf("dev.shadowsoffire:Placebo:1.20.1-8.6.3")
     compileOnly fg.deobf("dev.shadowsoffire:ApothicAttributes:1.20.1-1.3.7")
     compileOnly fg.deobf("dev.shadowsoffire:Apotheosis:1.20.1-7.4.8")
+    implementation fg.deobf("curse.maven:curios-309927:6418456")
+    implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
+    implementation fg.deobf("curse.maven:cloth-config-348521:5729105")
     implementation fg.deobf("curse.maven:jei-238222:6075247")
     implementation fg.deobf("curse.maven:jade-324717:6106101")
     implementation fg.deobf("curse.maven:guideme-1173950:6489464")
@@ -167,10 +189,6 @@ dependencies {
     implementation fg.deobf("curse.maven:geckolib-388172:6333474")
     implementation fg.deobf("curse.maven:advancedae-1084104:6205290")
     implementation fg.deobf("curse.maven:mob-grinding-utils-254241:5131447")
-    implementation fg.deobf("curse.maven:applied-energistics-2-wireless-terminals-459929:5217955")
-    implementation fg.deobf("curse.maven:curios-309927:6418456")
-    implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
-    implementation fg.deobf("curse.maven:cloth-config-348521:5729105")
     implementation fg.deobf("curse.maven:iron-furnaces-237664:5159498")
     implementation fg.deobf("curse.maven:cc-tweaked-282001:5714507")
 }
@@ -195,7 +213,7 @@ tasks.named('jar', Jar).configure {
         attributes([
                 'Specification-Title'     : mod_id,
                 'Specification-Vendor'    : mod_authors,
-                'Specification-Version'   : '1', // We are version 1 of ourselves
+                'Specification-Version'   : '1',
                 'Implementation-Title'    : project.name,
                 'Implementation-Version'  : project.jar.archiveVersion,
                 'Implementation-Vendor'   : mod_authors,
