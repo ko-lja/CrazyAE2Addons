@@ -2,6 +2,7 @@ package net.oktawia.crazyae2addons.defs;
 
 import appeng.init.client.InitScreens;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
+import net.oktawia.crazyae2addons.entities.ReinforcedMatterCondenserBE;
 import net.oktawia.crazyae2addons.menus.*;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBusMenu;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBusScreen;
@@ -165,6 +166,12 @@ public final class Screens {
                 CrazyMenuRegistrar.WIRELESS_REDSTONE_TERMINAL_MENU.get(),
                 WirelessRedstoneTerminalScreen<WirelessRedstoneTerminalMenu>::new,
                 "/screens/wireless_redstone_terminal.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.REINFORCED_MATTER_CONDENSER_MENU.get(),
+                ReinforcedMatterCondenserScreen<ReinforcedMatterCondenserMenu>::new,
+                "/screens/reinforced_matter_condenser.json"
         );
     }
 

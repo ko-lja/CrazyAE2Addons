@@ -77,32 +77,30 @@ public abstract class MixinGTMAE2 implements IPatternProviderTargetCacheExt {
         this.details = patternDetails;
     }
 
-    @ModifyReturnValue(
-            method = "wrapMeStorage(Lappeng/api/storage/MEStorage;)Lappeng/helpers/patternprovider/PatternProviderTarget;",
-            at = @At("RETURN"),
-            remap = false
-    )
-    private PatternProviderTarget injectWrapMeStorage(PatternProviderTarget original, MEStorage storage) {
-        var self = this;
-        IActionSource src = self.src;
+    @Unique
+    public PatternProviderTarget find(IPatternDetails details) {
+        this.details = details;
+        PatternProviderTarget original = this.find();
+        if (original == null) return null;
 
         return new PatternProviderTarget() {
-            private final BlockPos pos1 = MixinGTMAE2.this.pos;
-            private final Level lvl1 = MixinGTMAE2.this.lvl;
-            private final IPatternDetails details1 = MixinGTMAE2.this.details;
-            private final CraftingGuardBE guard1 = MixinGTMAE2.this.guard;
-            private final boolean exclusiveMode1 = MixinGTMAE2.this.exclusiveMode;
+            private final BlockPos pos1           = MixinGTMAE2.this.pos;
+            private final Level lvl1              = MixinGTMAE2.this.lvl;
+            private final IPatternDetails det1    = MixinGTMAE2.this.details;
+            private final CraftingGuardBE guard1  = MixinGTMAE2.this.guard;
+            private final boolean exclMode1       = MixinGTMAE2.this.exclusiveMode;
+
             @Override
             public long insert(AEKey what, long amount, Actionable type) {
-                if (details1 != null){
-                    CompoundTag tag = details1.getDefinition().getTag();
+                if (det1 != null){
+                    CompoundTag tag = det1.getDefinition().getTag();
                     int c = (tag != null && tag.contains("circuit")) ? tag.getInt("circuit") : -1;
                     if (c != -1){
                         traverseGridIfInterface(c, pos1, lvl1);
                         setCirc(c, pos1, lvl1);
                     }
                 }
-                var result = storage.insert(what, amount, type, src);
+                var result = original.insert(what, amount, type);
                 if (this.guard1 != null && result > 0 && this.guard1.getLevel() != null && this.guard1.getLevel().getServer() != null){
                     this.guard1.excluded.put(this.pos1, this.guard1.getLevel().getServer().getTickCount());
                 }
@@ -111,19 +109,16 @@ public abstract class MixinGTMAE2 implements IPatternProviderTargetCacheExt {
 
             @Override
             public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                for (var stack : storage.getAvailableStacks()) {
-                    if (patternInputs.contains(stack.getKey().dropSecondary())) {
-                        return true;
-                    }
-                }
+                if (original.containsPatternInput(patternInputs)) return true;
                 var server = this.lvl1.getServer();
                 if (server != null && this.guard1 != null && this.guard1.excluded.get(this.pos1) != null){
-                    return this.guard1.excluded.get(this.pos1) == server.getTickCount() && this.exclusiveMode1;
+                    return this.guard1.excluded.get(this.pos1) == server.getTickCount() && this.exclMode1;
                 }
                 return false;
             }
         };
     }
+
 
     @Unique
     private void traverseGridIfInterface(int circuit, BlockPos pos, Level level) {

@@ -81,6 +81,9 @@ public class CrazyBlockEntityRegistrar {
     public static final RegistryObject<BlockEntityType<CraftingSchedulerBE>> CRAFTING_SHEDULER_BE =
             reg("crafting_scheduler_be", CrazyBlockRegistrar.CRAFTING_SCHEDULER_BLOCK, CraftingSchedulerBE::new, CraftingSchedulerBE.class);
 
+    public static final RegistryObject<BlockEntityType<ReinforcedMatterCondenserBE>> REINFORCED_MATTER_CONDENSER_BE =
+            reg("reinforced_matter_condenser_be", CrazyBlockRegistrar.REINFORCED_MATTER_CONDENSER_BLOCK, ReinforcedMatterCondenserBE::new, ReinforcedMatterCondenserBE.class);
+
     public static final RegistryObject<BlockEntityType<? extends AmpereMeterBE>> AMPERE_METER_BE =
             BLOCK_ENTITIES.register("ampere_meter_be", () -> {
                 var blk = CrazyBlockRegistrar.AMPERE_METER_BLOCK.get();

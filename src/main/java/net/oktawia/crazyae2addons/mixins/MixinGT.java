@@ -68,20 +68,9 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
     @Unique
     public PatternProviderTarget find(IPatternDetails patternDetails) {
         this.details = patternDetails;
-        return ((PatternProviderTargetCacheAccessor) this).callFind();
-    }
-
-    @Inject(
-            method = "wrapMeStorage(Lappeng/api/storage/MEStorage;)Lappeng/helpers/patternprovider/PatternProviderTarget;",
-            at = @At("RETURN"),
-            cancellable = true,
-            remap = false
-    )
-    private void injectWrapMeStorage(MEStorage storage, CallbackInfoReturnable<PatternProviderTarget> cir) {
-        var self = (PatternProviderTargetCacheAccessor) this;
-        IActionSource src = self.getSrc();
-
-        cir.setReturnValue(new PatternProviderTarget() {
+        var original = ((PatternProviderTargetCacheAccessor) this).callFind();
+        if (original == null) return null;
+        return new PatternProviderTarget() {
             private final BlockPos pos1 = MixinGT.this.pos;
             private final Level lvl1 = MixinGT.this.lvl;
             private final IPatternDetails details1 = MixinGT.this.details;
@@ -97,7 +86,7 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
                         setCirc(c, pos1, lvl1);
                     }
                 }
-                var result = storage.insert(what, amount, type, src);
+                var result = original.insert(what, amount, type);
                 if (this.guard1 != null && result > 0 && this.guard1.getLevel() != null && this.guard1.getLevel().getServer() != null){
                     this.guard1.excluded.put(this.pos1, this.guard1.getLevel().getServer().getTickCount());
                 }
@@ -106,18 +95,14 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
 
             @Override
             public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                for (var stack : storage.getAvailableStacks()) {
-                    if (patternInputs.contains(stack.getKey().dropSecondary())) {
-                        return true;
-                    }
-                }
+                if (original.containsPatternInput(patternInputs)) return true;
                 var server = this.lvl1.getServer();
                 if (server != null && this.guard1 != null && this.guard1.excluded.get(this.pos1) != null){
                     return (this.guard1.excluded.get(this.pos1) == server.getTickCount() && this.exclusiveMode1);
                 }
                 return false;
             }
-        });
+        };
     }
 
     @Unique

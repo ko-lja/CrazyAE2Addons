@@ -160,5 +160,12 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("crafting_scheduler",
                     () -> new CraftingSchedulerBlockItem(CRAFTING_SCHEDULER_BLOCK.get(), new Item.Properties()));
 
+    public static final RegistryObject<ReinforcedMatterCondenserBlock> REINFORCED_MATTER_CONDENSER_BLOCK =
+            BLOCKS.register("reinforced_matter_condenser", ReinforcedMatterCondenserBlock::new);
+
+    public static final RegistryObject<BlockItem> REINFORCED_MATTER_CONDENSER_BLOCK_ITEM =
+            BLOCK_ITEMS.register("reinforced_matter_condenser",
+                    () -> new ReinforcedMatterCondenserBlockItem(REINFORCED_MATTER_CONDENSER_BLOCK.get(), new Item.Properties()));
+
     private CrazyBlockRegistrar() {}
 }

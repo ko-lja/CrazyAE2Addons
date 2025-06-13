@@ -9,6 +9,7 @@ import appeng.api.storage.MEStorage;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.oktawia.crazyae2addons.entities.CraftingGuardBE;
@@ -62,25 +63,22 @@ public abstract class MixinMAE22 implements IPatternProviderTargetCacheExt {
         this.details = patternDetails;
     }
 
-    @Inject(
-            method = "wrapMeStorage(Lappeng/api/storage/MEStorage;)Lappeng/helpers/patternprovider/PatternProviderTarget;",
-            at = @At("RETURN"),
-            cancellable = true,
-            remap = false
-    )
-    private void injectWrapMeStorage(MEStorage storage, CallbackInfoReturnable<PatternProviderTarget> cir) {
-        var self = this;
-        IActionSource src = self.src;
+    @Unique
+    public PatternProviderTarget find(IPatternDetails patternDetails) {
+        this.details = patternDetails;
+        PatternProviderTarget original = this.find();
+        if (original == null) return null;
 
-        cir.setReturnValue(new PatternProviderTarget() {
-            private final BlockPos pos1 = MixinMAE22.this.pos;
-            private final Level lvl1 = MixinMAE22.this.lvl;
+        return new PatternProviderTarget() {
             private final IPatternDetails details1 = MixinMAE22.this.details;
-            private final CraftingGuardBE guard1 = MixinMAE22.this.guard;
-            private final boolean exclusiveMode1 = MixinMAE22.this.exclusiveMode;
+            private final CraftingGuardBE guard1    = MixinMAE22.this.guard;
+            private final boolean exclusiveMode1    = MixinMAE22.this.exclusiveMode;
+            private final BlockPos pos1             = MixinMAE22.this.pos;
+            private final Level lvl1                = MixinMAE22.this.lvl;
+
             @Override
             public long insert(AEKey what, long amount, Actionable type) {
-                var result = storage.insert(what, amount, type, src);
+                var result = original.insert(what, amount, type);
                 if (this.guard1 != null && result > 0 && this.guard1.getLevel() != null && this.guard1.getLevel().getServer() != null){
                     this.guard1.excluded.put(this.pos1, this.guard1.getLevel().getServer().getTickCount());
                 }
@@ -89,17 +87,13 @@ public abstract class MixinMAE22 implements IPatternProviderTargetCacheExt {
 
             @Override
             public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                for (var stack : storage.getAvailableStacks()) {
-                    if (patternInputs.contains(stack.getKey().dropSecondary())) {
-                        return true;
-                    }
-                }
-                var server = this.lvl1.getServer();
-                if (server != null && this.guard1 != null && this.guard1.excluded.get(this.pos1) != null){
-                    return this.guard1.excluded.get(this.pos1) == server.getTickCount() && this.exclusiveMode1;
-                }
-                return false;
+                return original.containsPatternInput(patternInputs)
+                        || (guard1 != null
+                        && guard1.excluded.get(pos1) != null
+                        && guard1.excluded.get(pos1).equals(lvl1.getServer().getTickCount())
+                        && exclusiveMode1);
             }
-        });
+        };
     }
+
 }

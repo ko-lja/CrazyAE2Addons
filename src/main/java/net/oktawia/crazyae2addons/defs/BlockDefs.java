@@ -220,6 +220,18 @@ public class BlockDefs {
                         "E", AEParts.LEVEL_EMITTER.asItem()
                 )
         );
+
+        block(
+                CrazyBlockRegistrar.REINFORCED_MATTER_CONDENSER_BLOCK.get(),
+                "IPI/GMG/ICI",
+                () -> Map.of(
+                        "I", Items.IRON_INGOT,
+                        "P", Blocks.IRON_BLOCK.asItem(),
+                        "G", AEBlocks.QUARTZ_GLASS.asItem(),
+                        "M", AEBlocks.CONDENSER.asItem(),
+                        "C", AEItems.CELL_COMPONENT_256K.asItem()
+                )
+        );
     }
 
 }

@@ -212,6 +212,10 @@ public class CrazyItemRegistrar {
             ITEMS.register("wireless_redstone_terminal",
                     WirelessRedstoneTerminal::new);
 
+    public static final RegistryObject<SuperSingularityItem> SUPER_SINGULARITY =
+            ITEMS.register("super_singularity",
+                    () -> new SuperSingularityItem(new Item.Properties()));
+
 
     private CrazyItemRegistrar() {}
 

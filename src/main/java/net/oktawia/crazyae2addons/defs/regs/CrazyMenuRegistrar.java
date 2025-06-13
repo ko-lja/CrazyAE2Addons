@@ -147,5 +147,8 @@ public class CrazyMenuRegistrar {
     public static final RegistryObject<MenuType<RedstoneTerminalMenu>> REDSTONE_TERMINAL_MENU =
             reg(id("redstone_terminal"), RedstoneTerminalMenu::new, RedstoneTerminalPart.class);
 
+    public static final RegistryObject<MenuType<ReinforcedMatterCondenserMenu>> REINFORCED_MATTER_CONDENSER_MENU =
+            reg(id("reinforced_matter_condenser"), ReinforcedMatterCondenserMenu::new, ReinforcedMatterCondenserBE.class);
+
     private CrazyMenuRegistrar() {}
 }

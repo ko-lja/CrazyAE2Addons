@@ -18,6 +18,7 @@
     "crazyae2addons:mob_farm_damage",
     "crazyae2addons:mob_farm_input",
     "crazyae2addons:crafting_guard",
-    "crazyae2addons:crafting_scheduler"
+    "crazyae2addons:crafting_scheduler",
+    "crazyae2addons:reinforced_matter_condenser"
   ]
 }
