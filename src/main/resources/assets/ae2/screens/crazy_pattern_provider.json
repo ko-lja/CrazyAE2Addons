@@ -2,8 +2,8 @@
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
-    "texture": "guis/circuited_pp.png",
-    "srcRect": [0, 0, 176, 243]
+    "texture": "guis/crazy_pattern_provider.png",
+    "srcRect": [0, 0, 195, 243]
   },
   "slots": {
     "ENCODED_PATTERN": {
@@ -20,7 +20,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "block.crazyae2addons.circuited_pattern_provider"
+        "translate": "block.crazyae2addons.crazy_pattern_provider"
       },
       "position": {
         "left": 8,
@@ -35,15 +35,6 @@
         "left": 8,
         "top": 31
       }
-    },
-    "interface_stored_items": {
-      "text": {
-        "translate": "gui.ae2.ReturnInventory"
-      },
-      "position": {
-        "left": 8,
-        "top": 116
-      }
     }
   },
   "widgets": {
@@ -54,6 +45,12 @@
     "lockReason": {
       "left": 5,
       "top": 15
+    },
+    "scrollbar": {
+      "left": 175,
+      "top": 42,
+      "width": 16,
+      "height": 70
     }
   }
 }

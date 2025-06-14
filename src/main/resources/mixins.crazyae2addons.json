@@ -19,7 +19,8 @@
     "MixinPatternProviderMenu",
     "MixinPatternProviderTargetCache",
     "PatternProviderMenuAccessor",
-    "PatternProviderTargetCacheAccessor"
+    "PatternProviderTargetCacheAccessor",
+    "SlotAccessor"
   ],
   "client": [
     "AEBaseScreenInvoker",

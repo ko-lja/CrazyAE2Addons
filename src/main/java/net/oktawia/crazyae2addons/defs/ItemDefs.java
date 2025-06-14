@@ -8,6 +8,7 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.fml.ModList;
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.compat.GregTech.GTEnergyExporterPart;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.parts.*;
 import net.oktawia.crazyae2addons.items.*;
@@ -442,6 +443,5 @@ public class ItemDefs {
                         "E", Items.DIAMOND
                 )
         );
-
     }
 }

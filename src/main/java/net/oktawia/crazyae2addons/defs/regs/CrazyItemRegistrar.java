@@ -220,6 +220,10 @@ public class CrazyItemRegistrar {
             ITEMS.register("extracting_fe_p2p_tunnel",
                     () -> new ExtractingFEP2PTunnelPartItem(new Item.Properties()));
 
+    public static final RegistryObject<CrazyPatternProviderPartItem> CRAZY_PATTERN_PROVIDER_PART =
+            ITEMS.register("crazy_pattern_provider_part",
+                    () -> new CrazyPatternProviderPartItem(new Item.Properties()));
+
 
     private CrazyItemRegistrar() {}
 

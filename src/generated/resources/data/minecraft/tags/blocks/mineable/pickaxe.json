@@ -22,6 +22,7 @@
     "crazyae2addons:reinforced_matter_condenser",
     "crazyae2addons:penrose_frame",
     "crazyae2addons:penrose_coil",
-    "crazyae2addons:penrose_controller"
+    "crazyae2addons:penrose_controller",
+    "crazyae2addons:crazy_pattern_provider"
   ]
 }

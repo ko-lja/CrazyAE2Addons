@@ -1,6 +1,7 @@
 package net.oktawia.crazyae2addons.defs.regs;
 
 import appeng.core.AppEng;
+import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
 import net.minecraft.world.inventory.MenuType;
@@ -152,6 +153,9 @@ public class CrazyMenuRegistrar {
 
     public static final RegistryObject<MenuType<PenroseControllerMenu>> PENROSE_CONTROLLER_MENU =
             reg(id("penrose_controller"), PenroseControllerMenu::new, PenroseControllerBE.class);
+
+    public static final RegistryObject<MenuType<CrazyPatternProviderMenu>> CRAZY_PATTERN_PROVIDER_MENU =
+            reg(id("crazy_pattern_provider"), CrazyPatternProviderMenu::new, PatternProviderLogicHost.class);
 
     private CrazyMenuRegistrar() {}
 }

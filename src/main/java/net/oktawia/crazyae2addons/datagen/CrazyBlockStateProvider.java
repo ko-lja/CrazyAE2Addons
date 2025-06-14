@@ -23,6 +23,7 @@ public class CrazyBlockStateProvider extends BlockStateProvider {
                     && block != CrazyBlockRegistrar.PENROSE_CONTROLLER.get()
                     && block != CrazyBlockRegistrar.PENROSE_FRAME.get()
                     && block != CrazyBlockRegistrar.PENROSE_COIL.get()
+                    && block != CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get()
                     && block != CrazyBlockRegistrar.EJECTOR_BLOCK.get()){
                 simpleBlockWithItem(block);
             }

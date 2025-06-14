@@ -188,5 +188,12 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("penrose_controller",
                     () -> new PenroseCoilItem(PENROSE_CONTROLLER.get(), new Item.Properties()));
 
+    public static final RegistryObject<CrazyPatternProviderBlock> CRAZY_PATTERN_PROVIDER_BLOCK =
+            BLOCKS.register("crazy_pattern_provider", CrazyPatternProviderBlock::new);
+
+    public static final RegistryObject<BlockItem> CRAZY_PATTERN_PROVIDER_BLOCK_ITEM =
+            BLOCK_ITEMS.register("crazy_pattern_provider",
+                    () -> new CrazyPatternProviderBlockItem(CRAZY_PATTERN_PROVIDER_BLOCK.get(), new Item.Properties()));
+
     private CrazyBlockRegistrar() {}
 }

@@ -261,6 +261,15 @@ public class BlockDefs {
                         "N", Items.NETHER_STAR
                 )
         );
+
+        block(
+                CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get(),
+                "AAA/APA/AAA",
+                () -> Map.of(
+                        "A", AEBlocks.PATTERN_PROVIDER.asItem(),
+                        "P", AEItems.ENGINEERING_PROCESSOR.asItem()
+                )
+        );
     }
 
 }

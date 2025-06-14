@@ -2,6 +2,7 @@ package net.oktawia.crazyae2addons.defs;
 
 import appeng.init.client.InitScreens;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
+import net.oktawia.crazyae2addons.entities.CrazyPatternProviderBE;
 import net.oktawia.crazyae2addons.entities.ReinforcedMatterCondenserBE;
 import net.oktawia.crazyae2addons.menus.*;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBusMenu;
@@ -178,6 +179,12 @@ public final class Screens {
                 CrazyMenuRegistrar.PENROSE_CONTROLLER_MENU.get(),
                 PenroseControllerScreen<PenroseControllerMenu>::new,
                 "/screens/penrose_controller.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.CRAZY_PATTERN_PROVIDER_MENU.get(),
+                CrazyPatternProviderScreen<CrazyPatternProviderMenu>::new,
+                "/screens/crazy_pattern_provider.json"
         );
     }
 
