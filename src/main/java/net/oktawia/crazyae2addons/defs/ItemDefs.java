@@ -434,5 +434,14 @@ public class ItemDefs {
                 )
         );
 
+        item(
+                CrazyItemRegistrar.EXTRACTING_FE_P2P_TUNNEL.get(),
+                "FE",
+                Map.of(
+                        "F", AEParts.FE_P2P_TUNNEL.asItem(),
+                        "E", Items.DIAMOND
+                )
+        );
+
     }
 }

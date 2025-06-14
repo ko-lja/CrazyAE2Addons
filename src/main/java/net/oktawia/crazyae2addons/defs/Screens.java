@@ -173,6 +173,12 @@ public final class Screens {
                 ReinforcedMatterCondenserScreen<ReinforcedMatterCondenserMenu>::new,
                 "/screens/reinforced_matter_condenser.json"
         );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.PENROSE_CONTROLLER_MENU.get(),
+                PenroseControllerScreen<PenroseControllerMenu>::new,
+                "/screens/penrose_controller.json"
+        );
     }
 
     private Screens() {}

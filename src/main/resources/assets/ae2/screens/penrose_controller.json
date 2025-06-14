@@ -1,0 +1,82 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/penrose_controller.png",
+    "srcRect": [0, 0, 176, 205]
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "block.crazyae2addons.penrose_controller"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "config": {
+      "text": "Item to consume",
+      "position": {
+        "left": 8,
+        "top": 72
+      }
+    },
+    "generation": {
+      "position": {
+        "left": 112,
+        "top": 24
+      },
+      "align": "CENTER"
+    },
+    "amount": {
+      "position": {
+        "left": 112,
+        "top": 36
+      },
+      "align": "CENTER"
+    },
+    "matter_balls": {
+      "text": "Matter Balls: Power x8",
+      "position": {
+        "left": 52,
+        "top": 48
+      }
+    },
+    "singularities": {
+      "text": "Singularities: Power x64",
+      "position": {
+        "left": 52,
+        "top": 60
+      }
+    }
+  },
+  "slots": {
+    "MACHINE_INPUT": {
+      "left": 8,
+      "top": 24
+    },
+    "STORAGE_CELL": {
+      "left": 8,
+      "top": 48
+    },
+    "CONFIG": {
+      "left": 8,
+      "top": 84
+    }
+  },
+  "widgets": {
+    "add": {
+      "left": 32,
+      "top": 24,
+      "width": 16,
+      "height": 16
+    },
+    "remove": {
+      "left": 32,
+      "top": 48,
+      "width": 16,
+      "height": 16
+    }
+  }
+}

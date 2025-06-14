@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "crazyae2addons:block/penrose_frame"
+    },
+    "formed=true": {
+      "model": "crazyae2addons:block/penrose_frame_formed"
+    }
+  }
+}

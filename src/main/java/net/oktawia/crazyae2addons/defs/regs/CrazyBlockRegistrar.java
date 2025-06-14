@@ -167,5 +167,26 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("reinforced_matter_condenser",
                     () -> new ReinforcedMatterCondenserBlockItem(REINFORCED_MATTER_CONDENSER_BLOCK.get(), new Item.Properties()));
 
+    public static final RegistryObject<PenroseFrameBlock> PENROSE_FRAME =
+            BLOCKS.register("penrose_frame", PenroseFrameBlock::new);
+
+    public static final RegistryObject<BlockItem> PENROSE_FRAME_ITEM =
+            BLOCK_ITEMS.register("penrose_frame",
+                    () -> new PenroseFrameItem(PENROSE_FRAME.get(), new Item.Properties()));
+
+    public static final RegistryObject<PenroseCoilBlock> PENROSE_COIL =
+            BLOCKS.register("penrose_coil", PenroseCoilBlock::new);
+
+    public static final RegistryObject<BlockItem> PENROSE_COIL_ITEM =
+            BLOCK_ITEMS.register("penrose_coil",
+                    () -> new PenroseCoilItem(PENROSE_COIL.get(), new Item.Properties()));
+
+    public static final RegistryObject<PenroseControllerBlock> PENROSE_CONTROLLER =
+            BLOCKS.register("penrose_controller", PenroseControllerBlock::new);
+
+    public static final RegistryObject<BlockItem> PENROSE_CONTROLLER_ITEM =
+            BLOCK_ITEMS.register("penrose_controller",
+                    () -> new PenroseCoilItem(PENROSE_CONTROLLER.get(), new Item.Properties()));
+
     private CrazyBlockRegistrar() {}
 }

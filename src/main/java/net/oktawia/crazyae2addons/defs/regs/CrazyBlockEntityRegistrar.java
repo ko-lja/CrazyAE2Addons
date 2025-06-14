@@ -84,6 +84,15 @@ public class CrazyBlockEntityRegistrar {
     public static final RegistryObject<BlockEntityType<ReinforcedMatterCondenserBE>> REINFORCED_MATTER_CONDENSER_BE =
             reg("reinforced_matter_condenser_be", CrazyBlockRegistrar.REINFORCED_MATTER_CONDENSER_BLOCK, ReinforcedMatterCondenserBE::new, ReinforcedMatterCondenserBE.class);
 
+    public static final RegistryObject<BlockEntityType<PenroseFrameBE>> PENROSE_FRAME_BE =
+            reg("penrose_frame_be", CrazyBlockRegistrar.PENROSE_FRAME, PenroseFrameBE::new, PenroseFrameBE.class);
+
+    public static final RegistryObject<BlockEntityType<PenroseCoilBE>> PENROSE_COIL_BE =
+            reg("penrose_coil_be", CrazyBlockRegistrar.PENROSE_COIL, PenroseCoilBE::new, PenroseCoilBE.class);
+
+    public static final RegistryObject<BlockEntityType<PenroseControllerBE>> PENROSE_CONTROLLER_BE =
+            reg("penrose_controller_be", CrazyBlockRegistrar.PENROSE_CONTROLLER, PenroseControllerBE::new, PenroseControllerBE.class);
+
     public static final RegistryObject<BlockEntityType<? extends AmpereMeterBE>> AMPERE_METER_BE =
             BLOCK_ENTITIES.register("ampere_meter_be", () -> {
                 var blk = CrazyBlockRegistrar.AMPERE_METER_BLOCK.get();

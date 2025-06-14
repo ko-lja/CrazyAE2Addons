@@ -55,7 +55,7 @@ public class ReinforcedMatterCondenserMenu extends AEBaseMenu implements IProgre
 
     @Override
     public int getMaxProgress() {
-        return 16384;
+        return 8192;
     }
 
     public class CellProgressProvider implements IProgressProvider {

@@ -150,5 +150,8 @@ public class CrazyMenuRegistrar {
     public static final RegistryObject<MenuType<ReinforcedMatterCondenserMenu>> REINFORCED_MATTER_CONDENSER_MENU =
             reg(id("reinforced_matter_condenser"), ReinforcedMatterCondenserMenu::new, ReinforcedMatterCondenserBE.class);
 
+    public static final RegistryObject<MenuType<PenroseControllerMenu>> PENROSE_CONTROLLER_MENU =
+            reg(id("penrose_controller"), PenroseControllerMenu::new, PenroseControllerBE.class);
+
     private CrazyMenuRegistrar() {}
 }

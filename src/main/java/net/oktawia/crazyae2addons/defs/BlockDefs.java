@@ -232,6 +232,35 @@ public class BlockDefs {
                         "C", AEItems.CELL_COMPONENT_256K.asItem()
                 )
         );
+
+        block(
+                CrazyBlockRegistrar.PENROSE_FRAME.get(),
+                "ABA/CDC/ABA",
+                () -> Map.of(
+                        "A", AEBlocks.FLUIX_BLOCK.asItem(),
+                        "B", Blocks.IRON_BLOCK.asItem(),
+                        "C", Items.DIAMOND,
+                        "D", CrazyItemRegistrar.SUPER_SINGULARITY.get()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.PENROSE_COIL.get(),
+                "AAA/ADA/AAA",
+                () -> Map.of(
+                        "A", Blocks.COPPER_BLOCK.asItem(),
+                        "D", CrazyBlockRegistrar.PENROSE_FRAME.get().asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.PENROSE_CONTROLLER.get(),
+                "AAA/ANA/AAA",
+                () -> Map.of(
+                        "A", CrazyBlockRegistrar.PENROSE_FRAME.get().asItem(),
+                        "N", Items.NETHER_STAR
+                )
+        );
     }
 
 }

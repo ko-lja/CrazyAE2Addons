@@ -31,7 +31,7 @@ import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 
 public class ReinforcedMatterCondenserBE extends AEBaseInvBlockEntity implements MenuProvider {
 
-    private static final long   MAX_POWER = 16384L;
+    private static final long   MAX_POWER = 8192;
     private static final int    MAX_CELLS = 64;
 
     public BaseInternalInventory inputInv    = new CondenseHandler();
@@ -59,7 +59,7 @@ public class ReinforcedMatterCondenserBE extends AEBaseInvBlockEntity implements
                 }
                 @Override
                 public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                    if (stack.getItem() != AEItems.SINGULARITY.asItem() || !isComponentFull()) {
+                    if (stack.getItem() != AEItems.SINGULARITY.asItem() || !isComponentFull() || outputInv.getStackInSlot(0).getCount() == 64) {
                         return stack;
                     }
                     int count = stack.getCount();

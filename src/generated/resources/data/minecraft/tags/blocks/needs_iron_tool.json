@@ -19,6 +19,9 @@
     "crazyae2addons:mob_farm_input",
     "crazyae2addons:crafting_guard",
     "crazyae2addons:crafting_scheduler",
-    "crazyae2addons:reinforced_matter_condenser"
+    "crazyae2addons:reinforced_matter_condenser",
+    "crazyae2addons:penrose_frame",
+    "crazyae2addons:penrose_coil",
+    "crazyae2addons:penrose_controller"
   ]
 }

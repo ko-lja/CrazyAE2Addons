@@ -216,6 +216,10 @@ public class CrazyItemRegistrar {
             ITEMS.register("super_singularity",
                     () -> new SuperSingularityItem(new Item.Properties()));
 
+    public static final RegistryObject<ExtractingFEP2PTunnelPartItem> EXTRACTING_FE_P2P_TUNNEL =
+            ITEMS.register("extracting_fe_p2p_tunnel",
+                    () -> new ExtractingFEP2PTunnelPartItem(new Item.Properties()));
+
 
     private CrazyItemRegistrar() {}
 
