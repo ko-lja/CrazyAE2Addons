@@ -4,19 +4,29 @@ import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.slot.AppEngSlot;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.PacketDistributor;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
+import net.oktawia.crazyae2addons.network.NetworkHandler;
+import net.oktawia.crazyae2addons.network.UpdatePatternsPacket;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrazyPatternProviderMenu extends PatternProviderMenu {
+
+    private static String SYNC = "patternSync";
+    private final PatternProviderLogicHost host;
+    private final Player player;
+
     public CrazyPatternProviderMenu(int id, Inventory ip, PatternProviderLogicHost host) {
         super(CrazyMenuRegistrar.CRAZY_PATTERN_PROVIDER_MENU.get(), id, ip, host);
-        setupSlots();
-    }
-
-    private void setupSlots() {
+        this.host = host;
+        this.player = ip.player;
+        registerClientAction(SYNC, this::requestUpdate);
         getSlots(SlotSemantics.STORAGE).forEach(slot -> {
             if (slot instanceof AppEngSlot slt){
                 slt.setSlotEnabled(false);
@@ -24,41 +34,21 @@ public class CrazyPatternProviderMenu extends PatternProviderMenu {
         });
     }
 
-    @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        Slot slot = this.slots.get(index);
-        if (slot == null || !slot.hasItem()) {
-            return ItemStack.EMPTY;
-        }
-
-        ItemStack sourceStack = slot.getItem();
-        ItemStack copy = sourceStack.copy();
-
-        int playerInvStart = 0;
-        int playerInvEnd = 36;
-        int patternStart = 36;
-        int patternEnd = 36 + 81;
-
-        if (index >= playerInvStart && index < playerInvEnd) {
-            for (Slot target : this.getSlots(SlotSemantics.ENCODED_PATTERN)) {
-                if (target.isActive() && target.mayPlace(sourceStack)) {
-                    if (this.moveItemStackTo(sourceStack, target.index, target.index + 1, false)) {
-                        break;
-                    }
-                }
-            }
-        } else if (index >= patternStart && index < patternEnd) {
-            if (!this.moveItemStackTo(sourceStack, playerInvStart, playerInvEnd, true)) {
-                return ItemStack.EMPTY;
-            }
-        }
-
-        if (sourceStack.isEmpty()) {
-            slot.set(ItemStack.EMPTY);
+    public void requestUpdate() {
+        if (isClientSide()){
+            sendClientAction(SYNC);
         } else {
-            slot.setChanged();
-        }
+            var inventory = this.host.getLogic().getPatternInv();
+            List<ItemStack> visibleStacks = new ArrayList<>();
 
-        return copy;
+            for (int i = 0; i < 81; i++) {
+                visibleStacks.add(inventory.getStackInSlot(i));
+            }
+
+            NetworkHandler.INSTANCE.send(
+                    PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
+                    new UpdatePatternsPacket(visibleStacks)
+            );
+        }
     }
 }

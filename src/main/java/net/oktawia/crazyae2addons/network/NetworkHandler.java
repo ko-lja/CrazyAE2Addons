@@ -35,6 +35,14 @@ public class NetworkHandler {
                 DataValuesPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
+        INSTANCE.registerMessage(
+                id++,
+                UpdatePatternsPacket.class,
+                UpdatePatternsPacket::encode,
+                UpdatePatternsPacket::decode,
+                UpdatePatternsPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
     }
 
     public static void registerServerPackets() {
