@@ -27,11 +27,6 @@ public class CrazyPatternProviderMenu extends PatternProviderMenu {
         this.host = host;
         this.player = ip.player;
         registerClientAction(SYNC, this::requestUpdate);
-        getSlots(SlotSemantics.STORAGE).forEach(slot -> {
-            if (slot instanceof AppEngSlot slt){
-                slt.setSlotEnabled(false);
-            }
-        });
     }
 
     public void requestUpdate() {
