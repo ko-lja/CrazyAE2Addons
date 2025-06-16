@@ -165,9 +165,7 @@ public class EnergyExporterPart extends UpgradeablePart implements
     }
 
     @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        return maxExtract;
-    }
+    public int extractEnergy(int maxExtract, boolean simulate) { return 0; }
 
     @Override
     public int getEnergyStored() {
@@ -196,8 +194,6 @@ public class EnergyExporterPart extends UpgradeablePart implements
         return super.getCapability(cap);
     }
 
-
-
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(1, 1, false, false);
@@ -205,29 +201,46 @@ public class EnergyExporterPart extends UpgradeablePart implements
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        if (!initialized){
+        if (!initialized) {
             upgradesChanged();
             initialized = true;
         }
+
         BlockEntity neighbor = getLevel().getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         transfered = "0";
-        if (neighbor != null){
+
+        if (neighbor != null) {
             neighbor.getCapability(ForgeCapabilities.ENERGY, getSide().getOpposite()).ifPresent(storage -> {
-                double powerRequired = Math.max((Math.min(Math.pow(64, getInstalledUpgrades(AEItems.SPEED_CARD)), storage.getMaxEnergyStored() - storage.getEnergyStored()) - 1), 0);
-                double availablePower = getGridNode().getGrid().getEnergyService().getStoredPower() * 2;
-                double maxPower = getGridNode().getGrid().getEnergyService().getMaxStoredPower() * 2;
-                if (((availablePower - powerRequired) * 100 / maxPower) > 33){
-                    double ext = getGridNode().getGrid().getEnergyService().extractAEPower(powerRequired / 2, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                    if (storage.canReceive()){
-                        storage.receiveEnergy((int) powerRequired, false);
+                if (!storage.canReceive()) return;
+
+                int missingEnergy = storage.getMaxEnergyStored() - storage.getEnergyStored();
+                if (missingEnergy <= 0) return;
+
+                int speedLevel = getInstalledUpgrades(AEItems.SPEED_CARD);
+                int maxTransfer = (int) Math.pow(64, speedLevel);
+                int energyToTransfer = Math.min(maxTransfer, missingEnergy);
+
+                double requiredAEPower = energyToTransfer / 2.0;
+                if (getGridNode() == null) return;
+                double availablePower = getGridNode().getGrid().getEnergyService().getStoredPower();
+                double maxPower = getGridNode().getGrid().getEnergyService().getMaxStoredPower();
+
+                if (((availablePower - requiredAEPower) * 100 / maxPower) > 33) {
+                    double extractedSim = getGridNode().getGrid().getEnergyService().extractAEPower(requiredAEPower, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+                    if (extractedSim >= requiredAEPower) {
+                        double extracted = getGridNode().getGrid().getEnergyService().extractAEPower(requiredAEPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                        int accepted = storage.receiveEnergy(energyToTransfer, false);
+
+                        transfered = Utils.shortenNumber(extracted * 2.0 * accepted / energyToTransfer);
                     }
-                    transfered = Utils.shortenNumber(ext * 2);
                 }
             });
         }
-        if (this.getMenu() != null){
+
+        if (this.getMenu() != null) {
             this.getMenu().transfered = transfered;
         }
+
         return TickRateModulation.IDLE;
     }
 

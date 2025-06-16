@@ -443,5 +443,24 @@ public class ItemDefs {
                         "E", Items.DIAMOND
                 )
         );
+
+        item(
+                CrazyItemRegistrar.WIRELESS_REDSTONE_TERMINAL.get(),
+                "R/T/D",
+                Map.of(
+                        "R", AEItems.WIRELESS_RECEIVER.asItem(),
+                        "T", CrazyItemRegistrar.REDSTONE_TERMINAL.get(),
+                        "D", AEBlocks.DENSE_ENERGY_CELL.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.REDSTONE_TERMINAL.get(),
+                "T/R",
+                Map.of(
+                        "R", Items.REDSTONE,
+                        "T", AEParts.TERMINAL.asItem()
+                )
+        );
     }
 }

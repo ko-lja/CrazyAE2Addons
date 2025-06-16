@@ -55,42 +55,74 @@ public class GTEnergyExporterPart extends EnergyExporterPart {
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        if (!initialized){
+        if (!initialized) {
             upgradesChanged();
             onChangeInventory(this.inv, 0);
             initialized = true;
         }
+
         BlockEntity neighbor = getLevel().getBlockEntity(getBlockEntity().getBlockPos().relative(getSide()));
         transfered = "0";
-        if (neighbor != null){
+
+        if (neighbor != null) {
+            var energyService = getGridNode().getGrid().getEnergyService();
+            double stored = energyService.getStoredPower();
+            double maxStored = energyService.getMaxStoredPower();
+
+            double minAllowed = maxStored * 0.33;
+
             if (this.greg) {
-                neighbor.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, getSide().getOpposite()).ifPresent(storage -> {
-                    double powerRequired = Math.min((long) voltage * maxAmps * FeCompat.ratio(false), storage.getEnergyCanBeInserted());
-                    double availablePower = getGridNode().getGrid().getEnergyService().getStoredPower() * 2;
-                    double maxPower = getGridNode().getGrid().getEnergyService().getMaxStoredPower() * 2;
-                    if (((availablePower - powerRequired) * 100 / maxPower) > 33){
-                        double ext = getGridNode().getGrid().getEnergyService().extractAEPower(powerRequired / 2, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                        storage.acceptEnergyFromNetwork(getSide().getOpposite(), voltage, maxAmps);
-                        transfered = Utils.shortenNumber(ext * 2);
+                neighbor.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, getSide().getOpposite()).ifPresent(gtStorage -> {
+                    long euCanInsert = gtStorage.getEnergyCanBeInserted();
+
+                    double maxFE = voltage * maxAmps * FeCompat.ratio(false);
+                    double feToTransfer = Math.min(maxFE, euCanInsert);
+                    double aeRequired = feToTransfer / 2.0;
+
+                    double maxExtractable = Math.max(0, stored - minAllowed);
+                    aeRequired = Math.min(aeRequired, maxExtractable);
+
+                    if (aeRequired > 0) {
+                        double extractedSim = energyService.extractAEPower(aeRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+                        if (extractedSim >= aeRequired) {
+                            double extracted = energyService.extractAEPower(aeRequired, Actionable.MODULATE, PowerMultiplier.CONFIG);
+
+                            gtStorage.acceptEnergyFromNetwork(getSide().getOpposite(), voltage, maxAmps);
+                            transfered = Utils.shortenNumber(extracted * 2);
+                        }
                     }
                 });
             } else {
-                neighbor.getCapability(ForgeCapabilities.ENERGY, getSide().getOpposite()).ifPresent(storage -> {
-                    double powerRequired = Math.min(Math.pow(64, getInstalledUpgrades(AEItems.SPEED_CARD)), storage.getMaxEnergyStored() - storage.getEnergyStored()) - 1;
-                    double availablePower = getGridNode().getGrid().getEnergyService().getStoredPower() * 2;
-                    double maxPower = getGridNode().getGrid().getEnergyService().getMaxStoredPower() * 2;
-                    if (((availablePower - powerRequired) * 100 / maxPower) > 33){
-                        double ext = getGridNode().getGrid().getEnergyService().extractAEPower(powerRequired / 2, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                        storage.receiveEnergy((int) powerRequired, false);
-                        transfered = Utils.shortenNumber(ext * 2);
+                neighbor.getCapability(ForgeCapabilities.ENERGY, getSide().getOpposite()).ifPresent(feStorage -> {
+                    if (!feStorage.canReceive()) return;
+
+                    int speedLevel = getInstalledUpgrades(AEItems.SPEED_CARD);
+                    int maxTransfer = (int) Math.pow(64, speedLevel);
+                    int energyMissing = feStorage.getMaxEnergyStored() - feStorage.getEnergyStored();
+
+                    int feToTransfer = Math.min(maxTransfer, energyMissing);
+                    double aeRequired = feToTransfer / 2.0;
+
+                    double maxExtractable = Math.max(0, stored - minAllowed);
+                    aeRequired = Math.min(aeRequired, maxExtractable);
+
+                    if (aeRequired > 0) {
+                        double extractedSim = energyService.extractAEPower(aeRequired, Actionable.SIMULATE, PowerMultiplier.CONFIG);
+                        if (extractedSim >= aeRequired) {
+                            double extracted = energyService.extractAEPower(aeRequired, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                            int accepted = feStorage.receiveEnergy(feToTransfer, false);
+
+                            transfered = Utils.shortenNumber(extracted * 2 * accepted / feToTransfer);
+                        }
                     }
                 });
             }
         }
-        if (this.getMenu() != null){
+
+        if (this.getMenu() != null) {
             this.getMenu().transfered = transfered;
         }
+
         return TickRateModulation.IDLE;
     }
-
 }
