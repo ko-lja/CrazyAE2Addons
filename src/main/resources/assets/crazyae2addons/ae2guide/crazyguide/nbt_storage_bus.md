@@ -1,12 +1,12 @@
 ---
 navigation:
   parent: crazyae2addons_index.md
-  title: NBT Export Bus
-  icon: crazyae2addons:nbt_export_bus
+  title: NBT Storage Bus
+  icon: crazyae2addons:nbt_storage_bus
 categories:
   - Energy and Item Transfer
 item_ids:
-  - crazyae2addons:nbt_export_bus
+  - crazyae2addons:nbt_storage_bus
 ---
 # NBT Storage Bus
 
@@ -17,7 +17,7 @@ The NBT Storage Bus is an advanced version of the AE2 storage bus that lets you 
 ## How to Use
 
 1. **Place on a Storage Block**
-    - Attach the NBT Export Bus to a chest, drawer, or any block with item inventory.
+    - Attach the NBT Storage Bus to a chest, drawer, or any block with item inventory.
 
 2. **Open Configuration GUI**
     - Right-click the part to configure its filter and behavior.
@@ -39,6 +39,9 @@ The NBT Storage Bus is an advanced version of the AE2 storage bus that lets you 
     - Place an item in the fake slot and press the **Load** button.
     - Automatically imports the item's NBT into the filter.
 
+5. **Upgrades**
+    - Accepts 1 Upgrade Card (Void Card to void overflow)
+
 ---
 
 ## Matching System
@@ -50,4 +53,4 @@ NBT expressions use a custom parser that supports:
 - **Recursive key matching**
 - **Negation with !value**
 
-If an item matches the expression, it's exported.
+If an item matches the expression, it's allowed for extraction (depending on your settings).

@@ -120,17 +120,32 @@ public final class NBTMatcher {
         return true;
     }
 
-    private static boolean valueMatches(Tag itemVal, Tag critVal){
-        if(isAny(critVal)) return true;
+    private static boolean valueMatches(Tag itemVal, Tag critVal) {
+        if (isAny(critVal)) return true;
 
-        if(itemVal instanceof CompoundTag itC && critVal instanceof CompoundTag crC){ return matches(itC,crC); }
+        if (itemVal instanceof CompoundTag itC && critVal instanceof CompoundTag crC) {
+            return matches(itC, crC);
+        }
 
-        if(itemVal instanceof ListTag itL && critVal instanceof ListTag crL){ return listContains(itL,crL); }
+        if (itemVal instanceof ListTag itL && critVal instanceof ListTag crL) {
+            return listContains(itL, crL);
+        }
 
-        if(itemVal instanceof ListTag itL2 && critVal instanceof CompoundTag crC2){ return listAnyMatch(itL2,crC2); }
+        if (itemVal instanceof ListTag itL2 && critVal instanceof CompoundTag crC2) {
+            return listAnyMatch(itL2, crC2);
+        }
+
+        if (critVal instanceof StringTag strTag) {
+            String s = strTag.getAsString();
+            if (s.startsWith("!")) {
+                String negated = s.substring(1);
+                return !itemVal.getAsString().equals(negated);
+            }
+        }
 
         return itemVal.equals(critVal);
     }
+
 
     private static boolean listContains(ListTag item, ListTag crit){
         outer: for(Tag c:crit){

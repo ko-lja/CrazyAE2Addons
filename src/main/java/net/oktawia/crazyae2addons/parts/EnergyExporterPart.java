@@ -169,12 +169,14 @@ public class EnergyExporterPart extends UpgradeablePart implements
 
     @Override
     public int getEnergyStored() {
-        return Integer.MAX_VALUE;
+        if (getGridNode() == null) return 0;
+        return (int) (getGridNode().getGrid().getEnergyService().getStoredPower() * 2);
     }
 
     @Override
     public int getMaxEnergyStored() {
-        return Integer.MAX_VALUE;
+        if (getGridNode() == null) return 0;
+        return (int) (getGridNode().getGrid().getEnergyService().getMaxStoredPower() * 2);
     }
 
     @Override

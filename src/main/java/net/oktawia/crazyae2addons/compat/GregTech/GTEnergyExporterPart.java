@@ -65,6 +65,7 @@ public class GTEnergyExporterPart extends EnergyExporterPart {
         transfered = "0";
 
         if (neighbor != null) {
+            if (getGridNode() == null) return TickRateModulation.IDLE;
             var energyService = getGridNode().getGrid().getEnergyService();
             double stored = energyService.getStoredPower();
             double maxStored = energyService.getMaxStoredPower();

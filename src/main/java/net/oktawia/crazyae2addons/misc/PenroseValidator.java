@@ -31,39 +31,155 @@ public class PenroseValidator {
         {
           "symbols": {
             "F": ["crazyae2addons:penrose_frame"],
-            "E": ["crazyae2addons:penrose_coil"],
+            "O": ["crazyae2addons:penrose_coil"],
             "C": ["crazyae2addons:penrose_controller"],
             "A": ["minecraft:air"]
           },
-          "layers": [
-            [
-              "F F F F F F F",
-              "F F F F F F F",
-              "F F F F F F F",
-              "F F F F F F F",
-              "F F F F F F F",
-              "F F F F F F F",
-              "F F F C F F F"
-            ],
-            [
-              "F E E E E E F",
-              "E A A A A A E",
-              "E A A A A A E",
-              "E A A F A A E",
-              "E A A A A A E",
-              "E A A A A A E",
-              "F E E E E E F"
-            ],
-            [
-              "F F F F F F F",
-              "F F F F F F F",
-              "F F F F F F F",
-              "F F F F F F F",
-              "F F F F F F F",
-              "F F F F F F F",
-              "F F F F F F F"
+            "layers": [
+                [
+                    "F F F F F F F F F F F",
+                    "F . . . . . . . . . F",
+                    "F . . . . . . . . . F",
+                    "F . . . F O F . . . F",
+                    "F . . F F O F F . . F",
+                    "F . . O O O O O . . F",
+                    "F . . F F O F F . . F",
+                    "F . . . F O F . . . F",
+                    "F . . . . . . . . . F",
+                    "F . . . . . . . . . F",
+                    "F F F F F F F F F F F"
+                ],
+                [
+                    "F . . . . . . . . . F",
+                    ". . . . . . . . . . .",
+                    ". . . F F O F F . . .",
+                    ". . F F . . . F F . .",
+                    ". . F . . . . . F . .",
+                    ". . O . . . . . O . .",
+                    ". . F . . . . . F . .",
+                    ". . F F . . . F F . .",
+                    ". . . F F O F F . . .",
+                    ". . . . . . . . . . .",
+                    "F . . . . . . . . . F"
+                ],
+                [
+                    "F . . . . . . . . . F",
+                    ". . . F F O F F . . .",
+                    ". . F F . . . F F . .",
+                    ". F F . . . . . F F .",
+                    ". F . . . . . . . F .",
+                    ". O . . . . . . . O .",
+                    ". F . . . . . . . F .",
+                    ". F F . . . . . F F .",
+                    ". . F F . . . F F . .",
+                    ". . . F F O F F . . .",
+                    "F . . . . . . . . . F"
+                ],
+                [
+                    "F . . . F O F . . . F",
+                    ". . F F F . F F F . .",
+                    ". F F . . . . . F F .",
+                    ". F . . . . . . . F .",
+                    "F F . . . . . . . F F",
+                    "O . . . . . . . . . O",
+                    "F F . . . . . . . F F",
+                    ". F . . . . . . . F .",
+                    ". F F . . . . . F F .",
+                    ". . F F F . F F F . .",
+                    "F . . . F O F . . . F"
+                ],
+                [
+                    "F . . F F O F F . . F",
+                    ". . F F . . . F F . .",
+                    ". F . . . . . . . F .",
+                    "F F . . . . . . . F F",
+                    "F . . . . . . . . . F",
+                    "O . . . . . . . . . O",
+                    "F . . . . . . . . . F",
+                    "F F . . . . . . . F F",
+                    ". F . . . . . . . F .",
+                    ". . F F . . . F F . .",
+                    "F . . F F O F F . . F"
+                ],
+                [
+                    "F . . O O O O O . . F",
+                    ". . O . . . . . O . .",
+                    ". O . . . . . . . O .",
+                    "O . . . . . . . . . O",
+                    "O . . . . . . . . . O",
+                    "O . . . . . . . . . O",
+                    "O . . . . . . . . . O",
+                    "O . . . . . . . . . O",
+                    ". O . . . . . . . O .",
+                    ". . O . . . . . O . .",
+                    "F . . O O C O O . . F"
+                ],
+                [
+                    "F . . F F O F F . . F",
+                    ". . F F . . . F F . .",
+                    ". F . . . . . . . F .",
+                    "F F . . . . . . . F F",
+                    "F . . . . . . . . . F",
+                    "O . . . . . . . . . O",
+                    "F . . . . . . . . . F",
+                    "F F . . . . . . . F F",
+                    ". F . . . . . . . F .",
+                    ". . F F . . . F F . .",
+                    "F . . F F O F F . . F"
+                ],
+                [
+                    "F . . . F O F . . . F",
+                    ". . F F F . F F F . .",
+                    ". F F . . . . . F F .",
+                    ". F . . . . . . . F .",
+                    "F F . . . . . . . F F",
+                    "O . . . . . . . . . O",
+                    "F F . . . . . . . F F",
+                    ". F . . . . . . . F .",
+                    ". F F . . . . . F F .",
+                    ". . F F F . F F F . .",
+                    "F . . . F O F . . . F"
+                ],
+                [
+                    "F . . . . . . . . . F",
+                    ". . . F F O F F . . .",
+                    ". . F F . . . F F . .",
+                    ". F F . . . . . F F .",
+                    ". F . . . . . . . F .",
+                    ". O . . . . . . . O .",
+                    ". F . . . . . . . F .",
+                    ". F F . . . . . F F .",
+                    ". . F F . . . F F . .",
+                    ". . . F F O F F . . .",
+                    "F . . . . . . . . . F"
+                ],
+                [
+                    "F . . . . . . . . . F",
+                    ". . . . . . . . . . .",
+                    ". . . F F O F F . . .",
+                    ". . F F . . . F F . .",
+                    ". . F . . . . . F . .",
+                    ". . O . . . . . O . .",
+                    ". . F . . . . . F . .",
+                    ". . F F . . . F F . .",
+                    ". . . F F O F F . . .",
+                    ". . . . . . . . . . .",
+                    "F . . . . . . . . . F"
+                ],
+                [
+                    "F F F F F F F F F F F",
+                    "F . . . . . . . . . F",
+                    "F . . . . . . . . . F",
+                    "F . . . F O F . . . F",
+                    "F . . F F O F F . . F",
+                    "F . . O O O O O . . F",
+                    "F . . F F O F F . . F",
+                    "F . . . F O F . . . F",
+                    "F . . . . . . . . . F",
+                    "F . . . . . . . . . F",
+                    "F F F F F F F F F F F"
+                ]
             ]
-          ]
         }
         """;
 
@@ -127,19 +243,18 @@ public class PenroseValidator {
                 for (int x = 0; x < sizeX; x++) {
                     String symbol = row[x];
                     if (symbol.equals(".")) continue;
+
                     int relX = x - originInPatternX;
                     int relZ = z - originInPatternZ;
                     int relY = y - originInPatternY;
-                    BlockPos offset = rotateOffset(relX, relZ, facing);
-                    BlockPos checkPos = origin.offset(offset.getX(), relY, offset.getZ());
+
+                    BlockPos offsetXZ = rotateOffset(relX, relZ, facing);
+                    BlockPos checkPos = origin.offset(offsetXZ.getX(), relY, offsetXZ.getZ());
+
                     BlockState checkState = level.getBlockState(checkPos);
                     Block block = checkState.getBlock();
                     List<Block> allowed = symbols.get(symbol);
-                    if (allowed == null) {
-                        return false;
-                    }
-                    boolean match = allowed.contains(block);
-                    if (!match) {
+                    if (allowed == null || !allowed.contains(block)) {
                         markWalls(level, origin, state, PenroseFrameBlock.FORMED, false, controller);
                         return false;
                     }
@@ -159,6 +274,7 @@ public class PenroseValidator {
             default -> BlockPos.ZERO;
         };
     }
+
 
     public void markWalls(
             Level level,
@@ -183,8 +299,9 @@ public class PenroseValidator {
                     int relX = x - originInPatternX;
                     int relZ = z - originInPatternZ;
                     int relY = y - originInPatternY;
-                    BlockPos offset = rotateOffset(relX, relZ, facing);
-                    BlockPos checkPos = origin.offset(offset.getX(), relY, offset.getZ());
+
+                    BlockPos offsetXZ = rotateOffset(relX, relZ, facing);
+                    BlockPos checkPos = origin.offset(offsetXZ.getX(), relY, offsetXZ.getZ());
 
                     BlockState bs = level.getBlockState(checkPos);
                     if (bs.hasProperty(formedProperty) && bs.getValue(formedProperty) != setState) {
@@ -193,11 +310,7 @@ public class PenroseValidator {
 
                     var be = level.getBlockEntity(checkPos);
                     if (be instanceof PenroseFrameBE frameBE) {
-                        if (setState) {
-                            frameBE.setController(controller);
-                        } else {
-                            frameBE.setController(null);
-                        }
+                        frameBE.setController(setState ? controller : null);
                     }
                 }
             }
