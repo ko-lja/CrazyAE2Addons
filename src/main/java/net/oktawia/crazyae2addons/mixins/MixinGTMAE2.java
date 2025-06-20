@@ -63,6 +63,18 @@ public abstract class MixinGTMAE2 implements IPatternProviderTargetCacheExt {
         this.exclusiveMode = mode;
     }
 
+    @ModifyReturnValue(
+            method = "find()Lappeng/helpers/patternprovider/PatternProviderTarget;",
+            at = @At("RETURN"),
+            remap = false
+    )
+    private PatternProviderTarget rerouteToExtendedFind(PatternProviderTarget original) {
+        if (this.details != null) {
+            return this.find(this.details, original);
+        }
+        return original;
+    }
+
     @Inject(
             method = "<init>(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;Lappeng/api/networking/security/IActionSource;)V",
             at = @At("RETURN")
@@ -78,9 +90,8 @@ public abstract class MixinGTMAE2 implements IPatternProviderTargetCacheExt {
     }
 
     @Unique
-    public PatternProviderTarget find(IPatternDetails details) {
+    public PatternProviderTarget find(IPatternDetails details, PatternProviderTarget original) {
         this.details = details;
-        PatternProviderTarget original = this.find();
         if (original == null) return null;
 
         return new PatternProviderTarget() {
@@ -118,7 +129,6 @@ public abstract class MixinGTMAE2 implements IPatternProviderTargetCacheExt {
             }
         };
     }
-
 
     @Unique
     private void traverseGridIfInterface(int circuit, BlockPos pos, Level level) {

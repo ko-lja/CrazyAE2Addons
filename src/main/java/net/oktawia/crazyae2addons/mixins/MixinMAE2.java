@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import stone.mae2.appeng.helpers.patternprovider.PatternProviderTargetCache;
 import stone.mae2.parts.p2p.PatternP2PTunnel;
 
 import java.lang.reflect.Field;
@@ -67,10 +68,12 @@ public abstract class MixinMAE2 implements IPatternProviderCpu, IExclusivePatter
     private void injectAfterFindAdapters(BlockEntity be, Level level, List<PatternP2PTunnel.TunneledPatternProviderTarget> adapters, Direction direction, CallbackInfo ci) {
         var pattern = this.getPatternDetails();
         if (pattern == null) return;
-        for (var adapter : adapters) {
+        for (int i = 0; i < adapters.size(); i++) {
+            var adapter = adapters.get(i);
             var target = adapter.target();
             if (target instanceof IPatternProviderTargetCacheExt ext) {
                 ext.setExclusiveMode(this.getExclusiveMode());
+                ext.setDetails(pattern);
                 var grid = this.getGrid();
                 if (grid != null){
                     var guard = grid.getMachines(CraftingGuardBE.class).stream().findFirst().orElse(null);
@@ -78,7 +81,6 @@ public abstract class MixinMAE2 implements IPatternProviderCpu, IExclusivePatter
                         ext.setGuard(guard);
                     }
                 }
-                ext.setDetails(pattern);
             }
         }
     }
