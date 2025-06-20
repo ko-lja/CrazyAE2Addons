@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "crazyae2addons:block/energy_storage_frame"
+    },
+    "formed=true": {
+      "model": "crazyae2addons:block/energy_storage_frame_formed"
+    }
+  }
+}

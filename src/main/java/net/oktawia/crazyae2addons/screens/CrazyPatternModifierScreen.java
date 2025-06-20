@@ -6,6 +6,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fml.ModList;
@@ -13,12 +14,15 @@ import net.oktawia.crazyae2addons.menus.CrazyPatternModifierMenu;
 import net.oktawia.crazyae2addons.misc.IconButton;
 import net.minecraft.client.gui.components.Button;
 
+import java.util.ArrayList;
+
 
 public class CrazyPatternModifierScreen<C extends CrazyPatternModifierMenu> extends AEBaseScreen<C> {
 
     public IconButton nbt;
     public IconButton circConfirm;
     public AETextField circ;
+    public final IconButton[] historyButtons = new IconButton[5];
 
     public CrazyPatternModifierScreen(CrazyPatternModifierMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super((C) menu, playerInventory, title, style);
@@ -32,11 +36,31 @@ public class CrazyPatternModifierScreen<C extends CrazyPatternModifierMenu> exte
 
         this.widgets.add("nbt", this.nbt);
         this.widgets.add("confirmcirc", this.circConfirm);
-        circ = new AETextField(
-                style, Minecraft.getInstance().font, 0, 0, 0, 0
-        );
+
+        this.circ = new AETextField(style, Minecraft.getInstance().font, 0, 0, 0, 0);
         circ.setBordered(false);
         circ.setMaxLength(2);
+
+        for (int i = 0; i < 5; i++) {
+            int index = i;
+            historyButtons[i] = new IconButton(Icon.CRAFT_HAMMER, btn -> applyHistoryValue(index));
+            this.widgets.add("button" + (i + 1), historyButtons[i]);
+        }
+    }
+
+    private void applyHistoryValue(int index) {
+        int[] history = {
+                getMenu().history1,
+                getMenu().history2,
+                getMenu().history3,
+                getMenu().history4,
+                getMenu().history5
+        };
+        if (index < 0 || index >= history.length) return;
+        int val = history[index];
+        if (val == -1) return;
+        circ.setValue(String.valueOf(val));
+        getMenu().changeCircuit(val, false);
     }
 
     @Override
@@ -47,6 +71,26 @@ public class CrazyPatternModifierScreen<C extends CrazyPatternModifierMenu> exte
             setTextContent("info2", Component.literal(getMenu().textCirc));
         } else {
             setTextContent("info2", Component.literal("GregTech not detected"));
+        }
+
+        int[] history = {
+                getMenu().history1,
+                getMenu().history2,
+                getMenu().history3,
+                getMenu().history4,
+                getMenu().history5
+        };
+
+        for (int i = 0; i < historyButtons.length; i++) {
+            int val = history[i];
+            IconButton btn = historyButtons[i];
+            if (val != -1) {
+                btn.active = true;
+                btn.setTooltip(Tooltip.create(Component.literal(String.format("Circuit %s", val))));
+            } else {
+                btn.active = false;
+                btn.setTooltip(Tooltip.create(Component.empty()));
+            }
         }
     }
 
@@ -62,5 +106,17 @@ public class CrazyPatternModifierScreen<C extends CrazyPatternModifierMenu> exte
                 this.getMenu().changeCircuit(Integer.parseInt(circ.getValue()));
             }
         }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        boolean handled = super.mouseClicked(mouseX, mouseY, button);
+
+        if (button == 1 && circ != null && circ.isMouseOver(mouseX, mouseY)) {
+            circ.setValue("");
+            return true;
+        }
+
+        return handled;
     }
 }

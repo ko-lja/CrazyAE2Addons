@@ -9,6 +9,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.blocks.*;
 import net.oktawia.crazyae2addons.items.*;
+import net.oktawia.crazyae2addons.menus.EnergyStorageControllerMenu;
 
 import java.util.List;
 
@@ -194,6 +195,90 @@ public class CrazyBlockRegistrar {
     public static final RegistryObject<BlockItem> CRAZY_PATTERN_PROVIDER_BLOCK_ITEM =
             BLOCK_ITEMS.register("crazy_pattern_provider",
                     () -> new CrazyPatternProviderBlockItem(CRAZY_PATTERN_PROVIDER_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<EnergyStorageController> ENERGY_STORAGE_CONTROLLER_BLOCK =
+            BLOCKS.register("energy_storage_controller", EnergyStorageController::new);
+
+    public static final RegistryObject<BlockItem> ENERGY_STORAGE_CONTROLLER_BLOCK_ITEM =
+            BLOCK_ITEMS.register("energy_storage_controller",
+                    () -> new EnergyStorageControllerBlockItem(ENERGY_STORAGE_CONTROLLER_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<EnergyStorage1k> ENERGY_STORAGE_1K_BLOCK =
+            BLOCKS.register("energy_storage_1k", EnergyStorage1k::new);
+
+    public static final RegistryObject<BlockItem> ENERGY_STORAGE_1K_BLOCK_ITEM =
+            BLOCK_ITEMS.register("energy_storage_1k",
+                    () -> new EnergyStorage1kBlockItem(ENERGY_STORAGE_1K_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<EnergyStorage4k> ENERGY_STORAGE_4K_BLOCK =
+            BLOCKS.register("energy_storage_4k", EnergyStorage4k::new);
+
+    public static final RegistryObject<BlockItem> ENERGY_STORAGE_4K_BLOCK_ITEM =
+            BLOCK_ITEMS.register("energy_storage_4k",
+                    () -> new EnergyStorage4kBlockItem(ENERGY_STORAGE_4K_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<EnergyStorage16k> ENERGY_STORAGE_16K_BLOCK =
+            BLOCKS.register("energy_storage_16k", EnergyStorage16k::new);
+
+    public static final RegistryObject<BlockItem> ENERGY_STORAGE_16K_BLOCK_ITEM =
+            BLOCK_ITEMS.register("energy_storage_16k",
+                    () -> new EnergyStorage16kBlockItem(ENERGY_STORAGE_16K_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<EnergyStorage64k> ENERGY_STORAGE_64K_BLOCK =
+            BLOCKS.register("energy_storage_64k", EnergyStorage64k::new);
+
+    public static final RegistryObject<BlockItem> ENERGY_STORAGE_64K_BLOCK_ITEM =
+            BLOCK_ITEMS.register("energy_storage_64k",
+                    () -> new EnergyStorage64kBlockItem(ENERGY_STORAGE_64K_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<EnergyStorage256k> ENERGY_STORAGE_256K_BLOCK =
+            BLOCKS.register("energy_storage_256k", EnergyStorage256k::new);
+
+    public static final RegistryObject<BlockItem> ENERGY_STORAGE_256K_BLOCK_ITEM =
+            BLOCK_ITEMS.register("energy_storage_256k",
+                    () -> new EnergyStorage256kBlockItem(ENERGY_STORAGE_256K_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<EnergyStorageFrame> ENERGY_STORAGE_FRAME_BLOCK =
+            BLOCKS.register("energy_storage_frame", EnergyStorageFrame::new);
+
+    public static final RegistryObject<BlockItem> ENERGY_STORAGE_FRAME_BLOCK_ITEM =
+            BLOCK_ITEMS.register("energy_storage_frame",
+                    () -> new EnergyStorageFrameBlockItem(ENERGY_STORAGE_FRAME_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<DenseEnergyStorage1k> DENSE_ENERGY_STORAGE_1K_BLOCK =
+            BLOCKS.register("dense_energy_storage_1k", DenseEnergyStorage1k::new);
+
+    public static final RegistryObject<BlockItem> DENSE_ENERGY_STORAGE_1K_BLOCK_ITEM =
+            BLOCK_ITEMS.register("dense_energy_storage_1k",
+                    () -> new DenseEnergyStorage1kBlockItem(DENSE_ENERGY_STORAGE_1K_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<DenseEnergyStorage4k> DENSE_ENERGY_STORAGE_4K_BLOCK =
+            BLOCKS.register("dense_energy_storage_4k", DenseEnergyStorage4k::new);
+
+    public static final RegistryObject<BlockItem> DENSE_ENERGY_STORAGE_4K_BLOCK_ITEM =
+            BLOCK_ITEMS.register("dense_energy_storage_4k",
+                    () -> new DenseEnergyStorage4kBlockItem(DENSE_ENERGY_STORAGE_4K_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<DenseEnergyStorage16k> DENSE_ENERGY_STORAGE_16K_BLOCK =
+            BLOCKS.register("dense_energy_storage_16k", DenseEnergyStorage16k::new);
+
+    public static final RegistryObject<BlockItem> DENSE_ENERGY_STORAGE_16K_BLOCK_ITEM =
+            BLOCK_ITEMS.register("dense_energy_storage_16k",
+                    () -> new DenseEnergyStorage16kBlockItem(DENSE_ENERGY_STORAGE_16K_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<DenseEnergyStorage64k> DENSE_ENERGY_STORAGE_64K_BLOCK =
+            BLOCKS.register("dense_energy_storage_64k", DenseEnergyStorage64k::new);
+
+    public static final RegistryObject<BlockItem> DENSE_ENERGY_STORAGE_64K_BLOCK_ITEM =
+            BLOCK_ITEMS.register("dense_energy_storage_64k",
+                    () -> new DenseEnergyStorage64kBlockItem(DENSE_ENERGY_STORAGE_64K_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<DenseEnergyStorage256k> DENSE_ENERGY_STORAGE_256K_BLOCK =
+            BLOCKS.register("dense_energy_storage_256k", DenseEnergyStorage256k::new);
+
+    public static final RegistryObject<BlockItem> DENSE_ENERGY_STORAGE_256K_BLOCK_ITEM =
+            BLOCK_ITEMS.register("dense_energy_storage_256k",
+                    () -> new DenseEnergyStorage256kBlockItem(DENSE_ENERGY_STORAGE_256K_BLOCK.get(), new Item.Properties()));
 
     private CrazyBlockRegistrar() {}
 }

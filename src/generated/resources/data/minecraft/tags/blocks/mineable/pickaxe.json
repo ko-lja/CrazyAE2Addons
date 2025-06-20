@@ -23,6 +23,18 @@
     "crazyae2addons:penrose_frame",
     "crazyae2addons:penrose_coil",
     "crazyae2addons:penrose_controller",
-    "crazyae2addons:crazy_pattern_provider"
+    "crazyae2addons:crazy_pattern_provider",
+    "crazyae2addons:energy_storage_controller",
+    "crazyae2addons:energy_storage_1k",
+    "crazyae2addons:energy_storage_4k",
+    "crazyae2addons:energy_storage_16k",
+    "crazyae2addons:energy_storage_64k",
+    "crazyae2addons:energy_storage_256k",
+    "crazyae2addons:energy_storage_frame",
+    "crazyae2addons:dense_energy_storage_1k",
+    "crazyae2addons:dense_energy_storage_4k",
+    "crazyae2addons:dense_energy_storage_16k",
+    "crazyae2addons:dense_energy_storage_64k",
+    "crazyae2addons:dense_energy_storage_256k"
   ]
 }

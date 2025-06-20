@@ -26,17 +26,21 @@ public class PenroseControllerMenu extends AEBaseMenu {
     public final RestrictedInputSlot diskSlot;
     public String EXTRACT = "actionExtract";
     public String INSERT = "actionInsert";
+    public String POWER = "actionPower";
+    @GuiSync(93)
+    public boolean powerMode;
 
     public PenroseControllerMenu(int id, Inventory ip, PenroseControllerBE host) {
         super(CrazyMenuRegistrar.PENROSE_CONTROLLER_MENU.get(), id, ip, host);
         this.createPlayerInventorySlots(ip);
         this.host = host;
-        var disk = StorageCells.getCellInventory(host.diskInv.getStackInSlot(0), null);
+        this.powerMode = host.energyMode;
         this.addSlot(this.diskSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, host.diskInv, 0), SlotSemantics.STORAGE_CELL);
         this.addSlot(this.singularitySlot = new AppEngSlot(host.inputInv, 0), SlotSemantics.MACHINE_INPUT);
         this.addSlot(this.configSlot = new FakeSlot(host.config.createMenuWrapper(), 0), SlotSemantics.CONFIG);
         this.registerClientAction(EXTRACT, this::extractFromCell);
         this.registerClientAction(INSERT, this::insertToCell);
+        this.registerClientAction(POWER, Boolean.class, this::changeEnergyMode);
     }
 
     public void extractFromCell(){
@@ -65,6 +69,14 @@ public class PenroseControllerMenu extends AEBaseMenu {
             if (disk == null) return;
             var inserted = disk.insert(AEItemKey.of(this.singularitySlot.getItem()), this.singularitySlot.getItem().getCount(), Actionable.MODULATE, IActionSource.ofMachine(host));
             this.singularitySlot.getItem().setCount((int) (this.singularitySlot.getItem().getCount() - inserted));
+        }
+    }
+
+    public void changeEnergyMode(boolean dir){
+        this.powerMode = dir;
+        this.host.energyMode = dir;
+        if (isClientSide()){
+            sendClientAction(POWER, dir);
         }
     }
 }

@@ -186,6 +186,12 @@ public final class Screens {
                 CrazyPatternProviderScreen<CrazyPatternProviderMenu>::new,
                 "/screens/crazy_pattern_provider.json"
         );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.ENERGY_STORAGE_CONTROLLER_MENU.get(),
+                EnergyStorageControllerScreen<EnergyStorageControllerMenu>::new,
+                "/screens/energy_storage_controller.json"
+        );
     }
 
     private Screens() {}

@@ -2,15 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "A": {
+      "item": "ae2:speed_card"
+    },
     "E": {
-      "item": "minecraft:diamond"
+      "item": "ae2:import_bus"
     },
     "F": {
       "item": "ae2:fe_p2p_tunnel"
     }
   },
   "pattern": [
-    "FE"
+    "FEA"
   ],
   "result": {
     "item": "crazyae2addons:extracting_fe_p2p_tunnel"

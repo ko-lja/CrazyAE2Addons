@@ -1,9 +1,20 @@
 package net.oktawia.crazyae2addons.parts;
 
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKeyType;
+import appeng.me.service.P2PService;
+import appeng.util.Platform;
+import appeng.util.SettingsFrom;
+import com.mojang.logging.LogUtils;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
@@ -12,8 +23,11 @@ import appeng.parts.p2p.P2PModels;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.oktawia.crazyae2addons.Utils;
+import net.oktawia.crazyae2addons.mixins.P2PTunnelPartAccessor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Random;
 
 public class RRItemP2PTunnelPart extends CapabilityP2PTunnelPart<RRItemP2PTunnelPart, IItemHandler> {
 
@@ -32,6 +46,71 @@ public class RRItemP2PTunnelPart extends CapabilityP2PTunnelPart<RRItemP2PTunnel
         outputHandler = new OutputItemHandler();
         emptyHandler = NULL_ITEM_HANDLER;
         ContainerIndex = 0;
+    }
+
+
+    @Override
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+        if (isClientSide()) {
+            return true;
+        }
+
+        if (hand == InteractionHand.OFF_HAND) {
+            return false;
+        }
+
+        var is = player.getItemInHand(hand);
+
+        if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
+            var configData = mc.getData(is);
+            if (configData.contains("p2pType") || configData.contains("p2pFreq") || !configData.contains("RRItem")) {
+                mc.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
+                return false;
+            } else {
+                this.importSettings(SettingsFrom.MEMORY_CARD, configData, player);
+                mc.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        if (input.contains("myFreq")) {
+            var freq = input.getShort("myFreq");
+
+            ((P2PTunnelPartAccessor)this).setOutput(true);
+            var grid = getMainNode().getGrid();
+            if (grid != null) {
+                P2PService.get(grid).updateFreq(this, freq);
+            } else {
+                setFrequency(freq);
+                onTunnelNetworkChange();
+            }
+        }
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            if (!output.getAllKeys().isEmpty()) {
+                var iterator = output.getAllKeys().iterator();
+                while (iterator.hasNext()){
+                    iterator.next();
+                    iterator.remove();
+                }
+            };
+            output.putString("myType", IPartItem.getId(getPartItem()).toString());
+            output.putBoolean("RRItem", true);
+            output.putShort("myFreq", getFrequency());
+
+            var colors = Platform.p2p().toColors(getFrequency());
+            var colorCode = new int[] { colors[0].ordinal(), colors[0].ordinal(), colors[1].ordinal(),
+                    colors[1].ordinal(), colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(),
+                    colors[3].ordinal(), };
+            output.putIntArray(IMemoryCard.NBT_COLOR_CODE, colorCode);
+        }
     }
 
     @Override

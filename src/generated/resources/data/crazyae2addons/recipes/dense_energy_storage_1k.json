@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "ae2:fluix_crystal"
+    },
+    "K": {
+      "item": "crazyae2addons:energy_storage_1k"
+    },
+    "M": {
+      "item": "ae2:singularity"
+    },
+    "S": {
+      "item": "crazyae2addons:super_singularity"
+    }
+  },
+  "pattern": [
+    "CMC",
+    "MKM",
+    "CSC"
+  ],
+  "result": {
+    "item": "crazyae2addons:dense_energy_storage_1k"
+  },
+  "show_notification": true
+}

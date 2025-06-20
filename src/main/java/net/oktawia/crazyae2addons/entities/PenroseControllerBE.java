@@ -19,6 +19,7 @@ import appeng.util.ConfigInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -28,13 +29,18 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.PenroseControllerMenu;
 import net.oktawia.crazyae2addons.misc.PenroseValidator;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -42,8 +48,30 @@ import java.util.Objects;
 
 public class PenroseControllerBE extends AENetworkInvBlockEntity implements MenuProvider, IUpgradeableObject, IGridTickable {
 
+    public boolean energyMode = false;
     private int ticks = 0;
     public EnergyStorage energyStorage = new EnergyStorage(Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 0);
+
+    private final LazyOptional<IEnergyStorage> energyCap = LazyOptional.of(() -> new IEnergyStorage() {
+        @Override public int getEnergyStored() {
+            return energyStorage.getEnergyStored();
+        }
+        @Override public int getMaxEnergyStored() {
+            return energyStorage.getMaxEnergyStored();
+        }
+        @Override public boolean canExtract() {
+            return energyStorage.canExtract();
+        }
+        @Override public int extractEnergy(int maxExtract, boolean simulate) {
+            return energyStorage.extractEnergy(maxExtract, simulate);
+        }
+        @Override public boolean canReceive() {
+            return false;
+        }
+        @Override public int receiveEnergy(int maxReceive, boolean simulate) {
+            return 0;
+        }
+    });
 
     public PenroseValidator validator;
     public AppEngInternalInventory diskInv = new AppEngInternalInventory(this, 1, 1, new IAEItemFilter() {
@@ -94,6 +122,12 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
         super.loadTag(data);
         this.config.readFromChildTag(data, "config");
         this.inputInv.readFromNBT(data, "inputinv");
+        if (data.contains("mode")){
+            this.energyMode = data.getBoolean("mode");
+        }
+        if (data.contains("energy")){
+            this.energyStorage = new EnergyStorage(Integer.MAX_VALUE, 0, Integer.MAX_VALUE, data.getInt("energy"));
+        }
     }
 
     @Override
@@ -101,8 +135,9 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
         super.saveAdditional(data);
         this.config.writeToChildTag(data, "config");
         this.inputInv.writeToNBT(data, "inputinv");
+        data.putBoolean("mode", this.energyMode);
+        data.putInt("energy", this.energyStorage.getEnergyStored());
     }
-
 
     public static long energyGenerated(int count) {
         final int MAX_COUNT   = 32768;
@@ -157,7 +192,11 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
             } else if (AEItems.SINGULARITY.isSameAs(((AEItemKey) config.getStack(0).what()).toStack())){
                 generated *= 64;
             }
-            this.energyStorage = new EnergyStorage(Integer.MAX_VALUE, 0, Integer.MAX_VALUE, (int) Math.min(((long)Integer.MAX_VALUE), ((long)this.energyStorage.getEnergyStored()) + generated));
+            if (!energyMode){
+                this.energyStorage = new EnergyStorage(Integer.MAX_VALUE, 0, Integer.MAX_VALUE, (int) Math.min(((long)Integer.MAX_VALUE), ((long)this.energyStorage.getEnergyStored()) + generated));
+            } else {
+                grid.getEnergyService().injectPower((double) generated / 2, Actionable.MODULATE);
+            }
         }
         return TickRateModulation.IDLE;
     }
@@ -168,6 +207,21 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
+    public void onChangeInventory(InternalInventory inv, int slot) {}
+
+    @Override
+    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
+        if (cap == ForgeCapabilities.ENERGY) {
+            return energyCap.cast();
+        }
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
+        if (cap == ForgeCapabilities.ENERGY) {
+            return energyCap.cast();
+        }
+        return super.getCapability(cap);
     }
 }

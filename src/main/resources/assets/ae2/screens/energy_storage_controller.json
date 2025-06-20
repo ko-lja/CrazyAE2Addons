@@ -1,0 +1,26 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/blank_background.png",
+    "srcRect": [0, 0, 176, 205]
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "block.crazyae2addons.energy_storage_controller"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "energy": {
+      "position": {
+        "top": 60,
+        "left": 88
+      },
+      "align": "CENTER"
+    }
+  }
+}

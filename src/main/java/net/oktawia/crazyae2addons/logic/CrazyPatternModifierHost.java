@@ -10,8 +10,11 @@ import net.minecraft.world.item.ItemStack;
 import net.oktawia.crazyae2addons.menus.CrazyPatternModifierMenu;
 import org.jetbrains.annotations.Nullable;
 
-public class CrazyPatternModifierHost extends ItemMenuHost implements InternalInventoryHost {
+import java.util.ArrayDeque;
+import java.util.Deque;
 
+public class CrazyPatternModifierHost extends ItemMenuHost implements InternalInventoryHost {
+    public Deque<Integer> lastFiveCirc = new ArrayDeque<>();
     public final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
     private CrazyPatternModifierMenu menu;
 
@@ -21,13 +24,30 @@ public class CrazyPatternModifierHost extends ItemMenuHost implements InternalIn
         CompoundTag itemTag = this.getItemStack().getTag();
         if (itemTag != null) {
             this.inv.readFromNBT(itemTag, "inv");
+            for (int i = 0; i < itemTag.getInt("circHistorySize"); i++) {
+                lastFiveCirc.add(itemTag.getInt("circHistory_" + i));
+            }
         }
+    }
+
+    public Deque<Integer> getLastFiveCirc() {
+        return lastFiveCirc;
+    }
+
+    public void setLastFiveCirc(Deque<Integer> circ){
+        this.lastFiveCirc = circ;
     }
 
     @Override
     public void saveChanges() {
         CompoundTag itemTag = this.getItemStack().getOrCreateTag();
         this.inv.writeToNBT(itemTag, "inv");
+        itemTag.putInt("circHistorySize", lastFiveCirc.size());
+        int i = 0;
+        for (int val : lastFiveCirc) {
+            itemTag.putInt("circHistory_" + i, val);
+            i++;
+        }
     }
 
     @Override

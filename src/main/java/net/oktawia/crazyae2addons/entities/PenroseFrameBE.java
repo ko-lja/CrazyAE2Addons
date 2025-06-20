@@ -60,4 +60,12 @@ public class PenroseFrameBE extends AENetworkBlockEntity {
         }
         return super.getCapability(cap, side);
     }
+
+    @Override
+    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
+        if (cap == ForgeCapabilities.ENERGY) {
+            return energyCap.cast();
+        }
+        return super.getCapability(cap);
+    }
 }

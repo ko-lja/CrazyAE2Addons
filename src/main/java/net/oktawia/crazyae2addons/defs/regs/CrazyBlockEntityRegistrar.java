@@ -96,6 +96,9 @@ public class CrazyBlockEntityRegistrar {
     public static final RegistryObject<BlockEntityType<CrazyPatternProviderBE>> CRAZY_PATTERN_PROVIDER_BE =
             reg("crazy_pattern_provider_be", CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK, CrazyPatternProviderBE::new, CrazyPatternProviderBE.class);
 
+    public static final RegistryObject<BlockEntityType<EnergyStorageControllerBE>> ENERGY_STORAGE_CONTROLLER_BE =
+            reg("energy_storage_controller_be", CrazyBlockRegistrar.ENERGY_STORAGE_CONTROLLER_BLOCK, EnergyStorageControllerBE::new, EnergyStorageControllerBE.class);
+
     public static final RegistryObject<BlockEntityType<? extends AmpereMeterBE>> AMPERE_METER_BE =
             BLOCK_ENTITIES.register("ampere_meter_be", () -> {
                 var blk = CrazyBlockRegistrar.AMPERE_METER_BLOCK.get();

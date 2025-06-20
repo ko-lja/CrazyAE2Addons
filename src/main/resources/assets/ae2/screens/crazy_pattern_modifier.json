@@ -25,14 +25,14 @@
     "info1": {
       "position": {
         "left": 88,
-        "top": 20
+        "top": 24
       },
       "align": "CENTER"
     },
     "info2": {
       "position": {
         "left": 88,
-        "top": 65
+        "top": 62
       },
       "align": "CENTER"
     }
@@ -46,13 +46,43 @@
     },
     "circ": {
       "left": 63,
-      "top": 87,
+      "top": 72,
       "width": 30,
       "height": 16
     },
     "confirmcirc": {
       "left": 98,
-      "top": 85,
+      "top": 72,
+      "width": 16,
+      "height": 16
+    },
+    "button1": {
+      "left": 44,
+      "top": 90,
+      "width": 16,
+      "height": 16
+    },
+    "button2": {
+      "left": 62,
+      "top": 90,
+      "width": 16,
+      "height": 16
+    },
+    "button3": {
+      "left": 80,
+      "top": 90,
+      "width": 16,
+      "height": 16
+    },
+    "button4": {
+      "left": 98,
+      "top": 90,
+      "width": 16,
+      "height": 16
+    },
+    "button5": {
+      "left": 116,
+      "top": 90,
       "width": 16,
       "height": 16
     }

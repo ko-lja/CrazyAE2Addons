@@ -18,6 +18,7 @@
     "MixinPatternProviderLogic",
     "MixinPatternProviderMenu",
     "MixinPatternProviderTargetCache",
+    "P2PTunnelPartAccessor",
     "PatternProviderMenuAccessor",
     "PatternProviderTargetCacheAccessor",
     "SlotAccessor"

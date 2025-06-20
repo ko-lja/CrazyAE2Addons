@@ -200,6 +200,10 @@ public class CrazyItemRegistrar {
             ITEMS.register("crazy_calculator",
                     () -> new CrazyCalculatorItem(new Item.Properties()));
 
+    public static final RegistryObject<CrazyPatternProviderPartItem> CRAZY_PATTERN_PROVIDER_PART =
+            ITEMS.register("crazy_pattern_provider_part",
+                    () -> new CrazyPatternProviderPartItem(new Item.Properties()));
+
     public static final RegistryObject<RedstoneEmitterPartItem> REDSTONE_EMITTER =
             ITEMS.register("redstone_emitter",
                     () -> new RedstoneEmitterPartItem(new Item.Properties()));
@@ -220,10 +224,17 @@ public class CrazyItemRegistrar {
             ITEMS.register("extracting_fe_p2p_tunnel",
                     () -> new ExtractingFEP2PTunnelPartItem(new Item.Properties()));
 
-    public static final RegistryObject<CrazyPatternProviderPartItem> CRAZY_PATTERN_PROVIDER_PART =
-            ITEMS.register("crazy_pattern_provider_part",
-                    () -> new CrazyPatternProviderPartItem(new Item.Properties()));
+    public static final RegistryObject<ExtractingItemP2PTunnelPartItem> EXTRACTING_ITEM_P2P_TUNNEL =
+            ITEMS.register("extracting_item_p2p_tunnel",
+                    () -> new ExtractingItemP2PTunnelPartItem(new Item.Properties()));
 
+    public static final RegistryObject<ExtractingFluidP2PTunnelPartItem> EXTRACTING_FLUID_P2P_TUNNEL =
+            ITEMS.register("extracting_fluid_p2p_tunnel",
+                    () -> new ExtractingFluidP2PTunnelPartItem(new Item.Properties()));
+
+    public static final RegistryObject<WormHoleP2PTunnelPartItem> WORMHOLE_P2P_TUNNEL =
+            ITEMS.register("wormhole_tunnel",
+                    () -> new WormHoleP2PTunnelPartItem(new Item.Properties()));
 
     private CrazyItemRegistrar() {}
 

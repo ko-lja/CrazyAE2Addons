@@ -270,6 +270,135 @@ public class BlockDefs {
                         "P", AEItems.ENGINEERING_PROCESSOR.asItem()
                 )
         );
+
+        block(
+                CrazyBlockRegistrar.ENERGY_STORAGE_FRAME_BLOCK.get(),
+                "FMF/MEM/FMF",
+                () -> Map.of(
+                        "F", AEItems.FLUIX_CRYSTAL.asItem(),
+                        "M", AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem(),
+                        "E", AEBlocks.ENERGY_CELL.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.ENERGY_STORAGE_CONTROLLER_BLOCK.get(),
+                "FFF/FNF/FFF",
+                () -> Map.of(
+                        "F", CrazyBlockRegistrar.ENERGY_STORAGE_FRAME_BLOCK.get().asItem(),
+                        "N", Items.NETHER_STAR
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.ENERGY_STORAGE_1K_BLOCK.get(),
+                "CMC/MKM/CSC",
+                () -> Map.of(
+                        "C", AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem(),
+                        "M", AEItems.MATTER_BALL.asItem(),
+                        "S", AEItems.SINGULARITY.asItem(),
+                        "K", AEItems.CELL_COMPONENT_1K.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.ENERGY_STORAGE_4K_BLOCK.get(),
+                "CMC/MKM/CSC",
+                () -> Map.of(
+                        "C", AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem(),
+                        "M", AEItems.MATTER_BALL.asItem(),
+                        "S", AEItems.SINGULARITY.asItem(),
+                        "K", AEItems.CELL_COMPONENT_4K.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.ENERGY_STORAGE_16K_BLOCK.get(),
+                "CMC/MKM/CSC",
+                () -> Map.of(
+                        "C", AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem(),
+                        "M", AEItems.MATTER_BALL.asItem(),
+                        "S", AEItems.SINGULARITY.asItem(),
+                        "K", AEItems.CELL_COMPONENT_16K.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.ENERGY_STORAGE_64K_BLOCK.get(),
+                "CMC/MKM/CSC",
+                () -> Map.of(
+                        "C", AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem(),
+                        "M", AEItems.MATTER_BALL.asItem(),
+                        "S", AEItems.SINGULARITY.asItem(),
+                        "K", AEItems.CELL_COMPONENT_64K.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.ENERGY_STORAGE_256K_BLOCK.get(),
+                "CMC/MKM/CSC",
+                () -> Map.of(
+                        "C", AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem(),
+                        "M", AEItems.MATTER_BALL.asItem(),
+                        "S", AEItems.SINGULARITY.asItem(),
+                        "K", AEItems.CELL_COMPONENT_256K.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.DENSE_ENERGY_STORAGE_1K_BLOCK.get(),
+                "CMC/MKM/CSC",
+                () -> Map.of(
+                        "C", AEItems.FLUIX_CRYSTAL.asItem(),
+                        "M", AEItems.SINGULARITY.asItem(),
+                        "S", CrazyItemRegistrar.SUPER_SINGULARITY.get().asItem(),
+                        "K", CrazyBlockRegistrar.ENERGY_STORAGE_1K_BLOCK.get().asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.DENSE_ENERGY_STORAGE_4K_BLOCK.get(),
+                "CMC/MKM/CSC",
+                () -> Map.of(
+                        "C", AEItems.FLUIX_CRYSTAL.asItem(),
+                        "M", AEItems.SINGULARITY.asItem(),
+                        "S", CrazyItemRegistrar.SUPER_SINGULARITY.get().asItem(),
+                        "K", CrazyBlockRegistrar.ENERGY_STORAGE_4K_BLOCK.get().asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.DENSE_ENERGY_STORAGE_16K_BLOCK.get(),
+                "CMC/MKM/CSC",
+                () -> Map.of(
+                        "C", AEItems.FLUIX_CRYSTAL.asItem(),
+                        "M", AEItems.SINGULARITY.asItem(),
+                        "S", CrazyItemRegistrar.SUPER_SINGULARITY.get().asItem(),
+                        "K", CrazyBlockRegistrar.ENERGY_STORAGE_16K_BLOCK.get().asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.DENSE_ENERGY_STORAGE_64K_BLOCK.get(),
+                "CMC/MKM/CSC",
+                () -> Map.of(
+                        "C", AEItems.FLUIX_CRYSTAL.asItem(),
+                        "M", AEItems.SINGULARITY.asItem(),
+                        "S", CrazyItemRegistrar.SUPER_SINGULARITY.get().asItem(),
+                        "K", CrazyBlockRegistrar.ENERGY_STORAGE_64K_BLOCK.get().asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.DENSE_ENERGY_STORAGE_256K_BLOCK.get(),
+                "CMC/MKM/CSC",
+                () -> Map.of(
+                        "C", AEItems.FLUIX_CRYSTAL.asItem(),
+                        "M", AEItems.SINGULARITY.asItem(),
+                        "S", CrazyItemRegistrar.SUPER_SINGULARITY.get().asItem(),
+                        "K", CrazyBlockRegistrar.ENERGY_STORAGE_256K_BLOCK.get().asItem()
+                )
+        );
     }
 
 }

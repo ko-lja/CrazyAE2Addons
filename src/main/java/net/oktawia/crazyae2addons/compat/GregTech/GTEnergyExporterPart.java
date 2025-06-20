@@ -70,7 +70,7 @@ public class GTEnergyExporterPart extends EnergyExporterPart {
             double stored = energyService.getStoredPower();
             double maxStored = energyService.getMaxStoredPower();
 
-            double minAllowed = maxStored * 0.33;
+            double minAllowed = stored < 1_000_000_000 ? maxStored * 0.33 : 1_000_000_000;
 
             if (this.greg) {
                 neighbor.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, getSide().getOpposite()).ifPresent(gtStorage -> {

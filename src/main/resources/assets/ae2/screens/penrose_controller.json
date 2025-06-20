@@ -77,6 +77,12 @@
       "top": 48,
       "width": 16,
       "height": 16
+    },
+    "energy": {
+      "left": 32,
+      "top": 84,
+      "width": 16,
+      "height": 16
     }
   }
 }

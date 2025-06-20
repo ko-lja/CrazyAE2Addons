@@ -437,10 +437,44 @@ public class ItemDefs {
 
         item(
                 CrazyItemRegistrar.EXTRACTING_FE_P2P_TUNNEL.get(),
-                "FE",
+                "FEA",
                 Map.of(
                         "F", AEParts.FE_P2P_TUNNEL.asItem(),
-                        "E", Items.DIAMOND
+                        "E", AEParts.IMPORT_BUS.asItem(),
+                        "A", AEItems.SPEED_CARD.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.EXTRACTING_ITEM_P2P_TUNNEL.get(),
+                "FEA",
+                Map.of(
+                        "F", AEParts.ITEM_P2P_TUNNEL.asItem(),
+                        "E", AEParts.IMPORT_BUS.asItem(),
+                        "A", AEItems.SPEED_CARD.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.EXTRACTING_FLUID_P2P_TUNNEL.get(),
+                "FEA",
+                Map.of(
+                        "F", AEParts.FLUID_P2P_TUNNEL.asItem(),
+                        "E", AEParts.IMPORT_BUS.asItem(),
+                        "A", AEItems.SPEED_CARD.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.WORMHOLE_P2P_TUNNEL.get(),
+                "IAI/BNC/IDI",
+                Map.of(
+                        "A", AEParts.ITEM_P2P_TUNNEL.asItem(),
+                        "B", AEParts.FLUID_P2P_TUNNEL.asItem(),
+                        "C", AEParts.FE_P2P_TUNNEL.asItem(),
+                        "D", AEParts.ME_P2P_TUNNEL.asItem(),
+                        "N", Items.NETHER_STAR,
+                        "I", Items.DIAMOND
                 )
         );
 

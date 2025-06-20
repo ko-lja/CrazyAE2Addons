@@ -156,7 +156,7 @@ public class EnergyExporterPart extends UpgradeablePart implements
 
     @Override
     protected int getUpgradeSlots() {
-        return 4;
+        return 6;
     }
 
     @Override
@@ -227,7 +227,8 @@ public class EnergyExporterPart extends UpgradeablePart implements
                 double availablePower = getGridNode().getGrid().getEnergyService().getStoredPower();
                 double maxPower = getGridNode().getGrid().getEnergyService().getMaxStoredPower();
 
-                if (((availablePower - requiredAEPower) * 100 / maxPower) > 33) {
+                double threshold = availablePower < 1_000_000_000 ? maxPower * 0.33 : 1_000_000_000;
+                if (availablePower > threshold) {
                     double extractedSim = getGridNode().getGrid().getEnergyService().extractAEPower(requiredAEPower, Actionable.SIMULATE, PowerMultiplier.CONFIG);
                     if (extractedSim >= requiredAEPower) {
                         double extracted = getGridNode().getGrid().getEnergyService().extractAEPower(requiredAEPower, Actionable.MODULATE, PowerMultiplier.CONFIG);

@@ -1,6 +1,8 @@
 package net.oktawia.crazyae2addons.parts;
 
 import appeng.api.config.PowerUnits;
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -10,9 +12,19 @@ import appeng.api.parts.IPartModel;
 import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
+import appeng.me.service.P2PService;
 import appeng.parts.p2p.CapabilityP2PTunnelPart;
 import appeng.parts.p2p.P2PModels;
+import appeng.util.Platform;
+import appeng.util.SettingsFrom;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.oktawia.crazyae2addons.mixins.P2PTunnelPartAccessor;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 public class ExtractingFEP2PTunnelPart extends CapabilityP2PTunnelPart<ExtractingFEP2PTunnelPart, IEnergyStorage> implements IGridTickable {
@@ -97,6 +109,73 @@ public class ExtractingFEP2PTunnelPart extends CapabilityP2PTunnelPart<Extractin
     @PartModels
     public static List<IPartModel> getModels() {
         return MODELS.getModels();
+    }
+
+    @Override
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+        if (isClientSide()) {
+            return true;
+        }
+
+        if (hand == InteractionHand.OFF_HAND) {
+            return false;
+        }
+
+        var is = player.getItemInHand(hand);
+
+        if (!is.isEmpty() && is.getItem() instanceof IMemoryCard mc) {
+            var configData = mc.getData(is);
+            if (configData.contains("p2pType") || configData.contains("p2pFreq") || !configData.contains("extractingFE")) {
+                mc.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
+                return false;
+            } else {
+                this.importSettings(SettingsFrom.MEMORY_CARD, configData, player);
+                mc.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        if (input.contains("myFreq")) {
+            var freq = input.getShort("myFreq");
+
+            ((P2PTunnelPartAccessor)this).setOutput(true);
+            var grid = getMainNode().getGrid();
+            if (grid != null) {
+                P2PService.get(grid).updateFreq(this, freq);
+            } else {
+                setFrequency(freq);
+                onTunnelNetworkChange();
+            }
+        }
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            if (!output.getAllKeys().isEmpty()) {
+                var iterator = output.getAllKeys().iterator();
+                while (iterator.hasNext()){
+                    iterator.next();
+                    iterator.remove();
+                }
+            };
+            output.putString("myType", IPartItem.getId(getPartItem()).toString());
+            output.putBoolean("extractingFE", true);
+
+            if (getFrequency() != 0) {
+                output.putShort("myFreq", getFrequency());
+
+                var colors = Platform.p2p().toColors(getFrequency());
+                var colorCode = new int[] { colors[0].ordinal(), colors[0].ordinal(), colors[1].ordinal(),
+                        colors[1].ordinal(), colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(),
+                        colors[3].ordinal(), };
+                output.putIntArray(IMemoryCard.NBT_COLOR_CODE, colorCode);
+            }
+        }
     }
 
     public ExtractingFEP2PTunnelPart(IPartItem<?> partItem) {
