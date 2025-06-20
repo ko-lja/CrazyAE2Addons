@@ -236,6 +236,10 @@ public class CrazyItemRegistrar {
             ITEMS.register("wormhole_tunnel",
                     () -> new WormHoleP2PTunnelPartItem(new Item.Properties()));
 
+    public static final RegistryObject<EnergyInterfacePartItem> ENERGY_INTERFACE_PART =
+            ITEMS.register("energy_interface",
+                    () -> new EnergyInterfacePartItem(new Item.Properties()));
+
     private CrazyItemRegistrar() {}
 
 }

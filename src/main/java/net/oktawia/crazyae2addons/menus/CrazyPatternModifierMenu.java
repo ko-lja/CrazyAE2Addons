@@ -106,9 +106,9 @@ public class CrazyPatternModifierMenu extends AEBaseMenu {
                 if (recordHistory) {
                     Deque<Integer> history = getLastFiveCirc();
                     history.remove(val);
-                    history.addLast(val);
+                    history.addFirst(val);
                     while (history.size() > 5) {
-                        history.removeFirst();
+                        history.removeLast();
                     }
 
                     Integer[] arr = history.toArray(new Integer[0]);

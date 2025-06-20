@@ -4,7 +4,6 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
-import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -14,15 +13,12 @@ import net.oktawia.crazyae2addons.menus.CrazyPatternModifierMenu;
 import net.oktawia.crazyae2addons.misc.IconButton;
 import net.minecraft.client.gui.components.Button;
 
-import java.util.ArrayList;
-
-
 public class CrazyPatternModifierScreen<C extends CrazyPatternModifierMenu> extends AEBaseScreen<C> {
 
     public IconButton nbt;
     public IconButton circConfirm;
     public AETextField circ;
-    public final IconButton[] historyButtons = new IconButton[5];
+    public final Button[] historyButtons = new Button[5];
 
     public CrazyPatternModifierScreen(CrazyPatternModifierMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super((C) menu, playerInventory, title, style);
@@ -43,7 +39,7 @@ public class CrazyPatternModifierScreen<C extends CrazyPatternModifierMenu> exte
 
         for (int i = 0; i < 5; i++) {
             int index = i;
-            historyButtons[i] = new IconButton(Icon.CRAFT_HAMMER, btn -> applyHistoryValue(index));
+            historyButtons[i] = Button.builder(Component.literal("-"), btn -> applyHistoryValue(index)).bounds(0, 0, 30, 20).build();
             this.widgets.add("button" + (i + 1), historyButtons[i]);
         }
     }
@@ -83,12 +79,14 @@ public class CrazyPatternModifierScreen<C extends CrazyPatternModifierMenu> exte
 
         for (int i = 0; i < historyButtons.length; i++) {
             int val = history[i];
-            IconButton btn = historyButtons[i];
+            Button btn = historyButtons[i];
             if (val != -1) {
                 btn.active = true;
-                btn.setTooltip(Tooltip.create(Component.literal(String.format("Circuit %s", val))));
+                btn.setMessage(Component.literal(String.valueOf(val)));
+                btn.setTooltip(Tooltip.create(Component.literal("Circuit " + val)));
             } else {
                 btn.active = false;
+                btn.setMessage(Component.literal("-"));
                 btn.setTooltip(Tooltip.create(Component.empty()));
             }
         }

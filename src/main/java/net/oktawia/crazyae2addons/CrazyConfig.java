@@ -21,6 +21,7 @@ public class CrazyConfig {
         public final ForgeConfigSpec.BooleanValue enableEntityTicker;
         public final ForgeConfigSpec.IntValue EntityTickerCost;
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> EntityTickerBlackList;
+        public final ForgeConfigSpec.BooleanValue NestedP2PWormhole;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Crazy AE2 Addons - Config").push("general");
@@ -48,6 +49,10 @@ public class CrazyConfig {
                         List.of(),
                         o -> o instanceof String
                     );
+
+            NestedP2PWormhole = builder
+                    .comment("If it should be possible to route p2p tunnels through a wormhole tunnel")
+                            .define("nestedP2Pwormhole", false);
 
             builder.pop();
         }

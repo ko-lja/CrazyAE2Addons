@@ -44,6 +44,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.misc.CombinedEnergyStorage;
 import net.oktawia.crazyae2addons.misc.CombinedFluidHandlerItem;
 import net.oktawia.crazyae2addons.misc.FluidHandlerConcatenate;
@@ -65,16 +66,23 @@ public class WormholeP2PTunnelPart extends P2PTunnelPart<WormholeP2PTunnelPart> 
     private ConnectionUpdate pendingUpdate = ConnectionUpdate.NONE;
     private final Map<WormholeP2PTunnelPart, IGridConnection> connections = new IdentityHashMap<>();
 
-    private final IManagedGridNode outerNode = GridHelper
+    private final IManagedGridNode outerNode = CrazyConfig.COMMON.NestedP2PWormhole.get() ?
+            GridHelper
             .createManagedNode(this, NodeListener.INSTANCE)
             .setTagName("outer")
             .setInWorldNode(true)
-            .setFlags(GridFlags.DENSE_CAPACITY);
+            .setFlags(GridFlags.DENSE_CAPACITY)
+            :
+            GridHelper
+                    .createManagedNode(this, NodeListener.INSTANCE)
+            .setTagName("outer")
+            .setInWorldNode(true)
+            .setFlags(GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED);
 
     public WormholeP2PTunnelPart(IPartItem<?> partItem) {
         super(partItem);
         this.getMainNode()
-                .setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.DENSE_CAPACITY)
+                .setFlags(GridFlags.REQUIRE_CHANNEL, CrazyConfig.COMMON.NestedP2PWormhole.get() ? GridFlags.DENSE_CAPACITY : GridFlags.COMPRESSED_CHANNEL)
                 .addService(IGridTickable.class, this);
     }
 
@@ -83,11 +91,9 @@ public class WormholeP2PTunnelPart extends P2PTunnelPart<WormholeP2PTunnelPart> 
         var state = getLevel().getBlockState(targetPos);
         var block = state.getBlock();
 
-        if (block != null) {
-            Direction inputSide = block instanceof RedStoneWireBlock ? Direction.UP : getSide();
-            int newPower = block.getSignal(state, getLevel(), targetPos, inputSide);
-            sendRedstoneToOutput(newPower);
-        }
+        Direction inputSide = block instanceof RedStoneWireBlock ? Direction.UP : getSide();
+        int newPower = block.getSignal(state, getLevel(), targetPos, inputSide);
+        sendRedstoneToOutput(newPower);
     }
 
     private void sendRedstoneToOutput(int power) {
