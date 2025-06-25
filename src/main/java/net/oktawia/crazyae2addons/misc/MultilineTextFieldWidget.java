@@ -22,7 +22,7 @@ import static net.minecraft.client.gui.screens.Screen.hasShiftDown;
 @OnlyIn(Dist.CLIENT)
 public class MultilineTextFieldWidget extends AbstractWidget {
 
-    public static final int DEFAULT_MAX_LENGTH = 32_767;
+    public static final int DEFAULT_MAX_LENGTH = Integer.MAX_VALUE;
 
     private final Font font;
     private record Tok(String s, int col) {}

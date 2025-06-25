@@ -9,6 +9,7 @@ import net.oktawia.crazyae2addons.CrazyAddons;
 import java.util.Optional;
 
 public class NetworkHandler {
+    static int id = 0;
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(CrazyAddons.MODID, "main"),
@@ -18,7 +19,6 @@ public class NetworkHandler {
     );
 
     public static void registerClientPackets(){
-        int id = 0;
         INSTANCE.registerMessage(
                 id++,
                 DisplayValuePacket.class,
@@ -51,8 +51,23 @@ public class NetworkHandler {
                 SyncBlockClientPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
+        INSTANCE.registerMessage(
+                id++,
+                SendLongStringToClientPacket.class,
+                SendLongStringToClientPacket::encode,
+                SendLongStringToClientPacket::decode,
+                SendLongStringToClientPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
     }
 
     public static void registerServerPackets() {
+        INSTANCE.registerMessage(id++,
+                SendLongStringToServerPacket.class,
+                SendLongStringToServerPacket::encode,
+                SendLongStringToServerPacket::decode,
+                SendLongStringToServerPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_SERVER)
+        );
     }
 }

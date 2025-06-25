@@ -23,12 +23,12 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
     private static AETextField delay;
     private int lastScroll = -1;
     public static boolean initialized;
+    private String program = "";
 
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
         if (!initialized) {
-            input.setValue(getMenu().program);
             delay.setValue(String.valueOf(getMenu().delay));
             initialized = true;
         }
@@ -47,6 +47,7 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
         this.widgets.add("scroll", scrollbar);
         this.widgets.add("delay", delay);
         initialized = false;
+        getMenu().requestData();
     }
 
     @Override
@@ -126,5 +127,10 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
             return true;
         }
         return super.charTyped(codePoint, modifiers);
+    }
+
+    public void setProgram(String data) {
+        program += data;
+        input.setValue(program);
     }
 }

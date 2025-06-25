@@ -1,7 +1,9 @@
 package net.oktawia.crazyae2addons.items;
 
+import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.api.stacks.AEItemKey;
 import appeng.items.AEBaseItem;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
@@ -16,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -70,6 +73,8 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
 
                             ResourceLocation blockId = ForgeRegistries.BLOCKS.getKey(state.getBlock());
                             if (blockId == null) continue;
+                            var itemKey = AEItemKey.of(state.getBlock().asItem());
+                            if (itemKey.fuzzyEquals(AEItemKey.of(Blocks.AIR.asItem()), FuzzyMode.IGNORE_ALL)) continue;
 
                             StringBuilder fullId = new StringBuilder(blockId.toString());
 
@@ -98,18 +103,23 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
 
                 StringBuilder header = new StringBuilder();
                 for (Map.Entry<String, Integer> entry : blockMap.entrySet()) {
-                    header.append(entry.getValue()).append("(").append(entry.getKey()).append("),");
+                    header.append(entry.getValue()).append("(").append(entry.getKey()).append("),\n");
                 }
 
-                if (!header.isEmpty()) header.setLength(header.length() - 1);
+                if (!header.isEmpty()) header.setLength(header.length() - 2);
 
-                String finalCode = header + "||" + pattern;
-
-                stack.getOrCreateTag().putString("program", finalCode);
-                ProgramExpander.Result result = ProgramExpander.expand(finalCode);
-                if (result.success) {
-                    stack.getOrCreateTag().putString("code", String.join("/", result.program));
-                    p.displayClientMessage(Component.literal("Saved pattern to NBT, length: " + finalCode.length()), true);
+                String finalCode = header + "\n||\n" + pattern;
+                if (finalCode.length() <= 32767 || true){
+                    stack.getOrCreateTag().putString("program", finalCode);
+                    ProgramExpander.Result result = ProgramExpander.expand(finalCode);
+                    if (result.success) {
+                        stack.getOrCreateTag().putBoolean("code", true);
+                        p.displayClientMessage(Component.literal("Saved pattern to NBT, length: " + finalCode.length()), true);
+                    } else {
+                        p.displayClientMessage(Component.literal("Could not save this structure"), true);
+                    }
+                } else {
+                    p.displayClientMessage(Component.literal("Structure to big"), true);
                 }
 
                 pos1 = null;

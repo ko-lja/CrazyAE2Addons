@@ -5,6 +5,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.networking.crafting.ICraftingLink;
@@ -93,7 +94,13 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
 
     public AutoBuilderBE(BlockPos pos, BlockState state) {
         super(CrazyBlockEntityRegistrar.AUTO_BUILDER_BE.get(), pos, state);
-        getMainNode().addService(IGridTickable.class, this);
+        getMainNode()
+                .addService(IGridTickable.class, this)
+                .setFlags(GridFlags.REQUIRE_CHANNEL)
+                .setIdlePowerUsage(4)
+                .setVisualRepresentation(
+                        new ItemStack(CrazyBlockRegistrar.AUTO_BUILDER_BLOCK.get().asItem())
+                );
         this.inventory.setFilter(new IAEItemFilter() {
             @Override
             public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
@@ -385,7 +392,7 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
                                             for (var drop : drops){
                                                 inserted += StorageHelper.poweredInsert(grid.getEnergyService(), grid.getStorageService().getInventory(), AEItemKey.of(drop.getItem()), 1, IActionSource.ofMachine(this), Actionable.MODULATE);
                                             }
-                                            if (inserted <= 0) return TickRateModulation.IDLE;
+                                            if (inserted <= 0 && !drops.isEmpty()) return TickRateModulation.IDLE;
                                         }
 
                                         var extracted = StorageHelper.poweredExtraction(

@@ -4,15 +4,23 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.PacketDistributor;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.AutoBuilderBE;
 import net.oktawia.crazyae2addons.logic.BuilderPatternHost;
+import net.oktawia.crazyae2addons.network.DataValuesPacket;
+import net.oktawia.crazyae2addons.network.NetworkHandler;
+import net.oktawia.crazyae2addons.network.SendLongStringToClientPacket;
+import net.oktawia.crazyae2addons.network.SendLongStringToServerPacket;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class BuilderPatternMenu extends AEBaseMenu {
     public static final String SEND_DATA = "SendData";
     public static final String SEND_DELAY = "SendDelay";
+    public static final String REQUEST_DATA = "requestData";
 
-    @GuiSync(92)
     public String program;
     public BuilderPatternHost host;
     @GuiSync(93)
@@ -22,17 +30,40 @@ public class BuilderPatternMenu extends AEBaseMenu {
         super(CrazyMenuRegistrar.BUILDER_PATTERN_MENU.get(), id, playerInventory, host);
         registerClientAction(SEND_DATA, String.class, this::updateData);
         registerClientAction(SEND_DELAY, Integer.class, this::updateDelay);
+        registerClientAction(REQUEST_DATA, this::requestData);
         this.host = host;
         this.program = host.getProgram();
         this.delay = host.getDelay();
         this.createPlayerInventorySlots(playerInventory);
     }
 
+    public void requestData(){
+        if (isClientSide()){
+            sendClientAction(REQUEST_DATA);
+        } else {
+            byte[] bytes = program.getBytes(StandardCharsets.UTF_8);
+            int maxSize = 1000 * 1000;
+            int total = (int) Math.ceil((double) bytes.length / maxSize);
+
+            for (int i = 0; i < total; i++) {
+                int start = i * maxSize;
+                int end = Math.min(bytes.length, (i + 1) * maxSize);
+                byte[] part = Arrays.copyOfRange(bytes, start, end);
+                String partString = new String(part, StandardCharsets.UTF_8);
+
+                NetworkHandler.INSTANCE.send(
+                        PacketDistributor.TRACKING_CHUNK.with(() -> getPlayer().level().getChunkAt(getPlayer().blockPosition())),
+                        new SendLongStringToClientPacket(partString)
+                );
+            }
+        }
+    }
+
     public void updateData(String program) {
         this.program = program;
         this.host.setProgram(program);
         if (isClientSide()){
-            sendClientAction(SEND_DATA, program);
+            NetworkHandler.INSTANCE.sendToServer(new SendLongStringToServerPacket(this.program));
         } else {
             this.host.validate();
         }

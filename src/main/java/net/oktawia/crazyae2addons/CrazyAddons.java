@@ -103,6 +103,7 @@ public class CrazyAddons {
             MobKeyType.registerContainerItemStrategies();
             CrazyBlockEntityRegistrar.setupBlockEntityTypes();
             NetworkHandler.registerClientPackets();
+            NetworkHandler.registerServerPackets();
         });
     }
 
