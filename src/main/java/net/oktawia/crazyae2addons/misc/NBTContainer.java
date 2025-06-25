@@ -20,6 +20,10 @@ public class NBTContainer {
         data.put(key, value);
     }
 
+    public Map<String, Object> getData(){
+        return this.data;
+    }
+
     public Object get(String key) {
         return data.get(key);
     }

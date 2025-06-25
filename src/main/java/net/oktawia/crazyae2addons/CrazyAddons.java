@@ -9,6 +9,7 @@ import de.mari_023.ae2wtlib.wut.WUTHandler;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -28,6 +29,7 @@ import net.oktawia.crazyae2addons.menus.WirelessRedstoneTerminalMenu;
 import net.oktawia.crazyae2addons.mobstorage.EntityTypeRenderer;
 import net.oktawia.crazyae2addons.mobstorage.MobKeyType;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
+import net.oktawia.crazyae2addons.renderer.AutoBuilderBERenderer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -120,6 +122,13 @@ public class CrazyAddons {
             try {
                 CrazyItemRegistrar.registerPartModels();
             } catch (Exception ignored) {}
+        }
+        @SubscribeEvent
+        public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+            event.registerBlockEntityRenderer(
+                    CrazyBlockEntityRegistrar.AUTO_BUILDER_BE.get(),
+                    AutoBuilderBERenderer::new
+            );
         }
     }
 }

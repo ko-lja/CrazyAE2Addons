@@ -192,6 +192,36 @@ public final class Screens {
                 EnergyStorageControllerScreen<EnergyStorageControllerMenu>::new,
                 "/screens/energy_storage_controller.json"
         );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.VARIABLE_TERMINAL_MENU.get(),
+                VariableTerminalScreen<VariableTerminalMenu>::new,
+                "/screens/variable_terminal.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.DATA_SETTER_MENU.get(),
+                DataSetterScreen<DataSetterMenu>::new,
+                "/screens/data_setter.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.AUTO_BUILDER_MENU.get(),
+                AutoBuilderScreen<AutoBuilderMenu>::new,
+                "/screens/auto_builder.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.BUILDER_PATTERN_MENU.get(),
+                BuilderPatternScreen<BuilderPatternMenu>::new,
+                "/screens/builder_pattern.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.BROKEN_PATTERN_PROVIDER_MENU.get(),
+                BrokenPatternProviderScreen<BrokenPatternProviderMenu>::new,
+                "/screens/broken_pattern_provider.json"
+        );
     }
 
     private Screens() {}

@@ -258,6 +258,23 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
                 }
             }
         }
+        if (getLevel() == null) return TickRateModulation.IDLE;
+        Iterator<Map.Entry<String, Object>> it = this.toNotify.getData().entrySet().iterator();
+
+        while (it.hasNext()) {
+            Map.Entry<String, Object> entry = it.next();
+            Object raw = entry.getValue();
+
+            if (!(raw instanceof NotificationData data)) {
+                continue;
+            }
+
+            data.requesters.removeIf(bed -> NotificationData.get(bed, getLevel().getServer()) == null);
+
+            if (data.requesters.isEmpty()) {
+                it.remove();
+            }
+        }
         return TickRateModulation.IDLE;
     }
 }

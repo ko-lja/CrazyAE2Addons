@@ -4,7 +4,6 @@ import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
-import appeng.api.storage.MEStorage;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.parts.misc.InterfacePart;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
-import net.oktawia.crazyae2addons.entities.CraftingGuardBE;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderTargetCacheExt;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,7 +32,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Set;
 
@@ -45,16 +42,6 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
     @Unique private Level lvl = null;
     @Unique private IPatternDetails details = null;
     @Shadow @Final private Direction direction;
-    @Unique private CraftingGuardBE guard = null;
-    @Unique private boolean exclusiveMode = false;
-
-    @Unique public void setGuard(CraftingGuardBE guard){
-        this.guard = guard;
-    }
-
-    @Unique public void setExclusiveMode(boolean mode){
-        this.exclusiveMode = mode;
-    }
 
     @Inject(
             method = "<init>(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;Lappeng/api/networking/security/IActionSource;)V",
@@ -66,6 +53,11 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
     }
 
     @Unique
+    public void setDetails(IPatternDetails details){
+        this.details = details;
+    }
+
+    @Unique
     public PatternProviderTarget find(IPatternDetails patternDetails) {
         this.details = patternDetails;
         var original = ((PatternProviderTargetCacheAccessor) this).callFind();
@@ -74,8 +66,6 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
             private final BlockPos pos1 = MixinGT.this.pos;
             private final Level lvl1 = MixinGT.this.lvl;
             private final IPatternDetails details1 = MixinGT.this.details;
-            private final CraftingGuardBE guard1 = MixinGT.this.guard;
-            private final boolean exclusiveMode1 = MixinGT.this.exclusiveMode;
             @Override
             public long insert(AEKey what, long amount, Actionable type) {
                 if (details1 != null){
@@ -86,21 +76,12 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
                         setCirc(c, pos1, lvl1);
                     }
                 }
-                var result = original.insert(what, amount, type);
-                if (this.guard1 != null && result > 0 && this.guard1.getLevel() != null && this.guard1.getLevel().getServer() != null){
-                    this.guard1.excluded.put(this.pos1, this.guard1.getLevel().getServer().getTickCount());
-                }
-                return result;
+                return original.insert(what, amount, type);
             }
 
             @Override
             public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                if (original.containsPatternInput(patternInputs)) return true;
-                var server = this.lvl1.getServer();
-                if (server != null && this.guard1 != null && this.guard1.excluded.get(this.pos1) != null){
-                    return (this.guard1.excluded.get(this.pos1) == server.getTickCount() && this.exclusiveMode1);
-                }
-                return false;
+                return original.containsPatternInput(patternInputs);
             }
         };
     }
@@ -113,17 +94,17 @@ public abstract class MixinGT implements IPatternProviderTargetCacheExt {
         if (!(part instanceof InterfacePart ip)) return;
 
         ip.getGridNode().getGrid()
-                .getMachines(StorageBusPart.class)
-                .forEach(bus -> {
-                    if (bus.isUpgradedWith(CrazyItemRegistrar.CIRCUIT_UPGRADE_CARD_ITEM.get())) {
-                        BlockEntity busBe = bus.getBlockEntity();
-                        if (busBe == null) return;
+            .getMachines(StorageBusPart.class)
+            .forEach(bus -> {
+                if (bus.isUpgradedWith(CrazyItemRegistrar.CIRCUIT_UPGRADE_CARD_ITEM.get())) {
+                    BlockEntity busBe = bus.getBlockEntity();
+                    if (busBe == null) return;
 
-                        Level busLevel = busBe.getLevel();
-                        BlockPos targetPos = busBe.getBlockPos().relative(bus.getSide());
-                        setCirc(circuit, targetPos, busLevel);
-                    }
-                });
+                    Level busLevel = busBe.getLevel();
+                    BlockPos targetPos = busBe.getBlockPos().relative(bus.getSide());
+                    setCirc(circuit, targetPos, busLevel);
+                }
+            });
     }
 
     @Unique

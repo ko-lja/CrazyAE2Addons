@@ -12,19 +12,19 @@
     "MixinCraftingCpuLogic",
     "MixinFilterSlot",
     "MixinGT",
-    "MixinGTMAE2",
     "MixinListCraftingInventory",
     "MixinMAE2",
+    "MixinMAE22",
+    "MixinMAE23",
     "MixinPatternProviderLogic",
-    "MixinPatternProviderMenu",
     "MixinPatternProviderTargetCache",
     "P2PTunnelPartAccessor",
+    "PatternProviderBlockEntityAccessor",
     "PatternProviderMenuAccessor",
     "PatternProviderTargetCacheAccessor",
     "SlotAccessor"
   ],
   "client": [
-    "AEBaseScreenInvoker",
-    "MixinPatternProviderScreen"
+    "AEBaseScreenInvoker"
   ]
 }

@@ -142,10 +142,6 @@ public class CrazyItemRegistrar {
             ITEMS.register("entity_ticker",
                     () -> new EntityTickerPartItem(new Item.Properties()));
 
-    public static final RegistryObject<RightClickProviderPartItem> RIGHT_CLICK_PROVIDER_PART_ITEM =
-            ITEMS.register("right_click_provider",
-                    () -> new RightClickProviderPartItem(new Item.Properties()));
-
     public static final RegistryObject<CrazyPatternModifierItem> CRAZY_PATTERN_MODIFIER_ITEM =
             ITEMS.register("crazy_pattern_modifier",
                     () -> new CrazyPatternModifierItem(new Item.Properties()));
@@ -200,10 +196,6 @@ public class CrazyItemRegistrar {
             ITEMS.register("crazy_calculator",
                     () -> new CrazyCalculatorItem(new Item.Properties()));
 
-    public static final RegistryObject<CrazyPatternProviderPartItem> CRAZY_PATTERN_PROVIDER_PART =
-            ITEMS.register("crazy_pattern_provider_part",
-                    () -> new CrazyPatternProviderPartItem(new Item.Properties()));
-
     public static final RegistryObject<RedstoneEmitterPartItem> REDSTONE_EMITTER =
             ITEMS.register("redstone_emitter",
                     () -> new RedstoneEmitterPartItem(new Item.Properties()));
@@ -215,6 +207,10 @@ public class CrazyItemRegistrar {
     public static final RegistryObject<WirelessRedstoneTerminal> WIRELESS_REDSTONE_TERMINAL =
             ITEMS.register("wireless_redstone_terminal",
                     WirelessRedstoneTerminal::new);
+
+    public static final RegistryObject<VariableTerminalPartItem> VARIABLE_TERMINAL =
+            ITEMS.register("variable_terminal",
+                    () -> new VariableTerminalPartItem(new Item.Properties()));
 
     public static final RegistryObject<SuperSingularityItem> SUPER_SINGULARITY =
             ITEMS.register("super_singularity",
@@ -239,6 +235,14 @@ public class CrazyItemRegistrar {
     public static final RegistryObject<EnergyInterfacePartItem> ENERGY_INTERFACE_PART =
             ITEMS.register("energy_interface",
                     () -> new EnergyInterfacePartItem(new Item.Properties()));
+
+    public static final RegistryObject<BuilderPatternItem> BUILDER_PATTERN =
+            ITEMS.register("builder_pattern",
+                    () -> new BuilderPatternItem(new Item.Properties()));
+
+    public static final RegistryObject<CrazyUpgradeItem> CRAZY_UPGRADE =
+            ITEMS.register("crazy_upgrade",
+                    () -> new CrazyUpgradeItem(new Item.Properties()));
 
     private CrazyItemRegistrar() {}
 

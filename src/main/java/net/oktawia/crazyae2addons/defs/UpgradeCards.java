@@ -13,7 +13,6 @@ public class UpgradeCards {
         event.enqueueWork(() -> {
             Upgrades.add(AEItems.SPEED_CARD, CrazyItemRegistrar.ENTITY_TICKER_PART_ITEM.get(), 8, "group.entity_ticker.name");
             Upgrades.add(AEItems.SPEED_CARD, CrazyItemRegistrar.ENERGY_EXPORTER_PART_ITEM.get(), 6, "group.energy_exporter.name");
-            Upgrades.add(AEItems.SPEED_CARD, CrazyItemRegistrar.RIGHT_CLICK_PROVIDER_PART_ITEM.get(), 4, "group.right_click_provider.name");
             Upgrades.add(AEItems.REDSTONE_CARD, CrazyBlockRegistrar.SIGNALLING_INTERFACE_BLOCK_ITEM.get(), 1, "group.signalling_interface.name");
             Upgrades.add(AEItems.FUZZY_CARD, CrazyBlockRegistrar.SIGNALLING_INTERFACE_BLOCK_ITEM.get(), 1, "group.signalling_interface.name");
             Upgrades.add(AEItems.INVERTER_CARD, CrazyBlockRegistrar.SIGNALLING_INTERFACE_BLOCK_ITEM.get(), 1, "group.signalling_interface.name");
@@ -27,6 +26,8 @@ public class UpgradeCards {
             Upgrades.add(CrazyItemRegistrar.EXPERIENCE_UPGRADE_CARD.get(), CrazyBlockRegistrar.MOB_FARM_CONTROLLER.get(), 4, "group.mob_farm_controller.name");
             Upgrades.add(AEItems.VOID_CARD, CrazyItemRegistrar.NBT_STORAGE_BUS_PART_ITEM.get(), 1, "group.nbt_storage_bus.name");
             Upgrades.add(AEItems.ENERGY_CARD, CrazyItemRegistrar.WIRELESS_REDSTONE_TERMINAL.get(), 1, "group.wireless_redstone_terminal.name");
+            Upgrades.add(AEItems.SPEED_CARD, CrazyBlockRegistrar.AUTO_BUILDER_BLOCK.get(), 6, "group.auto_builder.name");
+            Upgrades.add(AEItems.CRAFTING_CARD, CrazyBlockRegistrar.AUTO_BUILDER_BLOCK.get(), 1, "group.auto_builder.name");
             Upgrades.add(AE2wtlib.QUANTUM_BRIDGE_CARD, CrazyItemRegistrar.WIRELESS_REDSTONE_TERMINAL.get(), 1, "group.wireless_redstone_terminal.name");
         });
     }

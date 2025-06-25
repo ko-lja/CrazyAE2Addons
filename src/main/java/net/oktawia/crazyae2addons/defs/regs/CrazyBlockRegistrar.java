@@ -9,6 +9,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.blocks.*;
 import net.oktawia.crazyae2addons.items.*;
+import net.oktawia.crazyae2addons.menus.BrokenPatternProviderMenu;
 import net.oktawia.crazyae2addons.menus.EnergyStorageControllerMenu;
 
 import java.util.List;
@@ -147,13 +148,6 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("mob_farm_input",
                     () -> new EjectorBlockItem(MOB_FARM_INPUT.get(), new Item.Properties()));
 
-    public static final RegistryObject<CraftingGuardBlock> CRAFTING_GUARD_BLOCK =
-            BLOCKS.register("crafting_guard", CraftingGuardBlock::new);
-
-    public static final RegistryObject<BlockItem> CRAFTING_GUARD_BLOCK_ITEM =
-            BLOCK_ITEMS.register("crafting_guard",
-                    () -> new CraftingGuardBlockItem(CRAFTING_GUARD_BLOCK.get(), new Item.Properties()));
-
     public static final RegistryObject<CraftingSchedulerBlock> CRAFTING_SCHEDULER_BLOCK =
             BLOCKS.register("crafting_scheduler", CraftingSchedulerBlock::new);
 
@@ -279,6 +273,28 @@ public class CrazyBlockRegistrar {
     public static final RegistryObject<BlockItem> DENSE_ENERGY_STORAGE_256K_BLOCK_ITEM =
             BLOCK_ITEMS.register("dense_energy_storage_256k",
                     () -> new DenseEnergyStorage256kBlockItem(DENSE_ENERGY_STORAGE_256K_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<AutoBuilderBlock> AUTO_BUILDER_BLOCK =
+            BLOCKS.register("auto_builder", AutoBuilderBlock::new);
+
+    public static final RegistryObject<BlockItem> AUTO_BUILDER_BLOCK_ITEM =
+            BLOCK_ITEMS.register("auto_builder",
+                    () -> new AutoBuilderBlockItem(AUTO_BUILDER_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<DataSetterBlock> DATA_SETTER_BLOCK =
+            BLOCKS.register("data_setter", DataSetterBlock::new);
+
+    public static final RegistryObject<BlockItem> DATA_SETTER_BLOCK_ITEM =
+            BLOCK_ITEMS.register("data_setter",
+                    () -> new DataSetterBlockItem(DATA_SETTER_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<BrokenPatternProviderBlock> BROKEN_PATTERN_PROVIDER_BLOCK =
+            BLOCKS.register("broken_pattern_provider", BrokenPatternProviderBlock::new);
+
+    public static final RegistryObject<BlockItem> BROKEN_PATTERN_PROVIDER_BLOCK_ITEM =
+            BLOCK_ITEMS.register("broken_pattern_provider",
+                    () -> new BrokenPatternProviderBlockItem(BROKEN_PATTERN_PROVIDER_BLOCK.get(), new Item.Properties()));
+
 
     private CrazyBlockRegistrar() {}
 }

@@ -43,6 +43,14 @@ public class NetworkHandler {
                 UpdatePatternsPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
+        INSTANCE.registerMessage(
+                id++,
+                SyncBlockClientPacket.class,
+                SyncBlockClientPacket::encode,
+                SyncBlockClientPacket::decode,
+                SyncBlockClientPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
     }
 
     public static void registerServerPackets() {

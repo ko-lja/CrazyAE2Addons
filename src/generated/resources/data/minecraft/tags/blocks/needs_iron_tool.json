@@ -17,7 +17,6 @@
     "crazyae2addons:mob_farm_collector",
     "crazyae2addons:mob_farm_damage",
     "crazyae2addons:mob_farm_input",
-    "crazyae2addons:crafting_guard",
     "crazyae2addons:crafting_scheduler",
     "crazyae2addons:reinforced_matter_condenser",
     "crazyae2addons:penrose_frame",
@@ -35,6 +34,9 @@
     "crazyae2addons:dense_energy_storage_4k",
     "crazyae2addons:dense_energy_storage_16k",
     "crazyae2addons:dense_energy_storage_64k",
-    "crazyae2addons:dense_energy_storage_256k"
+    "crazyae2addons:dense_energy_storage_256k",
+    "crazyae2addons:auto_builder",
+    "crazyae2addons:data_setter",
+    "crazyae2addons:broken_pattern_provider"
   ]
 }

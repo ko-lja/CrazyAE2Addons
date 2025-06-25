@@ -173,7 +173,7 @@ public class ItemDefs {
             CrazyItemRegistrar.DISPLAY_MONITOR_PART_ITEM.get(),
             "TL",
             Map.of(
-                "T", AEParts.MONITOR.asItem(),
+                "T", AEParts.SEMI_DARK_MONITOR.asItem(),
                 "L", CrazyItemRegistrar.LOGIC_CARD.get()
             )
         );
@@ -212,17 +212,6 @@ public class ItemDefs {
                 "D", Items.DIAMOND,
                 "N", Items.NETHER_STAR,
                 "E", CrazyItemRegistrar.ENERGY_EXPORTER_PART_ITEM.get()
-            )
-        );
-
-        item(
-            CrazyItemRegistrar.RIGHT_CLICK_PROVIDER_PART_ITEM.get(),
-            "ED/TP",
-            Map.of(
-                "E", AEParts.EXPORT_BUS.asItem(),
-                "D", Items.DIAMOND,
-                "T", Items.NAME_TAG,
-                "P", AEItems.ENGINEERING_PROCESSOR.asItem()
             )
         );
 
@@ -494,6 +483,42 @@ public class ItemDefs {
                 Map.of(
                         "R", Items.REDSTONE,
                         "T", AEParts.TERMINAL.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.ENERGY_INTERFACE_PART.get(),
+                "TR",
+                Map.of(
+                        "R", CrazyItemRegistrar.ENERGY_EXPORTER_PART_ITEM.get(),
+                        "T", AEBlocks.INTERFACE.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.CRAZY_UPGRADE.get(),
+                "PPP/PDP/PPP",
+                Map.of(
+                        "P", AEBlocks.PATTERN_PROVIDER.asItem(),
+                        "D", Items.DIAMOND.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.BUILDER_PATTERN.get(),
+                "PE",
+                Map.of(
+                        "P", AEItems.BLANK_PATTERN.asItem(),
+                        "E", Items.EMERALD.asItem()
+                )
+        );
+
+        item(
+                CrazyItemRegistrar.VARIABLE_TERMINAL.get(),
+                "RL",
+                Map.of(
+                        "R", CrazyItemRegistrar.REDSTONE_TERMINAL.get().asItem(),
+                        "L", CrazyItemRegistrar.LOGIC_CARD.get().asItem()
                 )
         );
     }

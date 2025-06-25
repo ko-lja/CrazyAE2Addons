@@ -202,16 +202,6 @@ public class BlockDefs {
         );
 
         block(
-                CrazyBlockRegistrar.CRAFTING_GUARD_BLOCK.get(),
-                "PEL",
-                () -> Map.of(
-                        "P", AEBlocks.PATTERN_PROVIDER.asItem(),
-                        "E", AEItems.ENGINEERING_PROCESSOR.asItem(),
-                        "L", AEItems.LOGIC_PROCESSOR.asItem()
-                )
-        );
-
-        block(
                 CrazyBlockRegistrar.CRAFTING_SCHEDULER_BLOCK.get(),
                 "PRE",
                 () -> Map.of(
@@ -397,6 +387,27 @@ public class BlockDefs {
                         "M", AEItems.SINGULARITY.asItem(),
                         "S", CrazyItemRegistrar.SUPER_SINGULARITY.get().asItem(),
                         "K", CrazyBlockRegistrar.ENERGY_STORAGE_256K_BLOCK.get().asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.AUTO_BUILDER_BLOCK.get(),
+                "EPE/BRN/EPE",
+                () -> Map.of(
+                        "E", Items.EMERALD.asItem(),
+                        "P", CrazyItemRegistrar.BUILDER_PATTERN.get().asItem(),
+                        "B", AEParts.IMPORT_BUS.asItem(),
+                        "R", AEBlocks.PATTERN_PROVIDER.asItem(),
+                        "N", AEParts.EXPORT_BUS.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.DATA_SETTER_BLOCK.get(),
+                "TL",
+                () -> Map.of(
+                        "T", CrazyBlockRegistrar.DATA_TRACKER_BLOCK.get().asItem(),
+                        "L", Items.REDSTONE_TORCH.asItem()
                 )
         );
     }

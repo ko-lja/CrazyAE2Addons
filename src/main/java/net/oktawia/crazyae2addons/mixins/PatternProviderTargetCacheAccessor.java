@@ -13,12 +13,8 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Pseudo
 @Mixin(targets = "appeng.helpers.patternprovider.PatternProviderTargetCache")
 public interface PatternProviderTargetCacheAccessor {
-    @Accessor("src")
-    IActionSource getSrc();
     @Invoker("find")
     PatternProviderTarget callFind();
-    @Accessor("cache")
-    BlockApiCache<MEStorage> getCache();
     @Accessor("direction")
     Direction getDirection();
 }

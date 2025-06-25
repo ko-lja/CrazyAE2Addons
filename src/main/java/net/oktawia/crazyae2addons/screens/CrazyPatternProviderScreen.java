@@ -21,23 +21,25 @@ public class CrazyPatternProviderScreen<C extends CrazyPatternProviderMenu> exte
     public CrazyPatternProviderScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
         scrollbar = new Scrollbar();
-        scrollbar.setRange(0, 5, 1);
+        scrollbar.setRange(0, (getMenu().slotNum / 9) - 4, 1);
         this.widgets.add("scrollbar", scrollbar);
     }
 
     public void updateBeforeRender() {
         super.updateBeforeRender();
 
+        this.setTextContent("patterninfo", Component.literal(String.format("Capacity: %s patterns", getMenu().slotNum)));
+
         int scrollOffset = this.scrollbar.getCurrentScroll();
         if (scrollOffset != lastOffset){
-            for (int i = 0; i < 81; i++) {
+            for (int i = 0; i < getMenu().slotNum; i++) {
                 int row = i / 9;
                 int col = i % 9;
 
                 int x = 8 + col * 18;
                 int y = 42 + (row - scrollOffset) * 18;
 
-                Slot s = this.menu.getSlots(appeng.menu.SlotSemantics.ENCODED_PATTERN).get(i);
+                Slot s = getMenu().getSlots(appeng.menu.SlotSemantics.ENCODED_PATTERN).get(i);
                 if (!(s instanceof AppEngSlot slot)) return;
                 SlotAccessor accessor = (SlotAccessor) slot;
 
@@ -55,7 +57,7 @@ public class CrazyPatternProviderScreen<C extends CrazyPatternProviderMenu> exte
     }
 
     public void updatePatternsFromServer(List<ItemStack> stacks) {
-        List<Slot> slots = this.menu.getSlots(SlotSemantics.ENCODED_PATTERN);
+        List<Slot> slots = getMenu().getSlots(SlotSemantics.ENCODED_PATTERN);
 
         for (int i = 0; i < stacks.size(); i++) {
             Slot s = slots.get(i);

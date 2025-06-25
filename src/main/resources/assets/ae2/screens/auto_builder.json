@@ -1,0 +1,34 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/auto_builder.png",
+    "srcRect": [0, 0, 176, 205]
+  },
+  "slots": {
+    "ENCODED_PATTERN": {
+      "left": 80,
+      "top": 62,
+      "grid": "HORIZONTAL"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "block.crazyae2addons.auto_builder"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "info1": {
+      "text": "Builder Pattern",
+      "position": {
+        "left": 88,
+        "top": 50
+      },
+      "align": "CENTER"
+    }
+  }
+}

@@ -75,9 +75,6 @@ public class CrazyBlockEntityRegistrar {
     public static final RegistryObject<BlockEntityType<MobFarmWallBE>> MOB_FARM_WALL_BE =
             reg("mob_farm_wall_be", CrazyBlockRegistrar.MOB_FARM_WALL, MobFarmWallBE::new, MobFarmWallBE.class);
 
-    public static final RegistryObject<BlockEntityType<CraftingGuardBE>> CRAFTING_GUARD_BE =
-            reg("crafting_guard_be", CrazyBlockRegistrar.CRAFTING_GUARD_BLOCK, CraftingGuardBE::new, CraftingGuardBE.class);
-
     public static final RegistryObject<BlockEntityType<CraftingSchedulerBE>> CRAFTING_SHEDULER_BE =
             reg("crafting_scheduler_be", CrazyBlockRegistrar.CRAFTING_SCHEDULER_BLOCK, CraftingSchedulerBE::new, CraftingSchedulerBE.class);
 
@@ -98,6 +95,15 @@ public class CrazyBlockEntityRegistrar {
 
     public static final RegistryObject<BlockEntityType<EnergyStorageControllerBE>> ENERGY_STORAGE_CONTROLLER_BE =
             reg("energy_storage_controller_be", CrazyBlockRegistrar.ENERGY_STORAGE_CONTROLLER_BLOCK, EnergyStorageControllerBE::new, EnergyStorageControllerBE.class);
+
+    public static final RegistryObject<BlockEntityType<AutoBuilderBE>> AUTO_BUILDER_BE =
+            reg("auto_builder_be", CrazyBlockRegistrar.AUTO_BUILDER_BLOCK, AutoBuilderBE::new, AutoBuilderBE.class);
+
+    public static final RegistryObject<BlockEntityType<DataSetterBE>> DATA_SETTER_BE =
+            reg("data_setter_be", CrazyBlockRegistrar.DATA_SETTER_BLOCK, DataSetterBE::new, DataSetterBE.class);
+
+    public static final RegistryObject<BlockEntityType<BrokenPatternProviderBE>> BROKEN_PATTERN_PROVIDER_BE =
+            reg("broken_pattern_provider_be", CrazyBlockRegistrar.BROKEN_PATTERN_PROVIDER_BLOCK, BrokenPatternProviderBE::new, BrokenPatternProviderBE.class);
 
     public static final RegistryObject<BlockEntityType<? extends AmpereMeterBE>> AMPERE_METER_BE =
             BLOCK_ENTITIES.register("ampere_meter_be", () -> {

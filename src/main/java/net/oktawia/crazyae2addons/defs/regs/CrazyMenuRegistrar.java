@@ -4,6 +4,7 @@ import appeng.core.AppEng;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.implementations.PatternProviderMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
@@ -159,6 +160,21 @@ public class CrazyMenuRegistrar {
 
     public static final RegistryObject<MenuType<EnergyStorageControllerMenu>> ENERGY_STORAGE_CONTROLLER_MENU =
             reg(id("energy_storage_controller"), EnergyStorageControllerMenu::new, EnergyStorageControllerBE.class);
+
+    public static final RegistryObject<MenuType<VariableTerminalMenu>> VARIABLE_TERMINAL_MENU =
+            reg(id("variable_terminal"), VariableTerminalMenu::new, VariableTerminalPart.class);
+
+    public static final RegistryObject<MenuType<DataSetterMenu>> DATA_SETTER_MENU =
+            reg(id("data_setter"), DataSetterMenu::new, DataSetterBE.class);
+
+    public static final RegistryObject<MenuType<AutoBuilderMenu>> AUTO_BUILDER_MENU =
+            reg(id("auto_builder"), AutoBuilderMenu::new, AutoBuilderBE.class);
+
+    public static final RegistryObject<MenuType<BuilderPatternMenu>> BUILDER_PATTERN_MENU =
+            reg(id("builder_pattern"), BuilderPatternMenu::new, BuilderPatternHost.class);
+
+    public static final RegistryObject<MenuType<BrokenPatternProviderMenu>> BROKEN_PATTERN_PROVIDER_MENU =
+            reg(id("broken_pattern_provider"), BrokenPatternProviderMenu::new, PatternProviderLogicHost.class);
 
     private CrazyMenuRegistrar() {}
 }

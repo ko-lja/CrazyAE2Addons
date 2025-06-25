@@ -175,9 +175,9 @@ dependencies {
     implementation fg.deobf("curse.maven:curios-309927:6418456")
     implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
     implementation fg.deobf("curse.maven:cloth-config-348521:5729105")
+    implementation fg.deobf("curse.maven:guideme-1173950:6489464")
     implementation fg.deobf("curse.maven:jei-238222:6075247")
     implementation fg.deobf("curse.maven:jade-324717:6106101")
-    implementation fg.deobf("curse.maven:guideme-1173950:6489464")
     implementation fg.deobf("curse.maven:mekanism-268560:6552911")
     implementation fg.deobf("curse.maven:mekanism-generators-268566:6552914")
     implementation fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:1.6.4") { transitive = false }

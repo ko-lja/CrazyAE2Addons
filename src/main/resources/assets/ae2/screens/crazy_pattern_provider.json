@@ -27,15 +27,6 @@
         "top": 6
       }
     },
-    "interface_config": {
-      "text": {
-        "translate": "gui.ae2.Patterns"
-      },
-      "position": {
-        "left": 8,
-        "top": 31
-      }
-    },
     "interface_stored_items": {
       "text": {
         "translate": "gui.ae2.ReturnInventory"
@@ -43,6 +34,12 @@
       "position": {
         "left": 8,
         "top": 116
+      }
+    },
+    "patterninfo": {
+      "position": {
+        "left": 8,
+        "top": 28
       }
     }
   },
