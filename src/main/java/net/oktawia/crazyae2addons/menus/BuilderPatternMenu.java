@@ -32,9 +32,11 @@ public class BuilderPatternMenu extends AEBaseMenu {
         registerClientAction(SEND_DELAY, Integer.class, this::updateDelay);
         registerClientAction(REQUEST_DATA, this::requestData);
         this.host = host;
-        this.program = host.getProgram();
         this.delay = host.getDelay();
         this.createPlayerInventorySlots(playerInventory);
+        if (!isClientSide()){
+            this.program = host.getProgram();
+        }
     }
 
     public void requestData(){
@@ -61,22 +63,20 @@ public class BuilderPatternMenu extends AEBaseMenu {
 
     public void updateData(String program) {
         this.program = program;
-        this.host.setProgram(program);
         if (isClientSide()){
             NetworkHandler.INSTANCE.sendToServer(new SendLongStringToServerPacket(this.program));
         } else {
-            this.host.validate();
+            this.host.setProgram(program);
         }
     }
 
     public void updateDelay(Integer delay) {
         if (delay < 0) delay = 0;
         this.delay = delay;
-        this.host.setDelay(delay);
         if (isClientSide()){
             sendClientAction(SEND_DELAY, delay);
         } else {
-            this.host.validate();
+            this.host.setDelay(delay);
         }
     }
 }

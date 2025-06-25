@@ -8,9 +8,12 @@ import appeng.items.AEBaseItem;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -21,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.BuilderPatternHost;
@@ -28,8 +32,13 @@ import net.oktawia.crazyae2addons.misc.ProgramExpander;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
     private BlockPos pos1 = null;
@@ -109,17 +118,19 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
                 if (!header.isEmpty()) header.setLength(header.length() - 2);
 
                 String finalCode = header + "\n||\n" + pattern;
-                if (finalCode.length() <= 32767 || true){
-                    stack.getOrCreateTag().putString("program", finalCode);
-                    ProgramExpander.Result result = ProgramExpander.expand(finalCode);
-                    if (result.success) {
-                        stack.getOrCreateTag().putBoolean("code", true);
-                        p.displayClientMessage(Component.literal("Saved pattern to NBT, length: " + finalCode.length()), true);
-                    } else {
-                        p.displayClientMessage(Component.literal("Could not save this structure"), true);
-                    }
+
+                ProgramExpander.Result result = ProgramExpander.expand(finalCode);
+                if (result.success) {
+                    String programId = UUID.randomUUID().toString();
+                    stack.getOrCreateTag().putBoolean("code", true);
+                    stack.getOrCreateTag().putString("program_id", programId);
+                    stack.getOrCreateTag().putInt("delay", 0);
+
+                    saveProgramToFile(programId, finalCode, p.getServer());
+
+                    p.displayClientMessage(Component.literal("Saved pattern to file, length: " + finalCode.length()), true);
                 } else {
-                    p.displayClientMessage(Component.literal("Structure to big"), true);
+                    p.displayClientMessage(Component.literal("Could not save this structure"), true);
                 }
 
                 pos1 = null;
@@ -129,6 +140,19 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
         }
         return new InteractionResultHolder<>(
                 InteractionResult.sidedSuccess(level.isClientSide()), p.getItemInHand(hand));
+    }
+
+    public static void saveProgramToFile(String id, String code, MinecraftServer server) {
+        Path file = server.getWorldPath(new LevelResource("serverdata"))
+                .resolve("autobuilder")
+                .resolve(id);
+
+        try {
+            Files.createDirectories(file.getParent());
+            Files.writeString(file, code, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            LogUtils.getLogger().info(e.toString());
+        }
     }
 
     private String moveCursor(BlockPos from, BlockPos to) {

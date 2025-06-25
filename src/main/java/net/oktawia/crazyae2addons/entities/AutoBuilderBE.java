@@ -40,6 +40,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -55,9 +56,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -73,6 +73,10 @@ import net.oktawia.crazyae2addons.misc.ProgramExpander;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.Future;
 
@@ -91,6 +95,7 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
     public List<ICraftingLink> craftingLinks = new ArrayList<>();
     private boolean isCrafting = false;
     private List<GenericStack> toCraft = new ArrayList<>();
+    private final boolean DEBUG = false;
 
     public AutoBuilderBE(BlockPos pos, BlockState state) {
         super(CrazyBlockEntityRegistrar.AUTO_BUILDER_BE.get(), pos, state);
@@ -401,7 +406,7 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
                                                 AEItemKey.of(block.asItem()),
                                                 1, IActionSource.ofMachine(this), Actionable.MODULATE);
 
-                                        if (extracted > 0) {
+                                        if (extracted > 0 || this.DEBUG) {
                                             BlockState state = block.defaultBlockState();
                                             if (!props.isEmpty()) {
                                                 for (Map.Entry<String, String> entry : props.entrySet()) {
@@ -534,6 +539,22 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
         }
     }
 
+    public static String loadProgramFromFile(ItemStack stack, MinecraftServer server) {
+        if (!stack.hasTag() || !stack.getTag().contains("program_id")) return "";
+
+        String id = stack.getTag().getString("program_id");
+        Path file = server.getWorldPath(new LevelResource("serverdata"))
+                .resolve("autobuilder")
+                .resolve(id);
+
+        try {
+            return Files.readString(file, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            LogUtils.getLogger().info(e.toString());
+            return "";
+        }
+    }
+
     public void onRedstoneActivate(@Nullable GenericStack additional) {
         if (getLevel() == null) return;
         if (inventory.getStackInSlot(0).isEmpty() && !inventory.getStackInSlot(1).isEmpty()) {
@@ -544,7 +565,7 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
             var tag = inventory.getStackInSlot(0).getOrCreateTag();
             if (tag.contains("code")){
                 if (tag.getBoolean("code")){
-                    var program = ProgramExpander.expand(tag.getString("program"));
+                    var program = ProgramExpander.expand(loadProgramFromFile(inventory.getStackInSlot(0), getLevel().getServer()));
                     if (program.success){
                         code = program.program;
                     }
@@ -557,9 +578,11 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
         if (this.code.isEmpty()) return;
 
         checkBlocksInStorage(ProgramExpander.countUsedBlocks(String.join("/", this.code)), additional);
-        if (!this.toCraft.isEmpty() && isUpgradedWith(AEItems.CRAFTING_CARD)){
-            scheduleCrafts();
-            isCrafting = true;
+        if (!this.toCraft.isEmpty() && !this.DEBUG){
+            if (isUpgradedWith(AEItems.CRAFTING_CARD)){
+                scheduleCrafts();
+                isCrafting = true;
+            }
         } else {
             this.isCrafting = false;
             this.isRunning = true;
