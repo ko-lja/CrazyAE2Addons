@@ -17,7 +17,7 @@ public class BuilderPatternHost extends ItemMenuHost {
 
     private String program = "";
     private boolean code;
-    private int delay = 20;
+    private int delay = 0;
 
     public BuilderPatternHost(Player player, @Nullable Integer slot, ItemStack itemStack) {
         super(player, slot, itemStack);

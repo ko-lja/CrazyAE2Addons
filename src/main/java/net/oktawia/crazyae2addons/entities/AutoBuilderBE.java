@@ -326,8 +326,8 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
                         double dy = getGhostRenderPos().getY() - worldPosition.getY();
                         double dz = getGhostRenderPos().getZ() - worldPosition.getZ();
                         double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                        var power = grid.getEnergyService().extractAEPower(Math.pow(distance, 2), Actionable.MODULATE, PowerMultiplier.ONE);
-                        if (power >= Math.pow(distance, 2)){
+                        var power = grid.getEnergyService().extractAEPower(Math.pow(distance, 3) / 25, Actionable.MODULATE, PowerMultiplier.ONE);
+                        if (power >= Math.pow(distance, 3) / 25){
                             if (isBreakable(level.getBlockState(getGhostRenderPos()), level, getGhostRenderPos())) {
                                 var drops = getSilkTouchDrops(level.getBlockState(getGhostRenderPos()), (ServerLevel) level, getGhostRenderPos());
                                 long inserted = 0;
@@ -377,8 +377,8 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
                                     double dy = getGhostRenderPos().getY() - worldPosition.getY();
                                     double dz = getGhostRenderPos().getZ() - worldPosition.getZ();
                                     double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                                    var power = grid.getEnergyService().extractAEPower(Math.pow(distance, 2), Actionable.MODULATE, PowerMultiplier.ONE);
-                                    if (power >= Math.pow(distance, 2)){
+                                    var power = grid.getEnergyService().extractAEPower(Math.pow(distance, 3) / 25, Actionable.MODULATE, PowerMultiplier.ONE);
+                                    if (power >= Math.pow(distance, 3) / 25){
                                         if (isBreakable(level.getBlockState(getGhostRenderPos()), level, getGhostRenderPos())) {
                                             var drops = getSilkTouchDrops(level.getBlockState(getGhostRenderPos()), (ServerLevel) level, getGhostRenderPos());
                                             long inserted = 0;
