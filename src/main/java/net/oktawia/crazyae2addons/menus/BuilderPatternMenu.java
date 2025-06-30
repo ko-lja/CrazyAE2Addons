@@ -2,6 +2,7 @@ package net.oktawia.crazyae2addons.menus;
 
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.PacketDistributor;
@@ -20,18 +21,23 @@ public class BuilderPatternMenu extends AEBaseMenu {
     public static final String SEND_DATA = "SendData";
     public static final String SEND_DELAY = "SendDelay";
     public static final String REQUEST_DATA = "requestData";
+    public static final String RENAME = "renameAction";
 
     public String program;
     public BuilderPatternHost host;
     @GuiSync(93)
     public Integer delay;
+    @GuiSync(239)
+    public String name;
 
     public BuilderPatternMenu(int id, Inventory playerInventory, BuilderPatternHost host) {
         super(CrazyMenuRegistrar.BUILDER_PATTERN_MENU.get(), id, playerInventory, host);
         registerClientAction(SEND_DATA, String.class, this::updateData);
         registerClientAction(SEND_DELAY, Integer.class, this::updateDelay);
         registerClientAction(REQUEST_DATA, this::requestData);
+        registerClientAction(RENAME, String.class, this::rename);
         this.host = host;
+        this.name = host.getItemStack().getDisplayName().getString().substring(1, host.getItemStack().getDisplayName().getString().length()-1);
         this.delay = host.getDelay();
         this.createPlayerInventorySlots(playerInventory);
         if (!isClientSide()){
@@ -77,6 +83,15 @@ public class BuilderPatternMenu extends AEBaseMenu {
             sendClientAction(SEND_DELAY, delay);
         } else {
             this.host.setDelay(delay);
+        }
+    }
+
+    public void rename(String name) {
+        this.name = name;
+        if (isClientSide()){
+            sendClientAction(RENAME, name);
+        } else {
+            host.getItemStack().setHoverName(Component.literal(name));
         }
     }
 }

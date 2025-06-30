@@ -59,6 +59,14 @@ public class NetworkHandler {
                 SendLongStringToClientPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
+        INSTANCE.registerMessage(
+                id++,
+                ClipboardPacket.class,
+                ClipboardPacket::encode,
+                ClipboardPacket::decode,
+                ClipboardPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
     }
 
     public static void registerServerPackets() {

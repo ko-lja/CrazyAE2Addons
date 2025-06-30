@@ -1,7 +1,6 @@
 package net.oktawia.crazyae2addons.mixins;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
@@ -14,7 +13,6 @@ import appeng.api.stacks.KeyCounter;
 import appeng.crafting.execution.*;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.interfaces.IIgnoreNBT;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderCpu;
 import org.spongepowered.asm.mixin.*;
@@ -85,5 +83,4 @@ public abstract class MixinCraftingCpuLogic {
         }
         return false;
     }
-
 }

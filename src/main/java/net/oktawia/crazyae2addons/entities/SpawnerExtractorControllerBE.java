@@ -56,6 +56,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.IsModLoaded;
@@ -63,18 +65,42 @@ import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.SpawnerExtractorControllerMenu;
+import net.oktawia.crazyae2addons.misc.SpawnerExtractorPreviewRenderer;
 import net.oktawia.crazyae2addons.misc.SpawnerExtractorValidator;
 import net.oktawia.crazyae2addons.mobstorage.MobKey;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Set;
 
 public class SpawnerExtractorControllerBE extends AENetworkBlockEntity implements MenuProvider, IUpgradeableObject, IGridTickable {
 
     public IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER.get(), 4, this::saveChanges);
     public SpawnerExtractorValidator validator;
     public boolean spawnerDissabled = false;
+    @OnlyIn(Dist.CLIENT)
+    public boolean preview = false;
+
+    @OnlyIn(Dist.CLIENT)
+    public List<SpawnerExtractorPreviewRenderer.CachedBlockInfo> ghostCache = null;
+
+    @OnlyIn(Dist.CLIENT)
+    public static final Set<SpawnerExtractorControllerBE> CLIENT_INSTANCES = new java.util.HashSet<>();
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level != null && level.isClientSide) {
+            CLIENT_INSTANCES.add(this);
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        CLIENT_INSTANCES.remove(this);
+    }
 
     public SpawnerExtractorControllerBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.SPAWNER_EXTRACTOR_CONTROLLER_BE.get(), pos, blockState);
@@ -198,10 +224,10 @@ public class SpawnerExtractorControllerBE extends AENetworkBlockEntity implement
 
     public static BlockPos getSpawnerPos(Direction facing) {
         return switch (facing.getOpposite()) {
-            case NORTH -> new BlockPos(0, 2, -2);
-            case SOUTH -> new BlockPos(0, 2, 2);
-            case WEST  -> new BlockPos(-2, 2, 0);
-            case EAST  -> new BlockPos(2, 2, 0);
+            case NORTH -> new BlockPos(0, 2, -3);
+            case SOUTH -> new BlockPos(0, 2, 3);
+            case WEST  -> new BlockPos(-3, 2, 0);
+            case EAST  -> new BlockPos(3, 2, 0);
             default -> BlockPos.ZERO;
         };
     }
@@ -211,7 +237,7 @@ public class SpawnerExtractorControllerBE extends AENetworkBlockEntity implement
         if (!CrazyConfig.COMMON.enablePeacefullSpawner.get() && getLevel().getDifficulty() == Difficulty.PEACEFUL) return TickRateModulation.IDLE;
         BlockPos spawnerPos = getBlockPos().offset(getSpawnerPos(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)));
         var spawner = getLevel().getBlockEntity(spawnerPos);
-        if (!validator.matchesStructure(getLevel(), getBlockPos(), getBlockState())){
+        if (!validator.matchesStructure(getLevel(), getBlockPos(), getBlockState(), this)){
             if (spawnerDissabled){
                 this.enableSpawner(getLevel(), spawnerPos);
                 spawnerDissabled = false;

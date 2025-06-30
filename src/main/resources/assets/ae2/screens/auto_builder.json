@@ -7,7 +7,7 @@
   },
   "slots": {
     "ENCODED_PATTERN": {
-      "left": 80,
+      "left": 120,
       "top": 62,
       "grid": "HORIZONTAL"
     }
@@ -23,12 +23,89 @@
       }
     },
     "info1": {
-      "text": "Builder Pattern",
+      "text": "Pattern",
       "position": {
-        "left": 88,
+        "left": 128,
         "top": 50
       },
       "align": "CENTER"
+    },
+    "info2": {
+      "text": "Offset",
+      "position": {
+        "left": 44,
+        "top": 50
+      },
+      "align": "CENTER"
+    },
+    "missing": {
+      "position": {
+        "left": 88,
+        "top": 30
+      },
+      "align": "CENTER"
+    }
+  },
+  "widgets": {
+    "skipmissing": {
+      "left": 121,
+      "top": 80,
+      "width": 35,
+      "height": 16
+    },
+    "n": {
+      "left": 10,
+      "top": 62,
+      "width": 16,
+      "height": 16
+    },
+    "xl": {
+      "left": 6,
+      "top": 80,
+      "width": 24,
+      "height": 16
+    },
+    "s": {
+      "left": 10,
+      "top": 94,
+      "width": 16,
+      "height": 16
+    },
+    "u": {
+      "left": 36,
+      "top": 62,
+      "width": 16,
+      "height": 16
+    },
+    "yl": {
+      "left": 32,
+      "top": 80,
+      "width": 24,
+      "height": 16
+    },
+    "d": {
+      "left": 36,
+      "top": 94,
+      "width": 16,
+      "height": 16
+    },
+    "e": {
+      "left": 62,
+      "top": 62,
+      "width": 16,
+      "height": 16
+    },
+    "zl": {
+      "left": 58,
+      "top": 80,
+      "width": 24,
+      "height": 16
+    },
+    "w": {
+      "left": 62,
+      "top": 94,
+      "width": 16,
+      "height": 16
     }
   }
 }

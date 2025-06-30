@@ -113,12 +113,12 @@ public class WirelessRedstoneTerminalScreen<C extends WirelessRedstoneTerminalMe
 
     private void refreshEmitters() {
         List<RedstoneTerminalMenu.EmitterInfo> emitters = getEmitters();
-
         for (int i = 0; i < EMITTERS_PER_PAGE; i++) {
             int index = currentPage * EMITTERS_PER_PAGE + i;
             Button toggle = toggleButtons.get(i);
             IconButton state = stateIcons.get(i);
 
+            if (emitters == null) return;
             if (index < emitters.size()) {
                 RedstoneTerminalMenu.EmitterInfo emitter = emitters.get(index);
                 Component name = Component.literal(emitter.name());

@@ -65,6 +65,10 @@ public class CrazyItemRegistrar {
         }
     }
 
+    public static final RegistryObject<StructurePatternCopyItem> DEBUG_STRUCTURE_COPY_THING =
+            ITEMS.register("debug_structure_copy_thingy",
+                    () -> new StructurePatternCopyItem(new Item.Properties()));
+
     public static final RegistryObject<LogicCard> LOGIC_CARD = regCard(
             "logic_card", () -> new LogicCard(new Item.Properties()));
 

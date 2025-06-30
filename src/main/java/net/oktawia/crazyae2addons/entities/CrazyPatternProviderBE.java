@@ -14,6 +14,8 @@ import appeng.util.inv.AppEngInternalInventory;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -28,6 +30,7 @@ import net.oktawia.crazyae2addons.network.SyncBlockClientPacket;
 
 public class CrazyPatternProviderBE extends PatternProviderBlockEntity {
     private int added = 0;
+    private CompoundTag nbt;
 
     public CrazyPatternProviderBE(BlockPos pos, BlockState blockState) {
         this(pos, blockState, 9*8);
@@ -77,6 +80,8 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity {
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
         data.putInt("added", added);
+        getLogic().writeToNBT(data);
+        ((AppEngInternalInventory)getLogic().getPatternInv()).writeToNBT(data, "dainv");
     }
 
     @Override
@@ -85,6 +90,8 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity {
         if (this.getLogic().getPatternInv().size() != 8 * 9 + 9 * added){
             var be = refreshLogic(added);
             be.added = added;
+            be.getLogic().readFromNBT(this.nbt);
+            ((AppEngInternalInventory)(be.getLogic().getPatternInv())).readFromNBT(this.nbt, "dainv");
         }
     }
 
@@ -92,6 +99,7 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity {
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
         added = data.getInt("added");
+        this.nbt = data;
     }
 
     public void setAdded(int amt){

@@ -69,9 +69,28 @@ public class EnergyInterfacePart extends AEBasePart {
         @Override public boolean canExtract() {
             return true;
         }
-        @Override public int extractEnergy(int maxExtract, boolean simulate) {
-            if (getMainNode().getGrid() == null) return 0;
-            return (int) getMainNode().getGrid().getEnergyService().extractAEPower((double) maxExtract /2, simulate ? Actionable.SIMULATE : Actionable.MODULATE, PowerMultiplier.ONE) * 2;
+        @Override
+        public int extractEnergy(int maxExtract, boolean simulate) {
+            var grid = getMainNode().getGrid();
+            if (grid == null) return 0;
+
+            var energyService = grid.getEnergyService();
+            double storedAE = energyService.getStoredPower();
+            double maxAE = energyService.getMaxStoredPower();
+            double minAllowed = Math.min(0.3 * maxAE, 0.5e9);
+
+            double available = storedAE - minAllowed;
+            if (available <= 0) return 0;
+
+            double maxExtractAE = Math.min(available, maxExtract / 2.0);
+
+            double extracted = energyService.extractAEPower(
+                    maxExtractAE,
+                    simulate ? Actionable.SIMULATE : Actionable.MODULATE,
+                    PowerMultiplier.ONE
+            );
+
+            return (int) (extracted * 2);
         }
         @Override public boolean canReceive() {
             return true;

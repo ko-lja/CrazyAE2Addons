@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "crazyae2addons:block/entropy_cradle"
+    },
+    "formed=true": {
+      "model": "crazyae2addons:block/entropy_cradle_formed"
+    }
+  }
+}

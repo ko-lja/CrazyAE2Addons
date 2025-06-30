@@ -2,9 +2,11 @@ package net.oktawia.crazyae2addons.mixins;
 
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
+import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.parts.misc.InterfacePart;
@@ -103,14 +105,25 @@ public abstract class MixinMAE23 implements IPatternProviderTargetCacheExt {
         }
     }
 
+
     @Unique
     private void traverseGridIfInterface(int circuit, BlockPos pos, Level level) {
         BlockEntity be = level.getBlockEntity(pos);
-        if (!(be instanceof CableBusBlockEntity cbbe)) return;
-        var part = cbbe.getPart(this.direction);
-        if (!(part instanceof InterfacePart ip)) return;
 
-        ip.getGridNode().getGrid()
+        IGridNode node = null;
+
+        if (be instanceof CableBusBlockEntity cbbe) {
+            var part = cbbe.getPart(this.direction);
+            if (part instanceof InterfacePart ip) {
+                node = ip.getGridNode();
+            }
+        } else if (be instanceof InterfaceBlockEntity ibe) {
+            node = ibe.getGridNode();
+        }
+
+        if (node == null) return;
+
+        node.getGrid()
                 .getMachines(StorageBusPart.class)
                 .forEach(bus -> {
                     if (bus.isUpgradedWith(CrazyItemRegistrar.CIRCUIT_UPGRADE_CARD_ITEM.get())) {

@@ -21,6 +21,7 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
     private static MultilineTextFieldWidget input;
     private static Scrollbar scrollbar;
     private static AETextField delay;
+    private final AETextField rename;
     private int lastScroll = -1;
     public static boolean initialized;
     private String program = "";
@@ -30,6 +31,7 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
         super.updateBeforeRender();
         if (!initialized) {
             delay.setValue(String.valueOf(getMenu().delay));
+            rename.setValue(getMenu().name);
             initialized = true;
         }
     }
@@ -46,6 +48,14 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
         this.widgets.add("data", input);
         this.widgets.add("scroll", scrollbar);
         this.widgets.add("delay", delay);
+        this.rename = new AETextField(style, Minecraft.getInstance().font, 0, 0, 0, 0);
+        rename.setBordered(false);
+        rename.setPlaceholder(Component.literal("Rename"));
+        rename.setValue(getMenu().name);
+        rename.setResponder(x -> {
+            getMenu().rename(x);
+        });
+        this.widgets.add("rename", rename);
         initialized = false;
         getMenu().requestData();
     }
@@ -87,12 +97,12 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
             try{
                 getMenu().updateDelay(Integer.parseInt(delay.getValue()));
             } catch (Exception ignored) {
-                getMenu().updateDelay(20);
+                getMenu().updateDelay(0);
             }
         });
         confirm.setTooltip(Tooltip.create(Component.literal("Confirm")));
         input = new MultilineTextFieldWidget(
-                font, 0, 0, 120, 100,
+                font, 0, 0, 202, 135,
                 Component.literal("Input program")
         );
         scrollbar = new Scrollbar();

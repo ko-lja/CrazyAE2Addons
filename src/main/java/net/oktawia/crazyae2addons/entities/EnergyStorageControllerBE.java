@@ -13,6 +13,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.me.energy.StoredEnergyAmount;
 import appeng.me.service.EnergyService;
 import appeng.menu.MenuOpener;
@@ -27,27 +28,42 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.EnergyStorageControllerMenu;
+import net.oktawia.crazyae2addons.misc.EnergyStoragePreviewRenderer;
 import net.oktawia.crazyae2addons.misc.EnergyStorageValidator;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+import java.util.Set;
+
 public class EnergyStorageControllerBE extends AENetworkBlockEntity implements MenuProvider, IGridTickable, IAEPowerStorage {
 
+    private boolean replace;
     public EnergyStorageValidator validator;
     public double energy;
     public boolean active;
     public double maxEnergy;
     public EnergyStorageControllerMenu menu;
     public StoredEnergyAmount stored;
+    @OnlyIn(Dist.CLIENT)
+    public List<EnergyStoragePreviewRenderer.CachedBlockInfo> ghostCache = null;
+
+    @OnlyIn(Dist.CLIENT)
+    public boolean preview = false;
+
+    @OnlyIn(Dist.CLIENT)
+    public static final Set<EnergyStorageControllerBE> CLIENT_INSTANCES = new java.util.HashSet<>();
 
     public EnergyStorageControllerBE(BlockPos pos, BlockState blockState){
-        this(pos, blockState, 0, 0, false);
+        this(pos, blockState, 0, 0, false, false);
     }
 
-    public EnergyStorageControllerBE(BlockPos pos, BlockState blockState, double energy, double maxEnergy, boolean active) {
+    public EnergyStorageControllerBE(BlockPos pos, BlockState blockState, double energy, double maxEnergy, boolean active, boolean replace) {
         super(CrazyBlockEntityRegistrar.ENERGY_STORAGE_CONTROLLER_BE.get(), pos, blockState);
         validator = new EnergyStorageValidator();
         this.getMainNode()
@@ -61,12 +77,28 @@ public class EnergyStorageControllerBE extends AENetworkBlockEntity implements M
         this.maxEnergy = maxEnergy;
         this.energy = energy;
         this.active = active;
+        this.replace = replace;
         this.stored = new StoredEnergyAmount(this.active ? this.energy : 0, this.maxEnergy, this::emitPowerEvent);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level != null && level.isClientSide) {
+            CLIENT_INSTANCES.add(this);
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        CLIENT_INSTANCES.remove(this);
     }
 
     @Override
     public void onReady(){
         super.onReady();
+        validator.matchesStructure(getLevel(), getBlockPos(), getBlockState(), this);
         if (this.getMainNode().getGrid() != null){
             ((EnergyService) this.getMainNode().getGrid().getService(IEnergyService.class)).addNode(this.getGridNode(), null);
             emitPowerEvent(GridPowerStorageStateChanged.PowerEventType.PROVIDE_POWER);
@@ -82,13 +114,13 @@ public class EnergyStorageControllerBE extends AENetworkBlockEntity implements M
     @Override
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
-        if (data.contains("energy")) {
-            this.energy = data.getDouble("energy");
-            this.stored.setStored(energy);
-        }
         if (data.contains("maxenergy")) {
             this.maxEnergy = data.getDouble("maxenergy");
             this.stored.setMaximum(maxEnergy);
+        }
+        if (data.contains("energy")) {
+            this.energy = data.getDouble("energy");
+            this.stored.setStored(energy);
         }
     }
 
@@ -122,7 +154,9 @@ public class EnergyStorageControllerBE extends AENetworkBlockEntity implements M
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (isClientSide() || getLevel() == null) return TickRateModulation.IDLE;
 
-        boolean validStructure = validator.matchesStructure(getLevel(), getBlockPos(), getBlockState());
+        boolean validStructure = validator.matchesStructure(getLevel(), getBlockPos(), getBlockState(), this) &&
+                getMainNode().getGrid() != null &&
+                !getMainNode().getGrid().getMachines(ControllerBlockEntity.class).isEmpty();
         boolean wasActive = this.active;
 
         if (getMenu() != null) {
@@ -130,13 +164,15 @@ public class EnergyStorageControllerBE extends AENetworkBlockEntity implements M
             getMenu().energy = (long) this.energy;
         }
 
-        if (!validStructure && wasActive) {
+        if (!validStructure && wasActive || !replace) {
             this.active = false;
+            this.replace = true;
 
+            getMainNode().destroy();
             getLevel().removeBlock(getBlockPos(), false);
             getLevel().removeBlockEntity(getBlockPos());
             getLevel().setBlockAndUpdate(getBlockPos(), getBlockState());
-            getLevel().setBlockEntity(new EnergyStorageControllerBE(getBlockPos(), getBlockState(), this.energy, 0, false));
+            getLevel().setBlockEntity(new EnergyStorageControllerBE(getBlockPos(), getBlockState(), this.energy, 0, false, true));
             setChanged();
             return TickRateModulation.IDLE;
         }
@@ -163,10 +199,11 @@ public class EnergyStorageControllerBE extends AENetworkBlockEntity implements M
 
             this.active = true;
 
+            getMainNode().destroy();
             getLevel().removeBlock(getBlockPos(), false);
             getLevel().removeBlockEntity(getBlockPos());
             getLevel().setBlockAndUpdate(getBlockPos(), getBlockState());
-            getLevel().setBlockEntity(new EnergyStorageControllerBE(getBlockPos(), getBlockState(), this.energy, this.maxEnergy, true));
+            getLevel().setBlockEntity(new EnergyStorageControllerBE(getBlockPos(), getBlockState(), this.energy, this.maxEnergy, true, true));
             setChanged();
         }
         emitPowerEvent(GridPowerStorageStateChanged.PowerEventType.PROVIDE_POWER);
@@ -182,6 +219,12 @@ public class EnergyStorageControllerBE extends AENetworkBlockEntity implements M
         return AECableType.COVERED;
     }
 
+    public void updateMenu(){
+        if (getMenu() != null){
+            getMenu().energy = (long) this.energy;
+        }
+    }
+
     @Override
     public double injectAEPower(double amt, Actionable mode) {
         double space = this.maxEnergy - this.energy;
@@ -192,9 +235,8 @@ public class EnergyStorageControllerBE extends AENetworkBlockEntity implements M
             this.stored.insert(toInsert, true);
         }
 
-        if (getMenu() != null){
-            getMenu().energy = (long) this.energy;
-        }
+        updateMenu();
+
         return amt - toInsert;
     }
 
@@ -225,9 +267,7 @@ public class EnergyStorageControllerBE extends AENetworkBlockEntity implements M
             this.energy -= extracted;
             this.stored.extract(extracted, true);
         }
-        if (getMenu() != null){
-            getMenu().energy = (long) this.energy;
-        }
+        updateMenu();
         return extracted;
     }
 

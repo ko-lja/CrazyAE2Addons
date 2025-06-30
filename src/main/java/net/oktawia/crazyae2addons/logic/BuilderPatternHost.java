@@ -50,14 +50,18 @@ public class BuilderPatternHost extends ItemMenuHost {
         ProgramExpander.Result result = ProgramExpander.expand(program);
         this.code = result.success;
         this.getItemStack().getOrCreateTag().putBoolean("code", this.code);
-
-        saveProgramToFile(
-                getItemStack().getOrCreateTag().contains("program_id")
-                ? this.getItemStack().getOrCreateTag().getString("program_id")
-                : UUID.randomUUID().toString(),
-                program,
-                getPlayer().getServer()
-        );
+        if (result.success){
+            if (!getItemStack().getOrCreateTag().contains("program_id")){
+                getItemStack().getOrCreateTag().putString("program_id", UUID.randomUUID().toString());
+            }
+            saveProgramToFile(
+                    getItemStack().getOrCreateTag().contains("program_id")
+                            ? this.getItemStack().getOrCreateTag().getString("program_id")
+                            : UUID.randomUUID().toString(),
+                    program,
+                    getPlayer().getServer()
+            );
+        }
     }
     public void setDelay(int delay) {
         this.delay = delay;

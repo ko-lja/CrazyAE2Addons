@@ -33,6 +33,12 @@ public class PenroseControllerScreen<C extends PenroseControllerMenu> extends AE
         this.widgets.add("add", extractBtn);
         this.widgets.add("remove", insertBtn);
         this.widgets.add("energy", powerMode);
+        var prevBtn = new IconButton(Icon.ENTER, btn -> getMenu().changePreview(!getMenu().preview));
+        prevBtn.setTooltip(Tooltip.create(Component.literal("Enable/Disable preview")));
+        var tierBtn = new IconButton(Icon.ENTER, btn -> getMenu().changePrevTier((getMenu().previewTier + 1) % 4));
+        tierBtn.setTooltip(Tooltip.create(Component.literal("Change preview tier")));
+        this.widgets.add("prevbtn", prevBtn);
+        this.widgets.add("tierbtn", tierBtn);
     }
 
     private void changePowerMode(boolean b) {
@@ -44,19 +50,34 @@ public class PenroseControllerScreen<C extends PenroseControllerMenu> extends AE
     public void updateBeforeRender() {
         super.updateBeforeRender();
         setTextContent("generation", Component.literal("Power Generation"));
-        var disk = StorageCells.getCellInventory(getMenu().diskSlot.getItem(), null);
+        var disk0 = StorageCells.getCellInventory(getMenu().diskSlot0.getItem(), null);
+        var disk1 = StorageCells.getCellInventory(getMenu().diskSlot1.getItem(), null);
+        var disk2 = StorageCells.getCellInventory(getMenu().diskSlot2.getItem(), null);
+        var disk3 = StorageCells.getCellInventory(getMenu().diskSlot3.getItem(), null);
         long generated;
-        if (disk == null){
-            generated = 0;
-        } else {
-            generated = PenroseControllerBE.energyGenerated((int) disk.getAvailableStacks().get(AEItemKey.of(CrazyItemRegistrar.SUPER_SINGULARITY.get())));
+        var tier = getMenu().tier;
+        int count = 0;
+        if (disk0 != null && tier >= 0) {
+            count += (int) disk0.getAvailableStacks().get(AEItemKey.of(CrazyItemRegistrar.SUPER_SINGULARITY.get()));
+        } if (disk1 != null && tier >= 1) {
+            count += (int) disk1.getAvailableStacks().get(AEItemKey.of(CrazyItemRegistrar.SUPER_SINGULARITY.get()));
+        } if (disk2 != null && tier >= 2) {
+            count += (int) disk2.getAvailableStacks().get(AEItemKey.of(CrazyItemRegistrar.SUPER_SINGULARITY.get()));
+        } if (disk3 != null && tier >= 3) {
+            count += (int) disk3.getAvailableStacks().get(AEItemKey.of(CrazyItemRegistrar.SUPER_SINGULARITY.get()));
         }
+
+        generated = PenroseControllerBE.energyGenerated(count, getMenu().tier);
+
         if (AEItems.MATTER_BALL.isSameAs(getMenu().configSlot.getItem())){
             generated *= 8;
         } else if (AEItems.SINGULARITY.isSameAs(getMenu().configSlot.getItem())){
             generated *= 64;
         }
+
         this.powerMode.setState(getMenu().powerMode);
         setTextContent("amount", Component.literal(String.format("%s FE/t", Utils.shortenNumber(generated))));
+        setTextContent("tier", Component.literal("Tier: " + getMenu().tier));
+        setTextContent("prev", Component.literal("Preview: " + getMenu().preview + ", preview tier: " + getMenu().previewTier));
     }
 }

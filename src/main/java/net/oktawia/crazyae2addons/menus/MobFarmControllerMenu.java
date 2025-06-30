@@ -8,11 +8,16 @@ import appeng.menu.slot.FakeSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.MobFarmControllerBE;
+import net.oktawia.crazyae2addons.entities.SpawnerExtractorControllerBE;
 import net.oktawia.crazyae2addons.misc.AppEngMobFilteredFakeSlot;
 
 public class MobFarmControllerMenu extends UpgradeableMenu<MobFarmControllerBE> {
     @GuiSync(348)
     public Integer damageBlocks;
+    private final MobFarmControllerBE host;
+    public String PREVIEW = "actionPrev";
+    @GuiSync(893)
+    public boolean preview;
 
     public MobFarmControllerMenu(int id, Inventory ip, MobFarmControllerBE host) {
         super(CrazyMenuRegistrar.MOB_FARM_CONTROLLER_MENU.get(), id, ip, host);
@@ -21,5 +26,16 @@ public class MobFarmControllerMenu extends UpgradeableMenu<MobFarmControllerBE> 
             this.addSlot(new FakeSlot(host.configInventory.createMenuWrapper(), x), SlotSemantics.CONFIG);
         }
         this.addSlot(new AppEngSlot(host.inventory, 0), SlotSemantics.STORAGE);
+        this.host = host;
+        this.preview = host.preview;
+        this.registerClientAction(PREVIEW, Boolean.class, this::changePreview);
+    }
+
+    public void changePreview(Boolean preview) {
+        host.preview = preview;
+        this.preview = preview;
+        if (isClientSide()){
+            sendClientAction(PREVIEW, preview);
+        }
     }
 }

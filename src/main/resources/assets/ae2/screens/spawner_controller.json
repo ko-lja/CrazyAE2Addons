@@ -19,7 +19,7 @@
       "text": "Speed depends on the amount",
       "position": {
         "left": 88,
-        "top": 40
+        "top": 50
       },
       "align": "CENTER"
     },
@@ -27,9 +27,24 @@
       "text": "of acceleration cards installed",
       "position": {
         "left": 88,
-        "top": 50
+        "top": 60
       },
       "align": "CENTER"
+    },
+    "prev": {
+      "position": {
+        "left": 88,
+        "top": 20
+      },
+      "align": "CENTER"
+    }
+  },
+  "widgets": {
+    "prevbtn": {
+      "left": 80,
+      "top": 30,
+      "width": 16,
+      "height": 16
     }
   }
 }

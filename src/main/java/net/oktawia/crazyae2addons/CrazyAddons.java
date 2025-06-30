@@ -10,7 +10,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,6 +28,7 @@ import net.oktawia.crazyae2addons.defs.*;
 import net.oktawia.crazyae2addons.defs.regs.*;
 import net.oktawia.crazyae2addons.logic.WirelessRedstoneTerminalItemLogicHost;
 import net.oktawia.crazyae2addons.menus.WirelessRedstoneTerminalMenu;
+import net.oktawia.crazyae2addons.misc.*;
 import net.oktawia.crazyae2addons.mobstorage.EntityTypeRenderer;
 import net.oktawia.crazyae2addons.mobstorage.MobKeyType;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
@@ -117,6 +120,11 @@ public class CrazyAddons {
         public static void onClientSetup(FMLClientSetupEvent event) {
             EntityTypeRenderer.initialize();
             Screens.register();
+            MinecraftForge.EVENT_BUS.addListener(PenrosePreviewRenderer::onRender);
+            MinecraftForge.EVENT_BUS.addListener(EntropyCradlePreviewRenderer::onRender);
+            MinecraftForge.EVENT_BUS.addListener(EnergyStoragePreviewRenderer::onRender);
+            MinecraftForge.EVENT_BUS.addListener(SpawnerExtractorPreviewRenderer::onRender);
+            MinecraftForge.EVENT_BUS.addListener(MobFarmPreviewRenderer::onRender);
         }
         @SubscribeEvent
         public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders evt) {

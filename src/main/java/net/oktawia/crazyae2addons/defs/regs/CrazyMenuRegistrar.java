@@ -43,9 +43,6 @@ public class CrazyMenuRegistrar {
 
     private static String id(String s) { return s; }
 
-    public static final RegistryObject<MenuType<CraftingCancelerMenu>> CRAFTING_CANCELER_MENU =
-            reg(id("crafting_canceler"), CraftingCancelerMenu::new, CraftingCancelerBE.class);
-
     public static final RegistryObject<MenuType<EntityTickerMenu>> ENTITY_TICKER_MENU =
             reg(id("entity_ticker"), EntityTickerMenu::new, EntityTickerPart.class);
 
@@ -175,6 +172,9 @@ public class CrazyMenuRegistrar {
 
     public static final RegistryObject<MenuType<BrokenPatternProviderMenu>> BROKEN_PATTERN_PROVIDER_MENU =
             reg(id("broken_pattern_provider"), BrokenPatternProviderMenu::new, PatternProviderLogicHost.class);
+
+    public static final RegistryObject<MenuType<EntropyCradleControllerMenu>> ENTROPY_CRADLE_CONTROLLER_MENU =
+            reg(id("entropy_cradle_controller"), EntropyCradleControllerMenu::new, EntropyCradleControllerBE.class);
 
     private CrazyMenuRegistrar() {}
 }

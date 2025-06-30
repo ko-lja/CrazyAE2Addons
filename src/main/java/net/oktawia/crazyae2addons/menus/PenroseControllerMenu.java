@@ -23,24 +23,59 @@ public class PenroseControllerMenu extends AEBaseMenu {
     private final PenroseControllerBE host;
     private final AppEngSlot singularitySlot;
     public final FakeSlot configSlot;
-    public final RestrictedInputSlot diskSlot;
+    public final RestrictedInputSlot diskSlot0;
+    public final RestrictedInputSlot diskSlot1;
+    public final RestrictedInputSlot diskSlot2;
+    public final RestrictedInputSlot diskSlot3;
     public String EXTRACT = "actionExtract";
     public String INSERT = "actionInsert";
     public String POWER = "actionPower";
+    public String PREVIEW = "actionPrev";
+    public String TIER = "actionTier";
     @GuiSync(93)
     public boolean powerMode;
+    @GuiSync(24)
+    public int tier;
+    @GuiSync(893)
+    public boolean preview;
+    @GuiSync(291)
+    public int previewTier;
 
     public PenroseControllerMenu(int id, Inventory ip, PenroseControllerBE host) {
         super(CrazyMenuRegistrar.PENROSE_CONTROLLER_MENU.get(), id, ip, host);
         this.createPlayerInventorySlots(ip);
         this.host = host;
         this.powerMode = host.energyMode;
-        this.addSlot(this.diskSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, host.diskInv, 0), SlotSemantics.STORAGE_CELL);
+        this.tier = host.tier;
+        this.preview = host.preview;
+        this.previewTier = host.previewTier;
+        this.addSlot(this.diskSlot0 = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, host.diskInv, 0), SlotSemantics.STORAGE_CELL);
+        this.addSlot(this.diskSlot1 = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, host.diskInv, 1), SlotSemantics.STORAGE_CELL);
+        this.addSlot(this.diskSlot2 = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, host.diskInv, 2), SlotSemantics.STORAGE_CELL);
+        this.addSlot(this.diskSlot3 = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.STORAGE_CELLS, host.diskInv, 3), SlotSemantics.STORAGE_CELL);
         this.addSlot(this.singularitySlot = new AppEngSlot(host.inputInv, 0), SlotSemantics.MACHINE_INPUT);
         this.addSlot(this.configSlot = new FakeSlot(host.config.createMenuWrapper(), 0), SlotSemantics.CONFIG);
         this.registerClientAction(EXTRACT, this::extractFromCell);
         this.registerClientAction(INSERT, this::insertToCell);
         this.registerClientAction(POWER, Boolean.class, this::changeEnergyMode);
+        this.registerClientAction(PREVIEW, Boolean.class, this::changePreview);
+        this.registerClientAction(TIER, Integer.class, this::changePrevTier);
+    }
+
+    public void changePrevTier(Integer tier) {
+        host.previewTier = tier;
+        this.previewTier = tier;
+        if (isClientSide()){
+            sendClientAction(TIER, tier);
+        }
+    }
+
+    public void changePreview(Boolean preview) {
+        host.preview = preview;
+        this.preview = preview;
+        if (isClientSide()){
+            sendClientAction(PREVIEW, preview);
+        }
     }
 
     public void extractFromCell(){

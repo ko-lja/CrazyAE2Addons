@@ -22,17 +22,29 @@
         "top": 72
       }
     },
+    "tier": {
+      "position": {
+        "left": 140,
+        "top": 6
+      }
+    },
+    "prev": {
+      "position": {
+        "left": 8,
+        "top": 16
+      }
+    },
     "generation": {
       "position": {
-        "left": 112,
-        "top": 24
+        "left": 120,
+        "top": 27
       },
       "align": "CENTER"
     },
     "amount": {
       "position": {
-        "left": 112,
-        "top": 36
+        "left": 120,
+        "top": 39
       },
       "align": "CENTER"
     },
@@ -40,25 +52,26 @@
       "text": "Matter Balls: Power x8",
       "position": {
         "left": 52,
-        "top": 48
+        "top": 84
       }
     },
     "singularities": {
       "text": "Singularities: Power x64",
       "position": {
         "left": 52,
-        "top": 60
+        "top": 98
       }
     }
   },
   "slots": {
     "MACHINE_INPUT": {
       "left": 8,
-      "top": 24
+      "top": 28
     },
     "STORAGE_CELL": {
       "left": 8,
-      "top": 48
+      "top": 48,
+      "grid": "HORIZONTAL"
     },
     "CONFIG": {
       "left": 8,
@@ -67,20 +80,32 @@
   },
   "widgets": {
     "add": {
-      "left": 32,
-      "top": 24,
+      "left": 34,
+      "top": 28,
       "width": 16,
       "height": 16
     },
     "remove": {
-      "left": 32,
-      "top": 48,
+      "left": 52,
+      "top": 28,
       "width": 16,
       "height": 16
     },
     "energy": {
       "left": 32,
       "top": 84,
+      "width": 16,
+      "height": 16
+    },
+    "prevbtn": {
+      "left": 110,
+      "top": 55,
+      "width": 16,
+      "height": 16
+    },
+    "tierbtn": {
+      "left": 130,
+      "top": 55,
       "width": 16,
       "height": 16
     }

@@ -82,6 +82,26 @@ public class MobFarmValidator {
      }
     """;
 
+    public Map<String, List<Block>> getSymbols() {
+        return this.symbols;
+    }
+
+    public List<List<String>> getLayers() {
+        return this.layers;
+    }
+
+    public int getOriginX() {
+        return this.originInPatternX;
+    }
+
+    public int getOriginY() {
+        return this.originInPatternY;
+    }
+
+    public int getOriginZ() {
+        return this.originInPatternZ;
+    }
+
     private final Map<String, List<Block>> symbols = new HashMap<>();
     private final List<List<String>> layers = new ArrayList<>();
     private int originInPatternX = -1;

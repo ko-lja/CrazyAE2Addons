@@ -8,23 +8,20 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
-import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.helpers.patternprovider.*;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.ConfigManager;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.logging.LogUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderCpu;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderTargetCacheExt;
 import net.oktawia.crazyae2addons.misc.PatternDetailsSerializer;
+import net.pedroksl.advanced_ae.common.logic.AdvCraftingCPULogic;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.*;
@@ -51,11 +48,18 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
 
     @Unique
     private CraftingCPUCluster cpuCluster = null;
+    @Unique
+    private AdvCraftingCPULogic cpuLogic = null;
 
     @Unique
     @Override
     public void setCpuCluster(CraftingCPUCluster cpu) {
         this.cpuCluster = cpu;
+    }
+    @Unique
+    @Override
+    public void setCpuLogic(AdvCraftingCPULogic cpu) {
+        this.cpuLogic = cpu;
     }
 
     @Unique
@@ -78,8 +82,6 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
 
     @Unique
     private IPatternDetails lastPattern = null;
-    @Unique
-    private BlockPos cpuClusterPos = null;
 
     @Shadow
     @Nullable
@@ -102,7 +104,6 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
 
     @Shadow @Nullable public abstract IGrid getGrid();
 
-    @Shadow private Direction sendDirection;
     @Unique
     private YesNo realRedstoneState = YesNo.NO;
 
@@ -147,6 +148,7 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
         if(host.getBlockEntity() != null && host.getBlockEntity().getType() == CrazyBlockEntityRegistrar.IMPULSED_PATTERN_PROVIDER_BE.get()){
             this.lastPattern = null;
             this.cpuCluster = null;
+            this.cpuLogic = null;
         }
     }
 
@@ -187,11 +189,20 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
         } else {
             tag.remove("lastpattern");
         }
-        if (this.cpuCluster != null){
-            BlockEntity cpuPart = this.cpuCluster.getBlockEntities().next();
-            tag.putLong("cpucluster", cpuPart.getBlockPos().asLong());
+        if (this.cpuCluster != null) {
+            CompoundTag clusterTag = new CompoundTag();
+            this.cpuCluster.writeToNBT(clusterTag);
+            tag.put("cpuCluster", clusterTag);
         } else {
-            tag.remove("cpucluster");
+            tag.remove("cpuCluster");
+        }
+
+        if (this.cpuLogic != null) {
+            CompoundTag logicTag = new CompoundTag();
+            this.cpuLogic.writeToNBT(logicTag);
+            tag.put("cpuLogic", logicTag);
+        } else {
+            tag.remove("cpuLogic");
         }
         if (this.getPatternDetails() != null){
             tag.put("pdetails", PatternDetailsSerializer.serialize(this.getPatternDetails()));
@@ -209,11 +220,15 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
         if (tag.contains("lastpattern")){
             this.lastPattern = PatternDetailsSerializer.deserialize((CompoundTag) tag.get("lastpattern"));
         }
-        if (tag.contains("cpucluster")){
-            this.cpuClusterPos = BlockPos.of(tag.getLong("cpucluster"));
-        }
         if (tag.contains("pdetails")){
             this.setPatternDetails(PatternDetailsSerializer.deserialize((CompoundTag) tag.get("pdetails")));
+        }
+        if (tag.contains("cpuCluster")) {
+            this.cpuCluster.readFromNBT(tag.getCompound("cpuCluster"));
+        }
+
+        if (tag.contains("cpuLogic")) {
+            this.cpuLogic.readFromNBT(tag.getCompound("cpuLogic"));
         }
     }
 
@@ -283,18 +298,6 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
 
     @Unique
     public void repeat() {
-        if (
-                host.getBlockEntity() != null
-                && this.cpuCluster == null
-                && this.cpuClusterPos != null
-                && host.getBlockEntity().getLevel() != null
-                && host.getBlockEntity().getLevel().getBlockEntity(this.cpuClusterPos) != null
-        ) {
-            this.cpuCluster = ((CraftingBlockEntity) host.getBlockEntity()
-                    .getLevel()
-                    .getBlockEntity(this.cpuClusterPos))
-                    .getCluster();
-        }
         if (this.lastPattern != null) {
             var Inv = host.getGrid().getStorageService().getInventory();
             for (var input : this.lastPattern.getInputs()) {
@@ -337,18 +340,20 @@ public abstract class MixinPatternProviderLogic implements IPatternProviderCpu {
 
     @Unique
     public void failCrafting(){
-        if (this.cpuCluster != null) {
+        if (this.cpuCluster != null || this.cpuLogic != null) {
             this.cancelAndUnlock();
         }
     }
 
     @Unique
     private void cancelAndUnlock(){
-        this.cpuCluster.cancelJob();
+        if (this.cpuCluster != null) this.cpuCluster.cancelJob();
+        else if (this.cpuLogic != null) this.cpuLogic.cancel();
         this.unlockEvent = null;
         this.unlockStack = null;
         this.lastPattern = null;
         this.cpuCluster = null;
+        this.cpuLogic = null;
     }
 
     @Unique

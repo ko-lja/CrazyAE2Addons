@@ -35,16 +35,6 @@ public class BlockDefs {
 
     public static void registerRecipes(){
         block(
-                CrazyBlockRegistrar.CRAFTING_CANCELER_BLOCK.get(),
-                "TM/MU",
-                () -> Map.of(
-                        "T", AEParts.MONITOR.asItem(),
-                        "M", AEBlocks.CRAFTING_MONITOR.asItem(),
-                        "U", AEBlocks.CRAFTING_UNIT.asItem()
-                )
-        );
-
-        block(
                 CrazyBlockRegistrar.ME_DATA_CONTROLLER_BLOCK.get(),
                 "SLS/LCL/SLS",
                 () -> Map.of(
@@ -224,17 +214,6 @@ public class BlockDefs {
         );
 
         block(
-                CrazyBlockRegistrar.PENROSE_FRAME.get(),
-                "ABA/CDC/ABA",
-                () -> Map.of(
-                        "A", AEBlocks.FLUIX_BLOCK.asItem(),
-                        "B", Blocks.IRON_BLOCK.asItem(),
-                        "C", Items.DIAMOND,
-                        "D", CrazyItemRegistrar.SUPER_SINGULARITY.get()
-                )
-        );
-
-        block(
                 CrazyBlockRegistrar.PENROSE_COIL.get(),
                 "AAA/ADA/AAA",
                 () -> Map.of(
@@ -281,116 +260,6 @@ public class BlockDefs {
         );
 
         block(
-                CrazyBlockRegistrar.ENERGY_STORAGE_1K_BLOCK.get(),
-                "CMC/MKM/CSC",
-                () -> Map.of(
-                        "C", AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem(),
-                        "M", AEItems.MATTER_BALL.asItem(),
-                        "S", AEItems.SINGULARITY.asItem(),
-                        "K", AEItems.CELL_COMPONENT_1K.asItem()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.ENERGY_STORAGE_4K_BLOCK.get(),
-                "CMC/MKM/CSC",
-                () -> Map.of(
-                        "C", AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem(),
-                        "M", AEItems.MATTER_BALL.asItem(),
-                        "S", AEItems.SINGULARITY.asItem(),
-                        "K", AEItems.CELL_COMPONENT_4K.asItem()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.ENERGY_STORAGE_16K_BLOCK.get(),
-                "CMC/MKM/CSC",
-                () -> Map.of(
-                        "C", AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem(),
-                        "M", AEItems.MATTER_BALL.asItem(),
-                        "S", AEItems.SINGULARITY.asItem(),
-                        "K", AEItems.CELL_COMPONENT_16K.asItem()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.ENERGY_STORAGE_64K_BLOCK.get(),
-                "CMC/MKM/CSC",
-                () -> Map.of(
-                        "C", AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem(),
-                        "M", AEItems.MATTER_BALL.asItem(),
-                        "S", AEItems.SINGULARITY.asItem(),
-                        "K", AEItems.CELL_COMPONENT_64K.asItem()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.ENERGY_STORAGE_256K_BLOCK.get(),
-                "CMC/MKM/CSC",
-                () -> Map.of(
-                        "C", AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem(),
-                        "M", AEItems.MATTER_BALL.asItem(),
-                        "S", AEItems.SINGULARITY.asItem(),
-                        "K", AEItems.CELL_COMPONENT_256K.asItem()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.DENSE_ENERGY_STORAGE_1K_BLOCK.get(),
-                "CMC/MKM/CSC",
-                () -> Map.of(
-                        "C", AEItems.FLUIX_CRYSTAL.asItem(),
-                        "M", AEItems.SINGULARITY.asItem(),
-                        "S", CrazyItemRegistrar.SUPER_SINGULARITY.get().asItem(),
-                        "K", CrazyBlockRegistrar.ENERGY_STORAGE_1K_BLOCK.get().asItem()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.DENSE_ENERGY_STORAGE_4K_BLOCK.get(),
-                "CMC/MKM/CSC",
-                () -> Map.of(
-                        "C", AEItems.FLUIX_CRYSTAL.asItem(),
-                        "M", AEItems.SINGULARITY.asItem(),
-                        "S", CrazyItemRegistrar.SUPER_SINGULARITY.get().asItem(),
-                        "K", CrazyBlockRegistrar.ENERGY_STORAGE_4K_BLOCK.get().asItem()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.DENSE_ENERGY_STORAGE_16K_BLOCK.get(),
-                "CMC/MKM/CSC",
-                () -> Map.of(
-                        "C", AEItems.FLUIX_CRYSTAL.asItem(),
-                        "M", AEItems.SINGULARITY.asItem(),
-                        "S", CrazyItemRegistrar.SUPER_SINGULARITY.get().asItem(),
-                        "K", CrazyBlockRegistrar.ENERGY_STORAGE_16K_BLOCK.get().asItem()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.DENSE_ENERGY_STORAGE_64K_BLOCK.get(),
-                "CMC/MKM/CSC",
-                () -> Map.of(
-                        "C", AEItems.FLUIX_CRYSTAL.asItem(),
-                        "M", AEItems.SINGULARITY.asItem(),
-                        "S", CrazyItemRegistrar.SUPER_SINGULARITY.get().asItem(),
-                        "K", CrazyBlockRegistrar.ENERGY_STORAGE_64K_BLOCK.get().asItem()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.DENSE_ENERGY_STORAGE_256K_BLOCK.get(),
-                "CMC/MKM/CSC",
-                () -> Map.of(
-                        "C", AEItems.FLUIX_CRYSTAL.asItem(),
-                        "M", AEItems.SINGULARITY.asItem(),
-                        "S", CrazyItemRegistrar.SUPER_SINGULARITY.get().asItem(),
-                        "K", CrazyBlockRegistrar.ENERGY_STORAGE_256K_BLOCK.get().asItem()
-                )
-        );
-
-        block(
                 CrazyBlockRegistrar.AUTO_BUILDER_BLOCK.get(),
                 "EPE/BRN/EPE",
                 () -> Map.of(
@@ -408,6 +277,25 @@ public class BlockDefs {
                 () -> Map.of(
                         "T", CrazyBlockRegistrar.DATA_TRACKER_BLOCK.get().asItem(),
                         "L", Items.REDSTONE_TORCH.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.SUPER_SINGULARITY_BLOCK.get(),
+                "SFS/FSF/SFS",
+                () -> Map.of(
+                        "S", CrazyItemRegistrar.SUPER_SINGULARITY.get().asItem(),
+                        "F", AEBlocks.FLUIX_BLOCK.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.PENROSE_PORT.get(),
+                " E /IPI/ E ",
+                () -> Map.of(
+                        "E", CrazyItemRegistrar.ENERGY_EXPORTER_PART_ITEM.get().asItem(),
+                        "I", AEBlocks.INTERFACE.asItem(),
+                        "P", CrazyBlockRegistrar.PENROSE_PORT_ITEM.get().asItem()
                 )
         );
     }

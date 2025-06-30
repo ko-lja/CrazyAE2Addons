@@ -8,6 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.IsModLoaded;
+import net.oktawia.crazyae2addons.blocks.EnergyStorageFrame;
 import net.oktawia.crazyae2addons.compat.Apotheosis.ApothAutoEnchanterBE;
 import net.oktawia.crazyae2addons.compat.GregTech.*;
 import net.oktawia.crazyae2addons.entities.*;
@@ -38,9 +39,6 @@ public class CrazyBlockEntityRegistrar {
             return type;
         });
     }
-
-    public static final RegistryObject<BlockEntityType<CraftingCancelerBE>> CRAFTING_CANCELER_BE =
-            reg("crafting_canceler_be", CrazyBlockRegistrar.CRAFTING_CANCELER_BLOCK, CraftingCancelerBE::new, CraftingCancelerBE.class);
 
     public static final RegistryObject<BlockEntityType<MEDataControllerBE>> ME_DATA_CONTROLLER_BE =
             reg("me_data_controller_be", CrazyBlockRegistrar.ME_DATA_CONTROLLER_BLOCK, MEDataControllerBE::new, MEDataControllerBE.class);
@@ -87,6 +85,9 @@ public class CrazyBlockEntityRegistrar {
     public static final RegistryObject<BlockEntityType<PenroseCoilBE>> PENROSE_COIL_BE =
             reg("penrose_coil_be", CrazyBlockRegistrar.PENROSE_COIL, PenroseCoilBE::new, PenroseCoilBE.class);
 
+    public static final RegistryObject<BlockEntityType<PenrosePortBE>> PENROSE_PORT_BE =
+            reg("penrose_port_be", CrazyBlockRegistrar.PENROSE_PORT, PenrosePortBE::new, PenrosePortBE.class);
+
     public static final RegistryObject<BlockEntityType<PenroseControllerBE>> PENROSE_CONTROLLER_BE =
             reg("penrose_controller_be", CrazyBlockRegistrar.PENROSE_CONTROLLER, PenroseControllerBE::new, PenroseControllerBE.class);
 
@@ -96,14 +97,35 @@ public class CrazyBlockEntityRegistrar {
     public static final RegistryObject<BlockEntityType<EnergyStorageControllerBE>> ENERGY_STORAGE_CONTROLLER_BE =
             reg("energy_storage_controller_be", CrazyBlockRegistrar.ENERGY_STORAGE_CONTROLLER_BLOCK, EnergyStorageControllerBE::new, EnergyStorageControllerBE.class);
 
+    public static final RegistryObject<BlockEntityType<EnergyStorageFrameBE>> ENERGY_STORAGE_FRAME_BE =
+            reg("energy_storage_frame_be", CrazyBlockRegistrar.ENERGY_STORAGE_FRAME_BLOCK, EnergyStorageFrameBE::new, EnergyStorageFrameBE.class);
+
+    public static final RegistryObject<BlockEntityType<EnergyStoragePortBE>> ENERGY_STORAGE_PORT_BE =
+            reg("energy_storage_port_be", CrazyBlockRegistrar.ENERGY_STORAGE_PORT_BLOCK, EnergyStoragePortBE::new, EnergyStoragePortBE.class);
+
     public static final RegistryObject<BlockEntityType<AutoBuilderBE>> AUTO_BUILDER_BE =
             reg("auto_builder_be", CrazyBlockRegistrar.AUTO_BUILDER_BLOCK, AutoBuilderBE::new, AutoBuilderBE.class);
+
+    public static final RegistryObject<BlockEntityType<AutoBuilderCreativeSupplyBE>> AUTO_BUILDER_CREATIVE_SUPPLY_BE =
+            reg("auto_builder_creative_supply_be", CrazyBlockRegistrar.AUTO_BUILDER_CREATIVE_SUPPLY_BLOCK, AutoBuilderCreativeSupplyBE::new, AutoBuilderCreativeSupplyBE.class);
 
     public static final RegistryObject<BlockEntityType<DataSetterBE>> DATA_SETTER_BE =
             reg("data_setter_be", CrazyBlockRegistrar.DATA_SETTER_BLOCK, DataSetterBE::new, DataSetterBE.class);
 
     public static final RegistryObject<BlockEntityType<BrokenPatternProviderBE>> BROKEN_PATTERN_PROVIDER_BE =
             reg("broken_pattern_provider_be", CrazyBlockRegistrar.BROKEN_PATTERN_PROVIDER_BLOCK, BrokenPatternProviderBE::new, BrokenPatternProviderBE.class);
+
+    public static final RegistryObject<BlockEntityType<EntropyCradleBE>> ENTROPY_CRADLE_BE =
+            reg("entropy_cradle_be", CrazyBlockRegistrar.ENTROPY_CRADLE, EntropyCradleBE::new, EntropyCradleBE.class);
+
+    public static final RegistryObject<BlockEntityType<EntropyCradleCapacitorBE>> ENTROPY_CRADLE_CAPACITOR_BE =
+            reg("entropy_cradle_capacitor_be", CrazyBlockRegistrar.ENTROPY_CRADLE_CAPACITOR, EntropyCradleCapacitorBE::new, EntropyCradleCapacitorBE.class);
+
+    public static final RegistryObject<BlockEntityType<EntropyCradleControllerBE>> ENTROPY_CRADLE_CONTROLLER_BE =
+            reg("entropy_cradle_controller_be", CrazyBlockRegistrar.ENTROPY_CRADLE_CONTROLLER, EntropyCradleControllerBE::new, EntropyCradleControllerBE.class);
+
+    public static final RegistryObject<BlockEntityType<SuperSingularityBlockBE>> SUPER_SINGULARITY_BLOCK_BE =
+            reg("super_singularity_block_be", CrazyBlockRegistrar.SUPER_SINGULARITY_BLOCK, SuperSingularityBlockBE::new, SuperSingularityBlockBE.class);
 
     public static final RegistryObject<BlockEntityType<? extends AmpereMeterBE>> AMPERE_METER_BE =
             BLOCK_ENTITIES.register("ampere_meter_be", () -> {

@@ -29,6 +29,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -39,18 +41,26 @@ import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.PenroseControllerMenu;
-import net.oktawia.crazyae2addons.misc.PenroseValidator;
+import net.oktawia.crazyae2addons.misc.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class PenroseControllerBE extends AENetworkInvBlockEntity implements MenuProvider, IUpgradeableObject, IGridTickable {
-
+    public static final Set<PenroseControllerBE> CLIENT_INSTANCES = new HashSet<>();
     public boolean energyMode = false;
+    public boolean preview = false;
+    public int previewTier = 0;
     private int ticks = 0;
     public EnergyStorage energyStorage = new EnergyStorage(Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 0);
+    @OnlyIn(Dist.CLIENT)
+    public List<PenrosePreviewRenderer.CachedBlockInfo> ghostCache = null;
+    @OnlyIn(Dist.CLIENT)
+    public int cachedTier = -1;
 
     private final LazyOptional<IEnergyStorage> energyCap = LazyOptional.of(() -> new IEnergyStorage() {
         @Override public int getEnergyStored() {
@@ -73,11 +83,18 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
         }
     });
 
-    public PenroseValidator validator;
-    public AppEngInternalInventory diskInv = new AppEngInternalInventory(this, 1, 1, new IAEItemFilter() {
+    public PenroseValidatorT0 validatorT0;
+    public PenroseValidatorT1 validatorT1;
+    public PenroseValidatorT2 validatorT2;
+    public PenroseValidatorT3 validatorT3;
+
+    public int tier = 0;
+
+    public AppEngInternalInventory diskInv = new AppEngInternalInventory(this, 4, 1, new IAEItemFilter() {
         @Override
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-            if (stack.getItem() == AEItems.ITEM_CELL_4K.asItem()) {
+            if (slot > tier) return false;
+            if (stack.getItem() == AEItems.ITEM_CELL_1K.asItem()) {
                 var cellInv = StorageCells.getCellInventory(stack, null);
                 if (cellInv == null) return false;
                 var stacks = cellInv.getAvailableStacks();
@@ -101,7 +118,10 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
 
     public PenroseControllerBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.PENROSE_CONTROLLER_BE.get(), pos, blockState);
-        validator = new PenroseValidator();
+        validatorT0 = new PenroseValidatorT0();
+        validatorT1 = new PenroseValidatorT1();
+        validatorT2 = new PenroseValidatorT2();
+        validatorT3 = new PenroseValidatorT3();
         this.getMainNode()
                 .setIdlePowerUsage(2.0F)
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
@@ -128,6 +148,23 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
         if (data.contains("energy")){
             this.energyStorage = new EnergyStorage(Integer.MAX_VALUE, 0, Integer.MAX_VALUE, data.getInt("energy"));
         }
+        if (data.contains("tier")){
+            this.tier = data.getInt("tier");
+        }
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level != null && level.isClientSide) {
+            CLIENT_INSTANCES.add(this);
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        CLIENT_INSTANCES.remove(this);
     }
 
     @Override
@@ -137,19 +174,38 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
         this.inputInv.writeToNBT(data, "inputinv");
         data.putBoolean("mode", this.energyMode);
         data.putInt("energy", this.energyStorage.getEnergyStored());
+        data.putInt("tier", this.tier);
     }
 
-    public static long energyGenerated(int count) {
-        final int MAX_COUNT   = 32768;
-        final long MAX_ENERGY = (1L << 30) / 64;
+    public static long energyGenerated(int count, int tier) {
+        long maxCount;
+        long maxEnergy = switch (tier) {
+            case 1 -> {
+                maxCount = 16384;
+                yield (1L << 26) / 64;
+            }
+            case 2 -> {
+                maxCount = 24576;
+                yield (1L << 28) / 64;
+            }
+            case 3 -> {
+                maxCount = 32768;
+                yield (1L << 30) / 64;
+            }
+            default -> {
+                maxCount = 8192;
+                yield (1L << 24) / 64;
+            }
+        };
 
         if (count <= 0) {
             return 0L;
         }
-        if (count >= MAX_COUNT) {
-            return MAX_ENERGY;
+        if (count >= maxCount) {
+            return maxEnergy;
         }
-        return (long) count * MAX_ENERGY / MAX_COUNT;
+
+        return (long) count * maxEnergy / maxCount;
     }
 
     @Override
@@ -175,7 +231,22 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         ticks ++;
         if (ticks >= 20){
-            this.formed = validator.matchesStructure(getLevel(), getBlockPos(), getBlockState(), this);
+            this.formed = false;
+            this.tier = 0;
+             if (validatorT3.matchesStructure(getLevel(), getBlockPos(), getBlockState(), this)) {
+                this.tier = 3;
+                this.formed = true;
+            } else if (validatorT2.matchesStructure(getLevel(), getBlockPos(), getBlockState(), this)) {
+                 this.tier = 2;
+                 this.formed = true;
+            } else if (validatorT1.matchesStructure(getLevel(), getBlockPos(), getBlockState(), this)) {
+                this.tier = 1;
+                this.formed = true;
+            } else if (validatorT0.matchesStructure(getLevel(), getBlockPos(), getBlockState(), this)){
+                this.tier = 0;
+                this.formed = true;
+            }
+
             ticks = 0;
         }
         if (this.formed){
@@ -186,16 +257,34 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
             if (disk == null) return TickRateModulation.IDLE;
             if (config.getStack(0) == null) return TickRateModulation.IDLE;
             var extracted = inv.extract(this.config.getKey(0), 1, Actionable.MODULATE, IActionSource.ofMachine(this));
-            int generated = Math.toIntExact(energyGenerated((int) disk.getAvailableStacks().get(AEItemKey.of(CrazyItemRegistrar.SUPER_SINGULARITY.get()))) * extracted);
+            var disk0 = StorageCells.getCellInventory(diskInv.getStackInSlot(0), null);
+            var disk1 = StorageCells.getCellInventory(diskInv.getStackInSlot(1), null);
+            var disk2 = StorageCells.getCellInventory(diskInv.getStackInSlot(2), null);
+            var disk3 = StorageCells.getCellInventory(diskInv.getStackInSlot(3), null);
+            long generated;
+            int count = 0;
+            if (disk0 != null && tier >= 0) {
+                count += (int) disk0.getAvailableStacks().get(AEItemKey.of(CrazyItemRegistrar.SUPER_SINGULARITY.get()));
+            } if (disk1 != null && tier >= 1) {
+                count += (int) disk1.getAvailableStacks().get(AEItemKey.of(CrazyItemRegistrar.SUPER_SINGULARITY.get()));
+            } if (disk2 != null && tier >= 2) {
+                count += (int) disk2.getAvailableStacks().get(AEItemKey.of(CrazyItemRegistrar.SUPER_SINGULARITY.get()));
+            } if (disk3 != null && tier >= 3) {
+                count += (int) disk3.getAvailableStacks().get(AEItemKey.of(CrazyItemRegistrar.SUPER_SINGULARITY.get()));
+            }
+
+            generated = PenroseControllerBE.energyGenerated(count, tier) * extracted;
+
             if (AEItems.MATTER_BALL.isSameAs(((AEItemKey) config.getStack(0).what()).toStack())){
                 generated *= 8;
             } else if (AEItems.SINGULARITY.isSameAs(((AEItemKey) config.getStack(0).what()).toStack())){
                 generated *= 64;
             }
             if (!energyMode){
-                this.energyStorage = new EnergyStorage(Integer.MAX_VALUE, 0, Integer.MAX_VALUE, (int) Math.min(((long)Integer.MAX_VALUE), ((long)this.energyStorage.getEnergyStored()) + generated));
+                this.energyStorage = new EnergyStorage(Integer.MAX_VALUE, 0, Integer.MAX_VALUE, (int) Math.min((Integer.MAX_VALUE), ((long)this.energyStorage.getEnergyStored()) + generated));
             } else {
-                grid.getEnergyService().injectPower((double) generated / 2, Actionable.MODULATE);
+                generated /= 2;
+                grid.getEnergyService().injectPower(generated, Actionable.MODULATE);
             }
         }
         return TickRateModulation.IDLE;
@@ -213,6 +302,8 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
         if (cap == ForgeCapabilities.ENERGY) {
             return energyCap.cast();
+        } else if (cap == ForgeCapabilities.ITEM_HANDLER){
+            return LazyOptional.empty();
         }
         return super.getCapability(cap, side);
     }
@@ -221,6 +312,8 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
         if (cap == ForgeCapabilities.ENERGY) {
             return energyCap.cast();
+        } else if (cap == ForgeCapabilities.ITEM_HANDLER){
+            return LazyOptional.empty();
         }
         return super.getCapability(cap);
     }

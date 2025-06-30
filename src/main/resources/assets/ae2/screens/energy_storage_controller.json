@@ -15,12 +15,27 @@
         "top": 6
       }
     },
+    "prev": {
+      "position": {
+        "left": 88,
+        "top": 25
+      },
+      "align": "CENTER"
+    },
     "energy": {
       "position": {
-        "top": 60,
+        "top": 70,
         "left": 88
       },
       "align": "CENTER"
+    }
+  },
+  "widgets": {
+    "prevbtn": {
+      "left": 80,
+      "top": 40,
+      "width": 16,
+      "height": 16
     }
   }
 }

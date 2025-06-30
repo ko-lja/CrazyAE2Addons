@@ -40,7 +40,7 @@ public class CrazyConfig {
 
             EntityTickerCost = builder
                 .comment("You can set the power cost multiplayer for the entity ticker here")
-                .defineInRange("EntityTickerCost", 256, 0, 1024);
+                .defineInRange("EntityTickerCost", 512, 0, 4096);
 
             EntityTickerBlackList = builder
                 .comment("Blocks on which entity ticker should not work")

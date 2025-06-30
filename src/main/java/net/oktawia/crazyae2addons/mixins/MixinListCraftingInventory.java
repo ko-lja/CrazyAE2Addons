@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(value = ListCraftingInventory.class)
 public class MixinListCraftingInventory implements IIgnoreNBT {
 
-    @Shadow private KeyCounter list;
     @Unique private boolean ignoreNBT = false;
 
     @Redirect(

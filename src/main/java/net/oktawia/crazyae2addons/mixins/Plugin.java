@@ -39,6 +39,7 @@ public class Plugin implements IMixinConfigPlugin {
             case "net.oktawia.crazyae2addons.mixins.MixinMAE22" -> isModLoaded("mae2") && !isModLoaded("gtceu");
             case "net.oktawia.crazyae2addons.mixins.MixinMAE23" -> isModLoaded("mae2") && isModLoaded("gtceu");
             case "net.oktawia.crazyae2addons.mixins.MixinPatternProviderTargetCache" -> !isModLoaded("mae2") && !isModLoaded("gtceu");
+            case "net.oktawia.crazyae2addons.mixins.MixinAAE" -> isModLoaded("advanced_ae");
             default -> true;
         };
     }

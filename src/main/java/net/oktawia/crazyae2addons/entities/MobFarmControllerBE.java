@@ -24,6 +24,8 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
@@ -72,6 +74,7 @@ import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.items.XpShardItem;
 import net.oktawia.crazyae2addons.menus.MobFarmControllerMenu;
 import net.oktawia.crazyae2addons.menus.SpawnerExtractorControllerMenu;
+import net.oktawia.crazyae2addons.misc.MobFarmPreviewRenderer;
 import net.oktawia.crazyae2addons.misc.MobFarmValidator;
 import net.oktawia.crazyae2addons.misc.SpawnerExtractorValidator;
 import net.oktawia.crazyae2addons.mobstorage.MobKey;
@@ -91,6 +94,30 @@ public class MobFarmControllerBE extends AENetworkBlockEntity implements MenuPro
             3,
             this::saveChanges);
     public FakePlayer fakePlayer;
+    @OnlyIn(Dist.CLIENT)
+    public boolean preview = false;
+
+    @OnlyIn(Dist.CLIENT)
+    public List<MobFarmPreviewRenderer.CachedBlockInfo> ghostCache = null;
+
+    @OnlyIn(Dist.CLIENT)
+    public static final Set<MobFarmControllerBE> CLIENT_INSTANCES = new HashSet<>();
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level != null && level.isClientSide) {
+            CLIENT_INSTANCES.add(this);
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        CLIENT_INSTANCES.remove(this);
+    }
+
+
 
     public MobFarmControllerBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.MOB_FARM_CONTROLLER_BE.get(), pos, blockState);

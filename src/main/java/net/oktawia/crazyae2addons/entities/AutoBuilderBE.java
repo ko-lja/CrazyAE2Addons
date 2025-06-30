@@ -1,7 +1,6 @@
 package net.oktawia.crazyae2addons.entities;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
@@ -15,10 +14,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.*;
 import appeng.api.storage.StorageHelper;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
@@ -84,6 +80,7 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
 
     public IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.AUTO_BUILDER_BLOCK.get(), 7, this::setChanged);
     public Integer delay = 20;
+    public BlockPos offset = new BlockPos(0, 2, 0);
     private BlockPos ghostRenderPos = worldPosition.above().above();
     private List<String> code = new ArrayList<>();
     private int currentInstruction = 0;
@@ -95,7 +92,8 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
     public List<ICraftingLink> craftingLinks = new ArrayList<>();
     private boolean isCrafting = false;
     private List<GenericStack> toCraft = new ArrayList<>();
-    private final boolean DEBUG = false;
+    public ItemStack missingItems = ItemStack.EMPTY;
+    public boolean skipEmpty = false;
 
     public AutoBuilderBE(BlockPos pos, BlockState state) {
         super(CrazyBlockEntityRegistrar.AUTO_BUILDER_BE.get(), pos, state);
@@ -197,6 +195,9 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
         if (tag.contains("GhostPos")) {
             this.ghostRenderPos = BlockPos.of(tag.getLong("GhostPos"));
         }
+        if (tag.contains("offset")){
+            this.offset = BlockPos.of(tag.getLong("offset"));
+        }
     }
 
     @Override
@@ -208,6 +209,7 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
         tag.putInt("tickDelayLeft", this.tickDelayLeft);
         tag.putBoolean("isRunning", this.isRunning);
         tag.putLong("GhostPos", ghostRenderPos.asLong());
+        tag.putLong("offset", this.offset.asLong());
     }
 
     private void triggerRedstonePulse() {
@@ -281,6 +283,12 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
                 try {
                     if (this.craftingLinks.isEmpty()){
                         if (getGridNode() == null) return TickRateModulation.IDLE;
+                        if (!craftingPlan.get().missingItems().isEmpty()) {
+                            this.craftingLinks.clear();
+                            this.toCraftPlans.clear();
+                            this.missingItems = craftingPlan.get().finalOutput().what().wrapForDisplayOrFilter();
+                            return TickRateModulation.IDLE;
+                        }
                         var result = getGridNode().getGrid().getCraftingService().submitJob(
                                 craftingPlan.get(), this, null, true, IActionSource.ofMachine(this));
                         if (result.successful() && result.link() != null) {
@@ -298,7 +306,7 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
 
         if (inventory.getStackInSlot(0).isEmpty()) {
             isRunning = false;
-            setGhostRenderPos(worldPosition.above().above());
+            setGhostRenderPos(worldPosition.offset(this.offset));
             return TickRateModulation.URGENT;
         }
 
@@ -330,7 +338,7 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
                 case "W" -> setGhostRenderPos(getGhostRenderPos().offset(-1, 0, 0));
                 case "U" -> setGhostRenderPos(getGhostRenderPos().offset(0, 1, 0));
                 case "D" -> setGhostRenderPos(getGhostRenderPos().offset(0, -1, 0));
-                case "R" -> setGhostRenderPos(worldPosition.above().above());
+                case "R" -> setGhostRenderPos(worldPosition.offset(this.offset));
                 case "X" -> {
                     var grid = getMainNode().getGrid();
                     if (grid != null) {
@@ -400,13 +408,16 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
                                             if (inserted <= 0 && !drops.isEmpty()) return TickRateModulation.IDLE;
                                         }
 
-                                        var extracted = StorageHelper.poweredExtraction(
-                                                grid.getEnergyService(),
-                                                grid.getStorageService().getInventory(),
-                                                AEItemKey.of(block.asItem()),
-                                                1, IActionSource.ofMachine(this), Actionable.MODULATE);
+                                        long extracted = 0;
+                                        if (getMainNode().getGrid().getMachines(AutoBuilderCreativeSupplyBE.class).isEmpty()){
+                                            extracted = StorageHelper.poweredExtraction(
+                                                    grid.getEnergyService(),
+                                                    grid.getStorageService().getInventory(),
+                                                    AEItemKey.of(block.asItem()),
+                                                    1, IActionSource.ofMachine(this), Actionable.MODULATE);
+                                        }
 
-                                        if (extracted > 0 || this.DEBUG) {
+                                        if (extracted > 0 || !getMainNode().getGrid().getMachines(AutoBuilderCreativeSupplyBE.class).isEmpty()) {
                                             BlockState state = block.defaultBlockState();
                                             if (!props.isEmpty()) {
                                                 for (Map.Entry<String, String> entry : props.entrySet()) {
@@ -436,7 +447,7 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
                 inventory.setItemDirect(0, ItemStack.EMPTY);
                 inventory.setItemDirect(1, pattern.copyWithCount(1));
             }
-            setGhostRenderPos(worldPosition.above().above());
+            setGhostRenderPos(worldPosition.offset(this.offset));
             triggerRedstonePulse();
         } else if (didWork) {
             tickDelayLeft = this.delay;
@@ -578,12 +589,13 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
         if (this.code.isEmpty()) return;
 
         checkBlocksInStorage(ProgramExpander.countUsedBlocks(String.join("/", this.code)), additional);
-        if (!this.toCraft.isEmpty() && !this.DEBUG){
+        if (!this.toCraft.isEmpty() && getMainNode().getGrid().getMachines(AutoBuilderCreativeSupplyBE.class).isEmpty() && !skipEmpty){
             if (isUpgradedWith(AEItems.CRAFTING_CARD)){
                 scheduleCrafts();
                 isCrafting = true;
             }
         } else {
+            this.missingItems = ItemStack.EMPTY;
             this.isCrafting = false;
             this.isRunning = true;
             this.currentInstruction = 0;
@@ -604,7 +616,7 @@ public class AutoBuilderBE extends AENetworkInvBlockEntity implements IGridTicka
             code = new ArrayList<>();
             currentInstruction = 0;
             tickDelayLeft = 0;
-            setGhostRenderPos(worldPosition.above().above());
+            setGhostRenderPos(worldPosition.offset(this.offset));
         }
     }
 

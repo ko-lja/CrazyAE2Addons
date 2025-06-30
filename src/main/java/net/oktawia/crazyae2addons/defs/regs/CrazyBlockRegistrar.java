@@ -29,13 +29,6 @@ public class CrazyBlockRegistrar {
     public static final DeferredRegister<Item> BLOCK_ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, CrazyAddons.MODID);
 
-    public static final RegistryObject<CraftingCancelerBlock> CRAFTING_CANCELER_BLOCK =
-            BLOCKS.register("crafting_canceler", CraftingCancelerBlock::new);
-
-    public static final RegistryObject<BlockItem> CRAFTING_CANCELER_BLOCK_ITEM =
-            BLOCK_ITEMS.register("crafting_canceler",
-                    () -> new CraftingCancelerBlockItem(CRAFTING_CANCELER_BLOCK.get(), new Item.Properties()));
-
     public static final RegistryObject<MEDataControllerBlock> ME_DATA_CONTROLLER_BLOCK =
             BLOCKS.register("me_data_controller", MEDataControllerBlock::new);
 
@@ -176,6 +169,13 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("penrose_coil",
                     () -> new PenroseCoilItem(PENROSE_COIL.get(), new Item.Properties()));
 
+    public static final RegistryObject<PenrosePortBlock> PENROSE_PORT =
+            BLOCKS.register("penrose_port", PenrosePortBlock::new);
+
+    public static final RegistryObject<BlockItem> PENROSE_PORT_ITEM =
+            BLOCK_ITEMS.register("penrose_port",
+                    () -> new PenrosePortItem(PENROSE_PORT.get(), new Item.Properties()));
+
     public static final RegistryObject<PenroseControllerBlock> PENROSE_CONTROLLER =
             BLOCKS.register("penrose_controller", PenroseControllerBlock::new);
 
@@ -189,6 +189,20 @@ public class CrazyBlockRegistrar {
     public static final RegistryObject<BlockItem> CRAZY_PATTERN_PROVIDER_BLOCK_ITEM =
             BLOCK_ITEMS.register("crazy_pattern_provider",
                     () -> new CrazyPatternProviderBlockItem(CRAZY_PATTERN_PROVIDER_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<EnergyStorageFrame> ENERGY_STORAGE_FRAME_BLOCK =
+            BLOCKS.register("energy_storage_frame", EnergyStorageFrame::new);
+
+    public static final RegistryObject<BlockItem> ENERGY_STORAGE_FRAME_BLOCK_ITEM =
+            BLOCK_ITEMS.register("energy_storage_frame",
+                    () -> new EnergyStorageFrameBlockItem(ENERGY_STORAGE_FRAME_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<EnergyStoragePort> ENERGY_STORAGE_PORT_BLOCK =
+            BLOCKS.register("energy_storage_port", EnergyStoragePort::new);
+
+    public static final RegistryObject<BlockItem> ENERGY_STORAGE_PORT_BLOCK_ITEM =
+            BLOCK_ITEMS.register("energy_storage_port",
+                    () -> new EnergyStoragePortBlockItem(ENERGY_STORAGE_PORT_BLOCK.get(), new Item.Properties()));
 
     public static final RegistryObject<EnergyStorageController> ENERGY_STORAGE_CONTROLLER_BLOCK =
             BLOCKS.register("energy_storage_controller", EnergyStorageController::new);
@@ -232,13 +246,6 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("energy_storage_256k",
                     () -> new EnergyStorage256kBlockItem(ENERGY_STORAGE_256K_BLOCK.get(), new Item.Properties()));
 
-    public static final RegistryObject<EnergyStorageFrame> ENERGY_STORAGE_FRAME_BLOCK =
-            BLOCKS.register("energy_storage_frame", EnergyStorageFrame::new);
-
-    public static final RegistryObject<BlockItem> ENERGY_STORAGE_FRAME_BLOCK_ITEM =
-            BLOCK_ITEMS.register("energy_storage_frame",
-                    () -> new EnergyStorageFrameBlockItem(ENERGY_STORAGE_FRAME_BLOCK.get(), new Item.Properties()));
-
     public static final RegistryObject<DenseEnergyStorage1k> DENSE_ENERGY_STORAGE_1K_BLOCK =
             BLOCKS.register("dense_energy_storage_1k", DenseEnergyStorage1k::new);
 
@@ -281,6 +288,13 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("auto_builder",
                     () -> new AutoBuilderBlockItem(AUTO_BUILDER_BLOCK.get(), new Item.Properties()));
 
+    public static final RegistryObject<AutoBuilderCreativeSupplyBlock> AUTO_BUILDER_CREATIVE_SUPPLY_BLOCK =
+            BLOCKS.register("auto_builder_creative_supply", AutoBuilderCreativeSupplyBlock::new);
+
+    public static final RegistryObject<BlockItem> AUTO_BUILDER_CREATIVE_SUPPLY_BLOCK_ITEM =
+            BLOCK_ITEMS.register("auto_builder_creative_supply",
+                    () -> new AutoBuilderCreativeSupplyBlockItem(AUTO_BUILDER_CREATIVE_SUPPLY_BLOCK.get(), new Item.Properties()));
+
     public static final RegistryObject<DataSetterBlock> DATA_SETTER_BLOCK =
             BLOCKS.register("data_setter", DataSetterBlock::new);
 
@@ -295,6 +309,33 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("broken_pattern_provider",
                     () -> new BrokenPatternProviderBlockItem(BROKEN_PATTERN_PROVIDER_BLOCK.get(), new Item.Properties()));
 
+    public static final RegistryObject<EntropyCradle> ENTROPY_CRADLE =
+            BLOCKS.register("entropy_cradle", EntropyCradle::new);
+
+    public static final RegistryObject<BlockItem> ENTROPY_CRADLE_ITEM =
+            BLOCK_ITEMS.register("entropy_cradle",
+                    () -> new EntropyCradleItem(ENTROPY_CRADLE.get(), new Item.Properties()));
+
+    public static final RegistryObject<EntropyCradleController> ENTROPY_CRADLE_CONTROLLER =
+            BLOCKS.register("entropy_cradle_controller", EntropyCradleController::new);
+
+    public static final RegistryObject<BlockItem> ENTROPY_CRADLE_CONTROLLER_ITEM =
+            BLOCK_ITEMS.register("entropy_cradle_controller",
+                    () -> new EntropyCradleControllerItem(ENTROPY_CRADLE_CONTROLLER.get(), new Item.Properties()));
+
+    public static final RegistryObject<EntropyCradleCapacitor> ENTROPY_CRADLE_CAPACITOR =
+            BLOCKS.register("entropy_cradle_capacitor", EntropyCradleCapacitor::new);
+
+    public static final RegistryObject<BlockItem> ENTROPY_CRADLE_CAPACITOR_ITEM =
+            BLOCK_ITEMS.register("entropy_cradle_capacitor",
+                    () -> new EntropyCradleCapacitorItem(ENTROPY_CRADLE_CAPACITOR.get(), new Item.Properties()));
+
+    public static final RegistryObject<SuperSingularityBlock> SUPER_SINGULARITY_BLOCK =
+            BLOCKS.register("super_singularity_block", SuperSingularityBlock::new);
+
+    public static final RegistryObject<BlockItem> SUPER_SINGULARITY_BLOCK_ITEM =
+            BLOCK_ITEMS.register("super_singularity_block",
+                    () -> new EntropyCradleCapacitorItem(SUPER_SINGULARITY_BLOCK.get(), new Item.Properties()));
 
     private CrazyBlockRegistrar() {}
 }

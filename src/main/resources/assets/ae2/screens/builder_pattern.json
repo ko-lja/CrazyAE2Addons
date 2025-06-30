@@ -1,51 +1,63 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"],
+  "includes": ["common/common.json"],
   "background": {
     "texture": "guis/builder_pattern.png",
-    "srcRect": [0, 0, 176, 205]
+    "srcRect": [0, 0, 256, 256]
+  },
+  "slots": {
+    "PLAYER_INVENTORY": {
+      "left": 47,
+      "bottom": 82,
+      "grid": "BREAK_AFTER_9COLS"
+    },
+    "PLAYER_HOTBAR": {
+      "left": 47,
+      "bottom": 24,
+      "grid": "HORIZONTAL"
+    }
   },
   "text": {
-    "dialog_title": {
+    "player_inventory_title": {
       "text": {
-        "translate": "item.crazyae2addons.builder_pattern"
+        "translate": "container.inventory"
       },
       "position": {
-        "left": 8,
-        "top": 6
-      }
-    },
-    "error": {
-      "position": {
-        "left": 15,
-        "top": 130
+        "left": 47,
+        "bottom": 93
       }
     }
   },
   "widgets": {
     "data": {
       "left": 8,
-      "top": 16,
-      "width": 120,
-      "height": 90
+      "top": 22,
+      "width": 202,
+      "height": 135
     },
     "scroll": {
-      "left": 130,
-      "top": 16,
+      "left": 212,
+      "top": 23,
       "width": 10,
-      "height": 90
+      "height": 133
     },
     "confirm": {
-      "left": 154,
-      "top": 6,
+      "left": 231,
+      "top": 16,
       "width": 16,
       "height": 16
     },
     "delay": {
-      "left": 144,
-      "top": 30,
+      "left": 227,
+      "top": 40,
       "width": 25,
       "height": 12
+    },
+    "rename": {
+      "left": 8,
+      "top": 6,
+      "width": 120,
+      "height": 16
     }
   }
 }

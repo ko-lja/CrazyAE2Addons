@@ -15,10 +15,6 @@ public final class Screens {
 
     public static void register() {
 
-        InitScreens.register(CrazyMenuRegistrar.CRAFTING_CANCELER_MENU.get(),
-                CraftingCancelerScreen<CraftingCancelerMenu>::new,
-                "/screens/crafting_canceler.json");
-
         InitScreens.register(CrazyMenuRegistrar.ENTITY_TICKER_MENU.get(),
                 EntityTickerScreen<EntityTickerMenu>::new,
                 "/screens/entity_ticker.json");
@@ -221,6 +217,12 @@ public final class Screens {
                 CrazyMenuRegistrar.BROKEN_PATTERN_PROVIDER_MENU.get(),
                 BrokenPatternProviderScreen<BrokenPatternProviderMenu>::new,
                 "/screens/broken_pattern_provider.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.ENTROPY_CRADLE_CONTROLLER_MENU.get(),
+                EntropyCradleControllerScreen<EntropyCradleControllerMenu>::new,
+                "/screens/entropy_cradle_controller.json"
         );
     }
 

@@ -40,6 +40,13 @@
         "top": 85
       },
       "align": "CENTER"
+    },
+    "prev": {
+      "position": {
+        "left": 115,
+        "top": 30
+      },
+      "align": "CENTER"
     }
   },
   "slots": {
@@ -52,6 +59,14 @@
       "left": 8,
       "top": 78,
       "grid": "BREAK_AFTER_3COLS"
+    }
+  },
+  "widgets": {
+    "prevbtn": {
+      "left": 107,
+      "top": 45,
+      "width": 16,
+      "height": 16
     }
   }
 }

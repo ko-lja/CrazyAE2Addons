@@ -30,6 +30,7 @@ public class EnergyStorageController extends AEBaseEntityBlock<EnergyStorageCont
         super(Properties.of().strength(2f).mapColor(MapColor.METAL).sound(SoundType.METAL));
         registerDefaultState(stateDefinition.any().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
     }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -51,7 +52,7 @@ public class EnergyStorageController extends AEBaseEntityBlock<EnergyStorageCont
         if (!level.isClientSide && state.getBlock() != newState.getBlock()) {
             var be = getBlockEntity(level, pos);
             if (be != null){
-                be.validator.markWalls(be.getLevel(), be.getBlockPos(), be.getBlockState(), EnergyStorageFrame.FORMED, false);
+                be.validator.markWalls(be.getLevel(), be.getBlockPos(), be.getBlockState(), EnergyStorageFrame.FORMED, false, be);
             }
         }
 
