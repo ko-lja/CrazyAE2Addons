@@ -1,6 +1,5 @@
-package net.oktawia.crazyae2addons.jei;
+package net.oktawia.crazyae2addons.xei.jei;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;

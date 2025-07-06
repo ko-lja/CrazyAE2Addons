@@ -1,4 +1,4 @@
-package net.oktawia.crazyae2addons.jei;
+package net.oktawia.crazyae2addons.xei.common;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

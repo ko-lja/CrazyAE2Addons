@@ -1,41 +1,21 @@
-package net.oktawia.crazyae2addons.jei;
+package net.oktawia.crazyae2addons.xei.common;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
-import mezz.jei.api.IModPlugin;
-import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
+import net.oktawia.crazyae2addons.xei.jei.ReinforcedCondenserEntry;
 
 import java.util.List;
 
-@JeiPlugin
-public class CrazyPlugin implements IModPlugin {
-    private static final ResourceLocation ID = new ResourceLocation("crazyae2addons", "jei_plugin");
-    public static CrazyEntry currentEntry;
+public class CrazyRecipes {
 
-    @Override
-    public ResourceLocation getPluginUid() {
-        return ID;
-    }
-
-    @Override
-    public void registerCategories(IRecipeCategoryRegistration registration) {
-        registration.addRecipeCategories(new CrazyCategory(registration.getJeiHelpers().getGuiHelper()));
-        registration.addRecipeCategories(new ReinforcedCondenserCategory(registration.getJeiHelpers().getGuiHelper()));
-        registration.addRecipeCategories(new CradleCategory(registration.getJeiHelpers().getGuiHelper()));
-    }
-
-    @Override
-    public void registerRecipes(IRecipeRegistration registration) {
-        List<CrazyEntry> entries = List.of(
+    public static List<CrazyEntry> getCrazyEntries() {
+        return List.of(
                 new CrazyEntry(
                         new ResourceLocation("crazyae2addons", "penrose_sphere.nbt"),
                         Component.literal("Penrose Sphere"),
@@ -102,18 +82,10 @@ public class CrazyPlugin implements IModPlugin {
                         )
                 )
         );
+    }
 
-        List<CrazyWrapper> wrapped = entries.stream().map(CrazyWrapper::new).toList();
-        registration.addRecipes(CrazyCategory.TYPE, wrapped);
-
-        registration.addRecipes(ReinforcedCondenserCategory.TYPE, List.of(
-                new ReinforcedCondenserEntry(
-                        new ItemStack(AEItems.SINGULARITY).copyWithCount(8192),
-                        new ItemStack(CrazyItemRegistrar.SUPER_SINGULARITY.get())
-                )
-        ));
-
-        List<CradleEntry> raw = List.of(
+    public static List<CradleEntry> getCradleEntries() {
+        return List.of(
                 new CradleEntry(
                         new ResourceLocation("crazyae2addons", "1k_storage.nbt"),
                         List.of(
@@ -235,11 +207,13 @@ public class CrazyPlugin implements IModPlugin {
                         new ItemStack(CrazyBlockRegistrar.PENROSE_FRAME.get())
                 )
         );
+    }
 
-        List<CradleWrapper> wrapped2 = raw.stream()
-                .map(CradleWrapper::new)
-                .toList();
-
-        registration.addRecipes(CradleCategory.TYPE, wrapped2);
+    public static List<ReinforcedCondenserEntry> getCondenserEntried() {
+        return List.of(
+                new ReinforcedCondenserEntry(
+                        new ItemStack(AEItems.SINGULARITY).copyWithCount(8192),
+                        new ItemStack(CrazyItemRegistrar.SUPER_SINGULARITY.get())
+                )
     }
 }

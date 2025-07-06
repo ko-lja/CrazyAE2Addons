@@ -43,5 +43,20 @@
       },
       "align": "CENTER"
     }
+  },
+  "widgets": {
+    "toolbox": {
+      "right": -2,
+      "bottom": 50,
+      "width": 68,
+      "height": 68
+    }
+  },
+  "slots": {
+  "TOOLBOX": {
+    "bottom": 42,
+    "right": -10,
+    "grid": "BREAK_AFTER_3COLS"
   }
+}
 }

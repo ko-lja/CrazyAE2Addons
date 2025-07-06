@@ -1,8 +1,10 @@
-package net.oktawia.crazyae2addons.jei;
+package net.oktawia.crazyae2addons.xei.jei;
 
 import com.lowdragmc.lowdraglib.jei.ModularWrapper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.oktawia.crazyae2addons.xei.common.CradleEntry;
+import net.oktawia.crazyae2addons.xei.common.CradlePreview;
 
 import java.util.List;
 

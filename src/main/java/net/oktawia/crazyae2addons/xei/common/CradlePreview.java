@@ -1,4 +1,4 @@
-package net.oktawia.crazyae2addons.jei;
+package net.oktawia.crazyae2addons.xei.common;
 
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.crazyae2addons.Utils;
 import net.oktawia.crazyae2addons.blocks.EntropyCradle;
 import net.oktawia.crazyae2addons.blocks.EntropyCradleCapacitor;
-import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
