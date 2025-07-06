@@ -25,6 +25,7 @@ public class CraftingSchedulerMenu extends AEBaseMenu {
         this.amount = host.amount;
         addSlot(new FakeSlot(host.inv.createMenuWrapper(), 0), SlotSemantics.CONFIG);
         registerClientAction(SAVE, Integer.class, this::save);
+        createPlayerInventorySlots(ip);
     }
 
     public void save(Integer amount) {

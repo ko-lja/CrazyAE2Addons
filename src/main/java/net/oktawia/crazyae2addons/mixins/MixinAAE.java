@@ -13,6 +13,8 @@ import appeng.api.stacks.KeyCounter;
 import appeng.crafting.inv.ListCraftingInventory;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.logging.LogUtils;
+import net.minecraft.nbt.CompoundTag;
+import net.oktawia.crazyae2addons.interfaces.IAdvPatternProviderCpu;
 import net.oktawia.crazyae2addons.interfaces.IIgnoreNBT;
 import net.oktawia.crazyae2addons.interfaces.IPatternProviderCpu;
 import net.pedroksl.advanced_ae.common.cluster.AdvCraftingCPU;
@@ -84,8 +86,8 @@ public abstract class MixinAAE {
         }
         boolean result = instance.pushPattern(iPatternDetails, keyCounters);
         if (result) {
-            if (instance instanceof IPatternProviderCpu provider) {
-                provider.setCpuLogic(this.cpu.craftingLogic);
+            if (instance instanceof IAdvPatternProviderCpu provider) {
+                provider.setCpuLogic(this.cpu);
             }
             return true;
         }

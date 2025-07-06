@@ -49,7 +49,7 @@ public class PenroseControllerBlock extends AEBaseEntityBlock<PenroseControllerB
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!level.isClientSide && state.getBlock() != newState.getBlock()) {
             var be = getBlockEntity(level, pos);
-            be.validatorT0.markWalls(be.getLevel(), be.getBlockPos(), be.getBlockState(), PenroseFrameBlock.FORMED, false, getBlockEntity(level, pos));
+            be.validatorT0.markWalls(be.getLevel(), be.getBlockPos(), be.getBlockState(), PenroseFrameBlock.FORMED, false, be);
         }
 
         super.onRemove(state, level, pos, newState, isMoving);

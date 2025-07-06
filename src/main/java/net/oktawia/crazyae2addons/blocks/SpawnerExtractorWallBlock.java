@@ -44,4 +44,31 @@ public class SpawnerExtractorWallBlock extends AEBaseEntityBlock<SpawnerExtracto
         super.createBlockStateDefinition(builder);
         builder.add(FORMED);
     }
+
+    @Override
+    public InteractionResult onActivated(
+            Level level,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            @Nullable ItemStack heldItem,
+            BlockHitResult hit) {
+        if (InteractionUtil.isInAlternateUseMode(player)) {
+            return InteractionResult.PASS;
+        }
+
+        var be = getBlockEntity(level, pos);
+        if (be != null) {
+            var controller = be.controller;
+            if (controller != null){
+                if (!level.isClientSide()) {
+                    controller.openMenu(player, MenuLocators.forBlockEntity(controller));
+                }
+
+                return InteractionResult.sidedSuccess(level.isClientSide());
+            }
+        }
+
+        return InteractionResult.PASS;
+    }
 }

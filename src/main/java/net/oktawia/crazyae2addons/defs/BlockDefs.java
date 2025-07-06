@@ -295,7 +295,44 @@ public class BlockDefs {
                 () -> Map.of(
                         "E", CrazyItemRegistrar.ENERGY_EXPORTER_PART_ITEM.get().asItem(),
                         "I", AEBlocks.INTERFACE.asItem(),
-                        "P", CrazyBlockRegistrar.PENROSE_PORT_ITEM.get().asItem()
+                        "P", CrazyBlockRegistrar.PENROSE_FRAME.get().asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.ENERGY_STORAGE_PORT_BLOCK.get(),
+                " E /IPI/ E ",
+                () -> Map.of(
+                        "E", CrazyItemRegistrar.ENERGY_EXPORTER_PART_ITEM.get().asItem(),
+                        "I", AEBlocks.INTERFACE.asItem(),
+                        "P", CrazyBlockRegistrar.ENERGY_STORAGE_FRAME_BLOCK.get().asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.ENTROPY_CRADLE.get(),
+                "BQB/QBQ/BQB",
+                () -> Map.of(
+                        "B", Blocks.OBSIDIAN.asItem(),
+                        "Q", Blocks.QUARTZ_BLOCK.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.ENTROPY_CRADLE_CONTROLLER.get(),
+                " F /FDF/ F ",
+                () -> Map.of(
+                        "F", CrazyBlockRegistrar.ENTROPY_CRADLE.get().asItem(),
+                        "D", Items.DIAMOND.asItem()
+                )
+        );
+
+        block(
+                CrazyBlockRegistrar.ENTROPY_CRADLE_CAPACITOR.get(),
+                " F /FRF/ F ",
+                () -> Map.of(
+                        "F", CrazyBlockRegistrar.ENTROPY_CRADLE.get().asItem(),
+                        "R", Blocks.REDSTONE_BLOCK.asItem()
                 )
         );
     }

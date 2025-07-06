@@ -94,13 +94,11 @@ public class MobFarmControllerBE extends AENetworkBlockEntity implements MenuPro
             3,
             this::saveChanges);
     public FakePlayer fakePlayer;
-    @OnlyIn(Dist.CLIENT)
+
     public boolean preview = false;
 
-    @OnlyIn(Dist.CLIENT)
     public List<MobFarmPreviewRenderer.CachedBlockInfo> ghostCache = null;
 
-    @OnlyIn(Dist.CLIENT)
     public static final Set<MobFarmControllerBE> CLIENT_INSTANCES = new HashSet<>();
 
     @Override
@@ -288,7 +286,7 @@ public class MobFarmControllerBE extends AENetworkBlockEntity implements MenuPro
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (!CrazyConfig.COMMON.enablePeacefullSpawner.get() && getLevel().getDifficulty() == Difficulty.PEACEFUL) return TickRateModulation.IDLE;
-        if (!validator.matchesStructure(getLevel(), getBlockPos(), getBlockState())){
+        if (!validator.matchesStructure(getLevel(), getBlockPos(), getBlockState(), this)){
             return TickRateModulation.IDLE;
         }
 

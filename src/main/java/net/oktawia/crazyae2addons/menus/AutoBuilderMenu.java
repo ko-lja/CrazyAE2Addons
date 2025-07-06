@@ -22,6 +22,8 @@ public class AutoBuilderMenu extends UpgradeableMenu<AutoBuilderBE> {
     public String missingItem;
     private String MISSING = "actionUpdateMissing";
     private String OFFSET = "actionUpdateOffset";
+    @GuiSync(932)
+    public boolean skipEmpty;
 
     public AutoBuilderMenu(int id, Inventory playerInventory, AutoBuilderBE host) {
         super(CrazyMenuRegistrar.AUTO_BUILDER_MENU.get(), id, playerInventory, host);
@@ -30,12 +32,14 @@ public class AutoBuilderMenu extends UpgradeableMenu<AutoBuilderBE> {
         this.xax = host.offset.getX();
         this.yax = host.offset.getY();
         this.zax = host.offset.getZ();
+        this.skipEmpty = host.skipEmpty;
         this.registerClientAction(MISSING, Boolean.class, this::updateMissing);
         this.registerClientAction(OFFSET, String.class, this::syncOffset);
     }
 
     public void updateMissing(boolean selected) {
         getHost().skipEmpty = selected;
+        this.skipEmpty = selected;
         if (isClientSide()){
             sendClientAction(MISSING, selected);
         }

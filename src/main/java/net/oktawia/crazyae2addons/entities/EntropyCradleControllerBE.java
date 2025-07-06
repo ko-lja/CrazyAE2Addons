@@ -56,11 +56,11 @@ public class EntropyCradleControllerBE extends AENetworkInvBlockEntity implement
     public EntropyCradleValidator validator;
     public int MAX_ENERGY = 600_000_000;
     public IEnergyStorage storedEnergy;
-    @OnlyIn(Dist.CLIENT)
+
     public List<EntropyCradlePreviewRenderer.CachedBlockInfo> ghostCache = null;
-    @OnlyIn(Dist.CLIENT)
+
     public boolean preview = false;
-    @OnlyIn(Dist.CLIENT)
+
     public static final Set<EntropyCradleControllerBE> CLIENT_INSTANCES = new java.util.HashSet<>();
 
     public EntropyCradleControllerBE(BlockPos pos, BlockState blockState) {

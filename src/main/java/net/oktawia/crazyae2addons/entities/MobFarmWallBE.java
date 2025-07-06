@@ -9,6 +9,8 @@ import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 
 public class MobFarmWallBE extends AENetworkBlockEntity {
 
+    public MobFarmControllerBE controller;
+
     public MobFarmWallBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.MOB_FARM_WALL_BE.get(), pos, blockState);
         this.getMainNode()

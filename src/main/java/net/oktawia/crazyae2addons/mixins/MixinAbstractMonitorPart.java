@@ -1,7 +1,6 @@
 package net.oktawia.crazyae2addons.mixins;
 
 import appeng.parts.reporting.AbstractMonitorPart;
-import com.mojang.logging.LogUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

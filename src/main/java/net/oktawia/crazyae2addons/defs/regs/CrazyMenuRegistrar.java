@@ -176,5 +176,8 @@ public class CrazyMenuRegistrar {
     public static final RegistryObject<MenuType<EntropyCradleControllerMenu>> ENTROPY_CRADLE_CONTROLLER_MENU =
             reg(id("entropy_cradle_controller"), EntropyCradleControllerMenu::new, EntropyCradleControllerBE.class);
 
+    public static final RegistryObject<MenuType<PatternManagementUnitControllerMenu>> PATTERN_MANAGEMENT_UNIT_CONTROLLER_MENU =
+            reg(id("pattern_management_unit_controller_menu"), PatternManagementUnitControllerMenu::new, PatternManagementUnitControllerBE.class);
+
     private CrazyMenuRegistrar() {}
 }

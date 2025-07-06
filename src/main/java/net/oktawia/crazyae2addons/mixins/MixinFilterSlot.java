@@ -1,7 +1,6 @@
 package net.oktawia.crazyae2addons.mixins;
 
 import appeng.api.stacks.GenericStack;
-import com.mojang.logging.LogUtils;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;

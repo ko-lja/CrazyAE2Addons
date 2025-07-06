@@ -224,6 +224,12 @@ public final class Screens {
                 EntropyCradleControllerScreen<EntropyCradleControllerMenu>::new,
                 "/screens/entropy_cradle_controller.json"
         );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.PATTERN_MANAGEMENT_UNIT_CONTROLLER_MENU.get(),
+                PatternManagementUnitControllerScreen<PatternManagementUnitControllerMenu>::new,
+                "/screens/pattern_management_unit_controller.json"
+        );
     }
 
     private Screens() {}

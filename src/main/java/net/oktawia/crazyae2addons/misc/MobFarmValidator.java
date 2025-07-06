@@ -15,6 +15,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.oktawia.crazyae2addons.blocks.MobFarmWallBlock;
 import net.oktawia.crazyae2addons.blocks.SpawnerExtractorWallBlock;
+import net.oktawia.crazyae2addons.entities.MobFarmControllerBE;
+import net.oktawia.crazyae2addons.entities.MobFarmWallBE;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -181,8 +183,7 @@ public class MobFarmValidator {
         return count;
     }
 
-
-    public boolean matchesStructure(Level level, BlockPos origin, BlockState state) {
+    public boolean matchesStructure(Level level, BlockPos origin, BlockState state, MobFarmControllerBE controller) {
         Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite();
         int height = layers.size();
         int sizeZ = layers.get(0).size();
@@ -213,13 +214,13 @@ public class MobFarmValidator {
                     boolean match = allowed.contains(block);
 
                     if (!match) {
-                        markWalls(level, origin, state, MobFarmWallBlock.FORMED, false);
+                        markWalls(level, origin, state, MobFarmWallBlock.FORMED, false, controller);
                         return false;
                     }
                 }
             }
         }
-        markWalls(level, origin, state, MobFarmWallBlock.FORMED, true);
+        markWalls(level, origin, state, MobFarmWallBlock.FORMED, true, controller);
         return true;
     }
 
@@ -234,7 +235,7 @@ public class MobFarmValidator {
         };
     }
 
-    public void markWalls(Level level, BlockPos origin, BlockState state, BooleanProperty formedProperty, boolean setState) {
+    public void markWalls(Level level, BlockPos origin, BlockState state, BooleanProperty formedProperty, boolean setState, MobFarmControllerBE controller) {
         Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite();
         int height = layers.size();
         int sizeZ = layers.get(0).size();
@@ -258,6 +259,9 @@ public class MobFarmValidator {
 
                     if (blockState.hasProperty(formedProperty) && blockState.getValue(formedProperty) != setState) {
                         level.setBlock(checkPos, blockState.setValue(formedProperty, setState), 3);
+                    }
+                    if (level.getBlockEntity(checkPos) instanceof MobFarmWallBE mfw){
+                        mfw.controller = controller;
                     }
                 }
             }

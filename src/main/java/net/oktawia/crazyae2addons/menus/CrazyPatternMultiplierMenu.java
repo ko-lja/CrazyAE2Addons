@@ -16,6 +16,9 @@ import net.minecraft.world.level.Level;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.CrazyPatternMultiplierHost;
 import net.oktawia.crazyae2addons.misc.AppEngFilteredSlot;
+import net.oktawia.crazyae2addons.misc.AppEngManyFilteredSlot;
+
+import java.util.List;
 
 public class CrazyPatternMultiplierMenu extends AEBaseMenu {
 
@@ -32,7 +35,7 @@ public class CrazyPatternMultiplierMenu extends AEBaseMenu {
         this.mult = host.getItemStack().getTag() == null ? 0 : host.getItemStack().getTag().getDouble("mult");
         host.setMenu(this);
         for (int i = 0; i < 36; i++){
-            this.addSlot(new AppEngFilteredSlot(host.inv, i, AEItems.PROCESSING_PATTERN.asItem()), SlotSemantics.ENCODED_PATTERN);
+            this.addSlot(new AppEngManyFilteredSlot(host.inv, 0, List.of(AEItems.PROCESSING_PATTERN.stack(), AEItems.CRAFTING_PATTERN.stack())), SlotSemantics.ENCODED_PATTERN);
         }
         registerClientAction(ACTION_MODIFY_PATTERNS, Double.class, this::modifyPatterns);
     }

@@ -10,9 +10,11 @@ import net.minecraft.world.item.ItemStack;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.CrazyPatternModifierHost;
 import net.oktawia.crazyae2addons.misc.AppEngFilteredSlot;
+import net.oktawia.crazyae2addons.misc.AppEngManyFilteredSlot;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 
 public class CrazyPatternModifierMenu extends AEBaseMenu {
 
@@ -48,7 +50,7 @@ public class CrazyPatternModifierMenu extends AEBaseMenu {
         history3 = arr.length > 2 ? arr[2] : -1;
         history4 = arr.length > 3 ? arr[3] : -1;
         history5 = arr.length > 4 ? arr[4] : -1;
-        this.addSlot(new AppEngFilteredSlot(host.inv, 0, AEItems.PROCESSING_PATTERN.asItem()), SlotSemantics.STORAGE);
+        this.addSlot(new AppEngManyFilteredSlot(host.inv, 0, List.of(AEItems.PROCESSING_PATTERN.stack(), AEItems.CRAFTING_PATTERN.stack())), SlotSemantics.STORAGE);
         registerClientAction(CHANGE_IGNORE_NBT, this::changeNBT);
         registerClientAction(CHANGE_CIRCUIT, Integer.class, this::changeCircuit);
         registerClientAction(CHANGE_CIRCUIT2, Integer.class, this::changeCircuit2);
@@ -98,9 +100,11 @@ public class CrazyPatternModifierMenu extends AEBaseMenu {
 
             if (val == -1) {
                 tag.remove("circuit");
+                tag.remove("CustomModelData");
                 this.textCirc = "No circuit selected";
             } else {
                 tag.putInt("circuit", val);
+                tag.putInt("CustomModelData", val == 0 ? 33 : val);
                 this.textCirc = "Selected circuit " + val;
 
                 if (recordHistory) {

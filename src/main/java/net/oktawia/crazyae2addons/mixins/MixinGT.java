@@ -5,7 +5,6 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
-import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.helpers.patternprovider.PatternProviderTarget;

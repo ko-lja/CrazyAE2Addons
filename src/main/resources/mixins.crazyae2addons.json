@@ -10,6 +10,7 @@
     "AEBaseMenuInvoker",
     "ExecutingCraftingJobAccessor",
     "MixinAAE",
+    "MixinAAE2",
     "MixinAbstractMonitorPart",
     "MixinCraftingCpuLogic",
     "MixinFilterSlot",

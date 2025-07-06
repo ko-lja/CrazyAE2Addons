@@ -21,7 +21,6 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.blocks.MobFarmWallBlock;
 import net.oktawia.crazyae2addons.blocks.PenroseFrameBlock;
 import net.oktawia.crazyae2addons.entities.PenroseControllerBE;
 import net.oktawia.crazyae2addons.interfaces.PenroseValidator;

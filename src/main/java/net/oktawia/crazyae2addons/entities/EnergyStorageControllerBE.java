@@ -50,13 +50,11 @@ public class EnergyStorageControllerBE extends AENetworkBlockEntity implements M
     public double maxEnergy;
     public EnergyStorageControllerMenu menu;
     public StoredEnergyAmount stored;
-    @OnlyIn(Dist.CLIENT)
+
     public List<EnergyStoragePreviewRenderer.CachedBlockInfo> ghostCache = null;
 
-    @OnlyIn(Dist.CLIENT)
     public boolean preview = false;
 
-    @OnlyIn(Dist.CLIENT)
     public static final Set<EnergyStorageControllerBE> CLIENT_INSTANCES = new java.util.HashSet<>();
 
     public EnergyStorageControllerBE(BlockPos pos, BlockState blockState){

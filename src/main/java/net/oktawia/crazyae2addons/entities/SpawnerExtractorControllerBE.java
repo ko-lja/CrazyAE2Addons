@@ -79,13 +79,11 @@ public class SpawnerExtractorControllerBE extends AENetworkBlockEntity implement
     public IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER.get(), 4, this::saveChanges);
     public SpawnerExtractorValidator validator;
     public boolean spawnerDissabled = false;
-    @OnlyIn(Dist.CLIENT)
+
     public boolean preview = false;
 
-    @OnlyIn(Dist.CLIENT)
     public List<SpawnerExtractorPreviewRenderer.CachedBlockInfo> ghostCache = null;
 
-    @OnlyIn(Dist.CLIENT)
     public static final Set<SpawnerExtractorControllerBE> CLIENT_INSTANCES = new java.util.HashSet<>();
 
     @Override

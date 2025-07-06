@@ -29,8 +29,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -55,11 +53,11 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
     public boolean energyMode = false;
     public boolean preview = false;
     public int previewTier = 0;
-    private int ticks = 0;
+    private int myticks = 0;
     public EnergyStorage energyStorage = new EnergyStorage(Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 0);
-    @OnlyIn(Dist.CLIENT)
+
     public List<PenrosePreviewRenderer.CachedBlockInfo> ghostCache = null;
-    @OnlyIn(Dist.CLIENT)
+
     public int cachedTier = -1;
 
     private final LazyOptional<IEnergyStorage> energyCap = LazyOptional.of(() -> new IEnergyStorage() {
@@ -229,8 +227,8 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        ticks ++;
-        if (ticks >= 20){
+        myticks++;
+        if (myticks >= 20){
             this.formed = false;
             this.tier = 0;
              if (validatorT3.matchesStructure(getLevel(), getBlockPos(), getBlockState(), this)) {
@@ -247,7 +245,7 @@ public class PenroseControllerBE extends AENetworkInvBlockEntity implements Menu
                 this.formed = true;
             }
 
-            ticks = 0;
+            myticks = 0;
         }
         if (this.formed){
             var grid = getMainNode().getGrid();

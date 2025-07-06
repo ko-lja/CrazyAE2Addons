@@ -125,6 +125,7 @@ public class CrazyAddons {
             MinecraftForge.EVENT_BUS.addListener(EnergyStoragePreviewRenderer::onRender);
             MinecraftForge.EVENT_BUS.addListener(SpawnerExtractorPreviewRenderer::onRender);
             MinecraftForge.EVENT_BUS.addListener(MobFarmPreviewRenderer::onRender);
+            MinecraftForge.EVENT_BUS.addListener(PatternManagementUnitPreviewRenderer::onRender);
         }
         @SubscribeEvent
         public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders evt) {

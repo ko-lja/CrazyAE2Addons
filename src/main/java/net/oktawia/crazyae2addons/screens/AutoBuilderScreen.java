@@ -28,6 +28,7 @@ public class AutoBuilderScreen<C extends AutoBuilderMenu> extends UpgradeableScr
         skipMissing.setChangeListener(() -> {
             getMenu().updateMissing(skipMissing.isSelected());
         });
+        skipMissing.setSelected(getMenu().skipEmpty);
         var north = new IconButton(Icon.ARROW_UP, btn -> changex(1));
         north.setTooltip(Tooltip.create(Component.literal("Add 1 offset to north")));
         var south = new IconButton(Icon.ARROW_DOWN, btn -> changex(-1));

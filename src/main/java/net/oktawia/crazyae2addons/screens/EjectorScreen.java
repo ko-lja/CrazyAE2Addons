@@ -11,4 +11,10 @@ public class EjectorScreen<C extends EjectorMenu> extends UpgradeableScreen<C> {
             C menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
     }
+
+    @Override
+    public void updateBeforeRender(){
+        super.updateBeforeRender();
+        setTextContent("missing", Component.literal(getMenu().cantCraft));
+    }
 }

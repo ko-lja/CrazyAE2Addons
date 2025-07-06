@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.oktawia.crazyae2addons.interfaces.IMovableSlot;
 import net.oktawia.crazyae2addons.menus.CrazyPatternProviderMenu;
 import net.oktawia.crazyae2addons.mixins.SlotAccessor;
 
@@ -41,15 +42,15 @@ public class CrazyPatternProviderScreen<C extends CrazyPatternProviderMenu> exte
 
                 Slot s = getMenu().getSlots(appeng.menu.SlotSemantics.ENCODED_PATTERN).get(i);
                 if (!(s instanceof AppEngSlot slot)) return;
-                SlotAccessor accessor = (SlotAccessor) slot;
-
-                if (row >= scrollOffset && row < scrollOffset + 4) {
-                    accessor.setX(x);
-                    accessor.setY(y);
-                    slot.setSlotEnabled(true);
-                    getMenu().requestUpdate();
-                } else {
-                    slot.setSlotEnabled(false);
+                if (slot instanceof IMovableSlot accessor){
+                    if (row >= scrollOffset && row < scrollOffset + 4) {
+                        accessor.setX(x);
+                        accessor.setY(y);
+                        slot.setSlotEnabled(true);
+                        getMenu().requestUpdate();
+                    } else {
+                        slot.setSlotEnabled(false);
+                    }
                 }
             }
         }

@@ -51,7 +51,7 @@ public class MobFarmControllerBlock extends AEBaseEntityBlock<MobFarmControllerB
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!level.isClientSide && state.getBlock() != newState.getBlock()) {
             var be = getBlockEntity(level, pos);
-            be.validator.markWalls(be.getLevel(), be.getBlockPos(), be.getBlockState(), MobFarmWallBlock.FORMED, false);
+            be.validator.markWalls(be.getLevel(), be.getBlockPos(), be.getBlockState(), MobFarmWallBlock.FORMED, false, be);
         }
 
         super.onRemove(state, level, pos, newState, isMoving);

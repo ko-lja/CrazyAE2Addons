@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PenroseFrameBE extends AENetworkBlockEntity {
 
-    private PenroseControllerBE controller;
+    public PenroseControllerBE controller;
 
     private final LazyOptional<IEnergyStorage> energyCap = LazyOptional.of(() -> new IEnergyStorage() {
         @Override public int getEnergyStored() {
@@ -58,10 +58,6 @@ public class PenroseFrameBE extends AENetworkBlockEntity {
                     .noneMatch(x -> (x.a() == this.controller.getMainNode().getNode() || x.b() == this.controller.getMainNode().getNode()))){
                 GridHelper.createConnection(getMainNode().getNode(), this.controller.getMainNode().getNode());
             }
-        } else {
-            getMainNode().getNode().getConnections().stream()
-                    .filter(x -> (!x.isInWorld()))
-                    .forEach(IGridConnection::destroy);
         }
     }
 

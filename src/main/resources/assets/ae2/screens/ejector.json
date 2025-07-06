@@ -28,6 +28,21 @@
         "left": 8,
         "top": 31
       }
+    },
+    "missing": {
+      "position": {
+        "left": 88,
+        "top": 22
+      },
+      "align": "CENTER"
+    },
+    "missing0": {
+      "position": {
+        "left": 88,
+        "top": 12
+      },
+      "align": "CENTER",
+      "text": "Missing:"
     }
   }
 }

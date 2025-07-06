@@ -7,34 +7,26 @@ import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.crafting.*;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
-import appeng.api.stacks.KeyCounter;
+import appeng.api.stacks.*;
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.definitions.AEItems;
-import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.crafting.pattern.EncodedPatternItem;
-import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.util.ConfigInventory;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -50,17 +42,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.oktawia.crazyae2addons.Utils;
+import net.oktawia.crazyae2addons.blocks.EjectorBlock;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
-import net.oktawia.crazyae2addons.logic.Signalling.SignallingInterfaceLogic;
 import net.oktawia.crazyae2addons.menus.EjectorMenu;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 public class EjectorBE extends AENetworkBlockEntity implements MenuProvider, IUpgradeableObject, ICraftingRequester, IGridTickable {
@@ -87,6 +76,8 @@ public class EjectorBE extends AENetworkBlockEntity implements MenuProvider, IUp
     public Boolean doesWait = false;
     public List<Future<ICraftingPlan>> toCraftPlans = new ArrayList<>();
     public List<ICraftingLink> craftingLinks = new ArrayList<>();
+    public GenericStack cantCraft = null;
+    public EjectorMenu menu = null;
 
     public EjectorBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.EJECTOR_BE.get(), pos, blockState);
@@ -291,6 +282,7 @@ public class EjectorBE extends AENetworkBlockEntity implements MenuProvider, IUp
             this.craftingLinks.remove(link);
         }
         if (link.isCanceled()){
+            LogUtils.getLogger().info("Job was cancelled");
             var iterator = craftingLinks.iterator();
             while (iterator.hasNext()){
                 iterator.next().cancel();
@@ -311,6 +303,10 @@ public class EjectorBE extends AENetworkBlockEntity implements MenuProvider, IUp
         if (craftingLinks.isEmpty()){
             doesWait = false;
         }
+        if (craftingLinks.isEmpty() && toCraftPlans.isEmpty()){
+            getLevel().setBlockAndUpdate(getBlockPos(), getBlockState().setValue(EjectorBlock.ISCRAFTING, false));
+            return TickRateModulation.IDLE;
+        }
         if (!leftoversToInsert.isEmpty()) {
             if (getGridNode() == null) return TickRateModulation.IDLE;
             var storage = getGridNode().getGrid().getStorageService().getInventory();
@@ -321,19 +317,45 @@ public class EjectorBE extends AENetworkBlockEntity implements MenuProvider, IUp
                 return inserted == stack.amount();
             });
         }
-        Iterator<Future<ICraftingPlan>> iterator = toCraftPlans.iterator();
-        while (iterator.hasNext()) {
-            Future<ICraftingPlan> craftingPlan = iterator.next();
-            if (craftingPlan.isDone()) {
-                try {
-                    if (getGridNode() == null) return TickRateModulation.IDLE;
-                    var result = getGridNode().getGrid().getCraftingService().submitJob(
-                            craftingPlan.get(), this, null, true, IActionSource.ofMachine(this));
-                    if (result.successful() && result.link() != null) {
-                        this.craftingLinks.add(result.link());
+        if (craftingLinks.isEmpty()) {
+            Iterator<Future<ICraftingPlan>> iterator = toCraftPlans.iterator();
+            while (iterator.hasNext()) {
+                Future<ICraftingPlan> craftingPlan = iterator.next();
+                if (craftingPlan.isDone()) {
+                    try {
+                        if (getGridNode() == null) return TickRateModulation.IDLE;
+
+                        var result = getGridNode().getGrid().getCraftingService().submitJob(
+                                craftingPlan.get(), this, null, true, IActionSource.ofMachine(this)
+                        );
+
+                        if (result.successful() && result.link() != null) {
+                            this.craftingLinks.add(result.link());
+                            getLevel().setBlockAndUpdate(getBlockPos(), getBlockState().setValue(EjectorBlock.ISCRAFTING, true));
+                            this.cantCraft = null;
+                            if (this.menu != null){
+                                this.menu.cantCraft = "nothing";
+                            }
+                            iterator.remove();
+                            break;
+                        } else if (!result.successful()){
+                            this.cantCraft = craftingPlan.get().finalOutput();
+                            if (this.menu != null){
+                                this.menu.cantCraft = String.format("%sx %s", this.cantCraft.what().formatAmount(this.cantCraft.amount(), AmountFormat.SLOT), this.cantCraft.what().toString());
+                            }
+                            getLevel().setBlockAndUpdate(getBlockPos(), getBlockState().setValue(EjectorBlock.ISCRAFTING, false));
+                            iterator.remove();
+                            toCraftPlans.clear();
+                            for (var link : craftingLinks){
+                                link.cancel();
+                            }
+                            craftingLinks.clear();
+                            flushInv();
+                        }
+                    } catch (Exception e) {
+                        LogUtils.getLogger().info("Crafting plan submit error: {}", String.valueOf(e));
                         iterator.remove();
                     }
-                } catch (Throwable ignored) {
                 }
             }
         }
@@ -416,5 +438,9 @@ public class EjectorBE extends AENetworkBlockEntity implements MenuProvider, IUp
         }
         doesWait = false;
         flushInv();
+    }
+
+    public void setMenu(EjectorMenu ejectorMenu) {
+        this.menu = ejectorMenu;
     }
 }

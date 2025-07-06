@@ -102,10 +102,13 @@ public class PenrosePortBE extends AENetworkBlockEntity implements IGridTickable
             LazyOptional<IEnergyStorage> cap = neighbor.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite());
 
             cap.ifPresent(target -> {
-                int maxOutput = controller.energyStorage.extractEnergy(Integer.MAX_VALUE, true);
-                int maxAccept = target.receiveEnergy(maxOutput, true);
-                if (maxAccept > 0) {
-                    int extracted = controller.energyStorage.extractEnergy(maxAccept, false);
+                int available = controller.energyStorage.getEnergyStored();
+                if (available <= 0) return;
+
+                int maxAccept = target.receiveEnergy(available, true);
+                int toExtract = Math.min(available, maxAccept);
+                if (toExtract > 0) {
+                    int extracted = controller.energyStorage.extractEnergy(toExtract, false);
                     target.receiveEnergy(extracted, false);
                 }
             });

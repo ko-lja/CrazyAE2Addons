@@ -11,7 +11,7 @@ import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 
 public class SpawnerExtractorWallBE extends AENetworkBlockEntity {
 
-    private SpawnerExtractorControllerBE controller;
+    public SpawnerExtractorControllerBE controller;
 
     public SpawnerExtractorWallBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.SPAWNER_EXTRACTOR_WALL_BE.get(), pos, blockState);

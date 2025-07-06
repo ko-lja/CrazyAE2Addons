@@ -28,11 +28,13 @@ public class EjectorBlock extends AEBaseEntityBlock<EjectorBE> implements IUpgra
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+    public static final BooleanProperty ISCRAFTING = BooleanProperty.create("iscrafting");
 
     public EjectorBlock() {
         super(AEBaseBlock.metalProps());
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
+        this.registerDefaultState(this.defaultBlockState().setValue(ISCRAFTING, false));
     }
 
     @Override
@@ -44,6 +46,7 @@ public class EjectorBlock extends AEBaseEntityBlock<EjectorBE> implements IUpgra
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
         builder.add(POWERED);
+        builder.add(ISCRAFTING);
     }
 
     @Nullable

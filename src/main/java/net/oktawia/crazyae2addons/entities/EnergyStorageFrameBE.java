@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class EnergyStorageFrameBE extends AENetworkBlockEntity {
 
-    private EnergyStorageControllerBE controller;
+    public EnergyStorageControllerBE controller;
 
     public EnergyStorageFrameBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.ENERGY_STORAGE_FRAME_BE.get(), pos, blockState);
