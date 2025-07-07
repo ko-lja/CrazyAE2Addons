@@ -18,7 +18,7 @@ public class CrazyWrapper extends ModularWrapper<CrazyPreview> {
         this.structureId = entry.structureId();
         this.requiredItems = entry.requiredItems();
         this.name = entry.name().getString();
-        CrazyPlugin.currentEntry = entry;
+        CrazyJeiPlugin.currentEntry = entry;
     }
 }
 

@@ -4,8 +4,8 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
-import net.oktawia.crazyae2addons.misc.DataVariable;
 import net.oktawia.crazyae2addons.parts.VariableTerminalPart;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.*;
 
@@ -41,67 +41,65 @@ public class VariableTerminalMenu extends AEBaseMenu {
         String[] parts = payload.split("=", 2);
         if (parts.length == 2) {
             String name = parts[0];
-            try {
-                int value = Integer.parseInt(parts[1]);
-                terminal.findController().ifPresent(controller -> {
-                    controller.addVariable(VariableTerminalPart.hexId, name, value, 0);
-                    loadVariables();
-                });
-            } catch (NumberFormatException ignored) {}
+            String value = parts[1];
+            terminal.findController().ifPresent(controller -> {
+                controller.addVariable(VariableTerminalPart.hexId, VariableTerminalPart.class, VariableTerminalPart.hexId, name, value);
+                loadVariables();
+            });
         }
     }
 
-    public void removeVariable(String name) {
+    public void removeVariable(String idAndName) {
         if (isClientSide()) {
-            sendClientAction(ACTION_REMOVE, name);
+            sendClientAction(ACTION_REMOVE, idAndName);
             return;
         }
 
-        terminal.findController().ifPresent(controller -> {
-            String keyToRemove = null;
+        String[] parts = idAndName.split("\\|", 2);
+        if (parts.length == 2) {
+            String id = parts[0];
+            String name = parts[1];
 
-            for (Object obj : controller.variables.toStream().toList()) {
-                Map.Entry<String, DataVariable> var = (Map.Entry<String, DataVariable>) obj;
-                if (Objects.equals(var.getValue().name, name)) {
-                    keyToRemove = var.getKey();
-                    break;
-                }
-            }
-
-            if (keyToRemove != null) {
-                controller.variables.del(keyToRemove);
+            terminal.findController().ifPresent(controller -> {
+                controller.removeVariable(id, name);
                 loadVariables();
-            }
-        });
+            });
+        }
     }
+
 
     private void loadVariables() {
         terminal.findController().ifPresent(controller -> {
             StringBuilder sb = new StringBuilder();
-            controller.variables.toStream().forEach(entry -> {
-                Map.Entry<String, DataVariable> var = (Map.Entry<String, DataVariable>) entry;
-                sb.append(var.getValue().name).append("=").append(var.getValue().value).append("|");
+            controller.variables.forEach((id, var) -> {
+                sb.append(var.id()).append(":").append(var.name()).append("=").append(var.value()).append("|");
             });
             this.serializedVariables = sb.toString();
         });
     }
 
-    public List<Map.Entry<String, Integer>> getVariableList() {
-        List<Map.Entry<String, Integer>> result = new ArrayList<>();
+
+    public List<Triple<String, String, String>> getVariableList() {
+        List<Triple<String, String, String>> result = new ArrayList<>();
         if (serializedVariables == null || serializedVariables.isEmpty()) return result;
 
         String[] entries = serializedVariables.split("\\|");
         for (String entry : entries) {
             if (entry.isEmpty()) continue;
-            String[] parts = entry.split("=", 2);
-            if (parts.length == 2) {
-                try {
-                    result.add(Map.entry(parts[0], Integer.parseInt(parts[1])));
-                } catch (NumberFormatException ignored) {}
-            }
+
+            int colonIdx = entry.indexOf(':');
+            int eqIdx = entry.indexOf('=', colonIdx + 1);
+            if (colonIdx == -1 || eqIdx == -1) continue;
+
+            String id = entry.substring(0, colonIdx);
+            String name = entry.substring(colonIdx + 1, eqIdx);
+            String value = entry.substring(eqIdx + 1);
+
+            result.add(Triple.of(id, name, value));
         }
         return result;
     }
+
 
     public VariableTerminalPart getTerminal() {
         return terminal;

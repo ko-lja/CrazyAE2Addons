@@ -12,7 +12,6 @@ import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.compat.CC.CCDataExtractorPartItem;
-import net.oktawia.crazyae2addons.compat.DataExtracor.CompatDataExtractorPartItem;
 import net.oktawia.crazyae2addons.compat.GregTech.*;
 import net.oktawia.crazyae2addons.items.*;
 import net.oktawia.crazyae2addons.mobstorage.*;
@@ -120,10 +119,7 @@ public class CrazyItemRegistrar {
 
     public static final RegistryObject<PartItem<? extends DataExtractorPart>> DATA_EXTRACTOR_PART_ITEM =
             ITEMS.register("data_extractor",
-                    () -> IsModLoaded.isGTCEuLoaded() ? IsModLoaded.isCCLoaded()
-                            ? new CompatDataExtractorPartItem(new Item.Properties())
-                            : new GTDataExtractorPartItem(new Item.Properties())
-                            : IsModLoaded.isCCLoaded()
+                    () -> IsModLoaded.isCCLoaded()
                             ? new CCDataExtractorPartItem(new Item.Properties())
                             : new DataExtractorPartItem(new Item.Properties())
                     );
@@ -247,6 +243,10 @@ public class CrazyItemRegistrar {
     public static final RegistryObject<CrazyUpgradeItem> CRAZY_UPGRADE =
             ITEMS.register("crazy_upgrade",
                     () -> new CrazyUpgradeItem(new Item.Properties()));
+
+    public static final RegistryObject<PlayerDataExtractorPartItem> PLAYER_DATA_EXTRACTOR =
+            ITEMS.register("player_data_extractor",
+                    () -> new PlayerDataExtractorPartItem(new Item.Properties()));
 
     private CrazyItemRegistrar() {}
 

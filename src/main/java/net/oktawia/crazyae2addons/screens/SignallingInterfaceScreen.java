@@ -3,7 +3,6 @@ package net.oktawia.crazyae2addons.screens;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.Icon;
-import appeng.client.gui.implementations.InterfaceScreen;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.IconButton;
@@ -15,7 +14,6 @@ import appeng.menu.SlotSemantics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.menus.IsolatedDataProcessorMenu;
 import net.oktawia.crazyae2addons.menus.SignallingInterfaceMenu;
 
 import java.util.ArrayList;

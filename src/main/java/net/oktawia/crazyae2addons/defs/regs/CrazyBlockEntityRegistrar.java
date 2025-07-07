@@ -46,12 +46,6 @@ public class CrazyBlockEntityRegistrar {
     public static final RegistryObject<BlockEntityType<DataProcessorBE>> DATA_PROCESSOR_BE =
             reg("data_processor_be", CrazyBlockRegistrar.DATA_PROCESSOR_BLOCK, DataProcessorBE::new, DataProcessorBE.class);
 
-    public static final RegistryObject<BlockEntityType<DataTrackerBE>> DATA_TRACKER_BE =
-            reg("data_tracker_be", CrazyBlockRegistrar.DATA_TRACKER_BLOCK, DataTrackerBE::new, DataTrackerBE.class);
-
-    public static final RegistryObject<BlockEntityType<IsolatedDataProcessorBE>> ISOLATED_DATA_PROCESSOR_BE =
-            reg("isolated_data_processor_be", CrazyBlockRegistrar.ISOLATED_DATA_PROCESSOR_BLOCK, IsolatedDataProcessorBE::new, IsolatedDataProcessorBE.class);
-
     public static final RegistryObject<BlockEntityType<ImpulsedPatternProviderBE>> IMPULSED_PATTERN_PROVIDER_BE =
             reg("impulsed_pp_be", CrazyBlockRegistrar.IMPULSED_PATTERN_PROVIDER_BLOCK, ImpulsedPatternProviderBE::new, ImpulsedPatternProviderBE.class);
 
@@ -108,9 +102,6 @@ public class CrazyBlockEntityRegistrar {
 
     public static final RegistryObject<BlockEntityType<AutoBuilderCreativeSupplyBE>> AUTO_BUILDER_CREATIVE_SUPPLY_BE =
             reg("auto_builder_creative_supply_be", CrazyBlockRegistrar.AUTO_BUILDER_CREATIVE_SUPPLY_BLOCK, AutoBuilderCreativeSupplyBE::new, AutoBuilderCreativeSupplyBE.class);
-
-    public static final RegistryObject<BlockEntityType<DataSetterBE>> DATA_SETTER_BE =
-            reg("data_setter_be", CrazyBlockRegistrar.DATA_SETTER_BLOCK, DataSetterBE::new, DataSetterBE.class);
 
     public static final RegistryObject<BlockEntityType<BrokenPatternProviderBE>> BROKEN_PATTERN_PROVIDER_BE =
             reg("broken_pattern_provider_be", CrazyBlockRegistrar.BROKEN_PATTERN_PROVIDER_BLOCK, BrokenPatternProviderBE::new, BrokenPatternProviderBE.class);

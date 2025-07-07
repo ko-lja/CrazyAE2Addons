@@ -55,31 +55,12 @@ public class BlockDefs {
         );
 
         block(
-                CrazyBlockRegistrar.DATA_TRACKER_BLOCK.get(),
-                "TSL",
-                () -> Map.of(
-                        "T", Items.REDSTONE_TORCH,
-                        "S", AEBlocks.SKY_STONE_BLOCK.asItem(),
-                        "L", CrazyItemRegistrar.LOGIC_CARD.get().asItem()
-                )
-        );
-
-        block(
                 CrazyBlockRegistrar.AMPERE_METER_BLOCK.get(),
                 "ICE",
                 () -> Map.of(
                         "I", AEParts.IMPORT_BUS.asItem(),
-                        "C", CrazyBlockRegistrar.DATA_TRACKER_BLOCK.get().asItem(),
+                        "C", AEParts.INTERFACE.asItem(),
                         "E", AEParts.EXPORT_BUS.asItem()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.ISOLATED_DATA_PROCESSOR_BLOCK.get(),
-                "WWW/WCW/WWW",
-                () -> Map.of(
-                        "W", net.minecraft.world.level.block.Blocks.WHITE_WOOL.asItem(),
-                        "C", CrazyBlockRegistrar.DATA_PROCESSOR_BLOCK.get().asItem()
                 )
         );
 
@@ -98,7 +79,7 @@ public class BlockDefs {
                 "IT",
                 () -> Map.of(
                         "I", AEBlocks.INTERFACE.asItem(),
-                        "T", CrazyBlockRegistrar.DATA_TRACKER_BLOCK.get().asItem()
+                        "T", Items.REDSTONE.asItem()
                 )
         );
 
@@ -268,15 +249,6 @@ public class BlockDefs {
                         "B", AEParts.IMPORT_BUS.asItem(),
                         "R", AEBlocks.PATTERN_PROVIDER.asItem(),
                         "N", AEParts.EXPORT_BUS.asItem()
-                )
-        );
-
-        block(
-                CrazyBlockRegistrar.DATA_SETTER_BLOCK.get(),
-                "TL",
-                () -> Map.of(
-                        "T", CrazyBlockRegistrar.DATA_TRACKER_BLOCK.get().asItem(),
-                        "L", Items.REDSTONE_TORCH.asItem()
                 )
         );
 

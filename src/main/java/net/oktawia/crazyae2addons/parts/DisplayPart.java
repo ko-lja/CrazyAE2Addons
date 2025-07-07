@@ -1,5 +1,6 @@
 package net.oktawia.crazyae2addons.parts;
 
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
+import appeng.parts.AEBasePart;
 import appeng.parts.automation.PlaneModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -27,6 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.MEDataControllerBE;
+import net.oktawia.crazyae2addons.interfaces.VariableMachine;
 import net.oktawia.crazyae2addons.menus.DisplayMenu;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.DisplayValuePacket;
@@ -44,15 +47,16 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.items.parts.PartModels;
 
-public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTickable {
+public class DisplayPart extends AEBasePart implements MenuProvider, IGridTickable, VariableMachine {
 
     private static final PlaneModels MODELS = new PlaneModels("part/display_mon_off",
             "part/display_mon_on");
 
     public byte spin = 0; // 0-3
     public String textValue = "";
-    public HashMap<String, Integer> variables = new HashMap<>();
+    public HashMap<String, String> variables = new HashMap<>();
     public boolean reRegister = true;
+    public String identifier = randomHexId();
 
     @PartModels
     public static List<IPartModel> getModels() {
@@ -66,8 +70,20 @@ public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTi
                 .addService(IGridTickable.class, this);
     }
 
+    public static String randomHexId() {
+        SecureRandom rand = new SecureRandom();
+        StringBuilder sb = new StringBuilder(4);
+        for (int i = 0; i < 4; i++) sb.append(Integer.toHexString(rand.nextInt(16)).toUpperCase());
+        return sb.toString();
+    }
+
     @Override
-    public void doNotify(String name, Integer value, Integer depth) {
+    public String getId() {
+        return this.identifier;
+    }
+
+    @Override
+    public void notifyVariable(String name, String value) {
         this.variables.put(name, value);
         if (!getLevel().isClientSide()) {
             String variables;
@@ -125,6 +141,9 @@ public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTi
         if(extra.contains("spin")){
             this.spin = extra.getByte("spin");
         }
+        if(extra.contains("ident")){
+            this.identifier = extra.getString("ident");
+        }
         if(!isClientSide()){
             NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
                     new DisplayValuePacket(this.getBlockEntity().getBlockPos(), this.textValue, this.getSide(), this.spin, ""));
@@ -137,6 +156,7 @@ public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTi
         super.writeToNBT(extra);
         extra.putString("textvalue", this.textValue);
         extra.putByte("spin", this.spin);
+        extra.putString("ident", this.identifier);
     }
 
     @Override
@@ -177,12 +197,12 @@ public class DisplayPart extends NotifyablePart implements MenuProvider, IGridTi
             this.reRegister = true;
             return;
         }
-        controller.unRegisterNotification(this);
+        controller.removeNotification(this.identifier);
         Pattern pattern = Pattern.compile("&\\w+");
         Matcher matcher = pattern.matcher(value);
         while (matcher.find()) {
             String word = matcher.group();
-            controller.registerNotification(word.replace("&", ""), this);
+            controller.registerNotification(this.identifier, word.replace("&", ""), this.identifier, this.getClass());
         }
     }
     @Override

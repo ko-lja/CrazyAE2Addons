@@ -65,10 +65,10 @@ public class DisplayValuePacket {
                     if (displayPart != null) {
                         displayPart.textValue = packet.textValue;
                         displayPart.spin = packet.spin;
-                        HashMap<String, Integer> variablesMap = new HashMap<>();
+                        HashMap<String, String> variablesMap = new HashMap<>();
                         for (String s : packet.variables.split("\\|")) {
                             String[] arr = s.split(":", 2);
-                            variablesMap.put(arr[0], Integer.parseInt(arr[1]));
+                            variablesMap.put(arr[0],arr[1]);
                         }
                         displayPart.variables = variablesMap;
                     }

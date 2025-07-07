@@ -152,22 +152,6 @@ public class CradlePreview extends WidgetGroup {
         updateRenderedLayer();
     }
 
-    @Override
-    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
-
-        int x = sceneWidgetAll.getRect().left - 1;
-        int y = sceneWidgetAll.getRect().up - 1;
-        int w = sceneWidgetAll.getRect().right - 3;
-        int h = sceneWidgetAll.getRect().down - 4;
-        int borderColor = 0xFF3F3F3F;
-
-        graphics.fill(x, y, x + w, y + 1, borderColor);
-        graphics.fill(x, y + h - 1, x + w, y + h, borderColor);
-        graphics.fill(x, y, x + 1, y + h, borderColor);
-        graphics.fill(x + w - 1, y, x + w, y + h, borderColor);
-    }
-
     private void switchLayer() {
         layer++;
         if (layer > (maxY - minY)) layer = -1;

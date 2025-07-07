@@ -44,26 +44,12 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("data_processor",
                     () -> new DataProcessorBlockItem(DATA_PROCESSOR_BLOCK.get(), new Item.Properties()));
 
-    public static final RegistryObject<DataTrackerBlock> DATA_TRACKER_BLOCK =
-            BLOCKS.register("data_tracker", DataTrackerBlock::new);
-
-    public static final RegistryObject<BlockItem> DATA_TRACKER_BLOCK_ITEM =
-            BLOCK_ITEMS.register("data_tracker",
-                    () -> new DataTrackerBlockItem(DATA_TRACKER_BLOCK.get(), new Item.Properties()));
-
     public static final RegistryObject<AmpereMeterBlock> AMPERE_METER_BLOCK =
             BLOCKS.register("ampere_meter", AmpereMeterBlock::new);
 
     public static final RegistryObject<BlockItem> AMPERE_METER_BLOCK_ITEM =
             BLOCK_ITEMS.register("ampere_meter",
                     () -> new AmpereMeterBlockItem(AMPERE_METER_BLOCK.get(), new Item.Properties()));
-
-    public static final RegistryObject<IsolatedDataProcessorBlock> ISOLATED_DATA_PROCESSOR_BLOCK =
-            BLOCKS.register("isolated_data_processor", IsolatedDataProcessorBlock::new);
-
-    public static final RegistryObject<BlockItem> ISOLATED_DATA_PROCESSOR_BLOCK_ITEM =
-            BLOCK_ITEMS.register("isolated_data_processor",
-                    () -> new IsolatedDataProcessorBlockItem(ISOLATED_DATA_PROCESSOR_BLOCK.get(), new Item.Properties()));
 
     public static final RegistryObject<ImpulsedPatternProviderBlock> IMPULSED_PATTERN_PROVIDER_BLOCK =
             BLOCKS.register("impulsed_pattern_provider", ImpulsedPatternProviderBlock::new);
@@ -295,13 +281,6 @@ public class CrazyBlockRegistrar {
     public static final RegistryObject<BlockItem> AUTO_BUILDER_CREATIVE_SUPPLY_BLOCK_ITEM =
             BLOCK_ITEMS.register("auto_builder_creative_supply",
                     () -> new AutoBuilderCreativeSupplyBlockItem(AUTO_BUILDER_CREATIVE_SUPPLY_BLOCK.get(), new Item.Properties()));
-
-    public static final RegistryObject<DataSetterBlock> DATA_SETTER_BLOCK =
-            BLOCKS.register("data_setter", DataSetterBlock::new);
-
-    public static final RegistryObject<BlockItem> DATA_SETTER_BLOCK_ITEM =
-            BLOCK_ITEMS.register("data_setter",
-                    () -> new DataSetterBlockItem(DATA_SETTER_BLOCK.get(), new Item.Properties()));
 
     public static final RegistryObject<BrokenPatternProviderBlock> BROKEN_PATTERN_PROVIDER_BLOCK =
             BLOCKS.register("broken_pattern_provider", BrokenPatternProviderBlock::new);

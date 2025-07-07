@@ -1,77 +1,239 @@
 package net.oktawia.crazyae2addons.entities;
 
-import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.upgrades.IUpgradeInventory;
-import appeng.api.upgrades.IUpgradeableObject;
-import appeng.api.upgrades.UpgradeInventories;
-import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.blockentity.inventory.AppEngCellInventory;
 import appeng.core.definitions.AEItems;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
-import appeng.parts.AEBasePart;
 import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.filter.AEItemFilters;
-import appeng.util.inv.filter.IAEItemFilter;
-import net.minecraft.core.BlockPos;
+import com.mojang.logging.LogUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
-import net.oktawia.crazyae2addons.misc.DataVariable;
-import net.oktawia.crazyae2addons.misc.NBTContainer;
-import net.oktawia.crazyae2addons.misc.NotificationData;
-import net.oktawia.crazyae2addons.parts.DataExtractorPart;
-import net.oktawia.crazyae2addons.parts.NotifyablePart;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
+import net.oktawia.crazyae2addons.interfaces.VariableMachine;
 import net.oktawia.crazyae2addons.menus.MEDataControllerMenu;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGridTickable, MenuProvider, IUpgradeableObject {
+public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGridTickable, MenuProvider {
 
-    public IAEItemFilter filter = new IAEItemFilter() {
-        @Override
-        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
-            return true;
+    public AppEngInternalInventory inv = new AppEngInternalInventory(this, 6);
+    public final Map<MachineRecord, VariableRecord> variables = new HashMap<>();
+    public final Map<VariableRecord, MachineRecord> notifications = new HashMap<>();
+
+    public MEDataControllerBE(BlockPos pos, BlockState state) {
+        super(CrazyBlockEntityRegistrar.ME_DATA_CONTROLLER_BE.get(), pos, state);
+        this.getMainNode()
+                .setFlags(GridFlags.REQUIRE_CHANNEL)
+                .setIdlePowerUsage(4)
+                .addService(IGridTickable.class, this)
+                .setVisualRepresentation(new ItemStack(CrazyBlockRegistrar.ME_DATA_CONTROLLER_BLOCK.get()));
+    }
+
+    @Override
+    public void loadTag(CompoundTag tag) {
+        super.loadTag(tag);
+
+        this.variables.clear();
+        this.notifications.clear();
+
+        if (tag.contains("Variables", Tag.TAG_LIST)) {
+            ListTag variableList = tag.getList("Variables", Tag.TAG_COMPOUND);
+            for (Tag baseTag : variableList) {
+                if (baseTag instanceof CompoundTag entryTag) {
+                    CompoundTag machineTag = entryTag.getCompound("machine");
+                    CompoundTag variableTag = entryTag.getCompound("variable");
+
+                    MachineRecord machine = null;
+                    try {
+                        machine = new MachineRecord(
+                                machineTag.getString("id"),
+                                Class.forName(machineTag.getString("name"))
+                        );
+                    } catch (Exception e) {
+                        LogUtils.getLogger().info(e.toString());
+                    }
+
+                    VariableRecord variable = new VariableRecord(
+                            variableTag.getString("id"),
+                            variableTag.getString("name"),
+                            variableTag.getString("value")
+                    );
+                    if (variable.value != null && !variable.value.isEmpty()){
+                        this.variables.put(machine, variable);
+                    }
+                }
+            }
         }
 
-        @Override
-        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-            return stack.getItem() == AEItems.CELL_COMPONENT_1K.asItem() ||
-                    stack.getItem() == AEItems.CELL_COMPONENT_4K.asItem() ||
-                    stack.getItem() == AEItems.CELL_COMPONENT_16K.asItem() ||
-                    stack.getItem() == AEItems.CELL_COMPONENT_64K.asItem() ||
-                    stack.getItem() == AEItems.CELL_COMPONENT_256K.asItem();
-        }
-    };
-    public AppEngInternalInventory inv = new AppEngInternalInventory(this, 6, 1, filter);
-    public MEDataControllerMenu menu;
-    public IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.ME_DATA_CONTROLLER_BLOCK.get(), 0, this::saveChanges);
-    public NBTContainer variables = new NBTContainer();
-    public NBTContainer toNotify = new NBTContainer();
+        if (tag.contains("Notifications", Tag.TAG_LIST)) {
+            ListTag notifList = tag.getList("Notifications", Tag.TAG_COMPOUND);
+            for (Tag baseTag : notifList) {
+                if (baseTag instanceof CompoundTag entryTag) {
+                    CompoundTag machineTag = entryTag.getCompound("machine");
+                    CompoundTag variableTag = entryTag.getCompound("variable");
 
-    public MEDataControllerBE(BlockPos pos, BlockState blockState) {
-        super(CrazyBlockEntityRegistrar.ME_DATA_CONTROLLER_BE.get(), pos, blockState);
-        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL).setIdlePowerUsage(4).addService(IGridTickable.class, this)
-                .setVisualRepresentation(
-                        new ItemStack(CrazyBlockRegistrar.ME_DATA_CONTROLLER_BLOCK.get().asItem())
-                );
+                    MachineRecord machine = null;
+                    try {
+                        machine = new MachineRecord(
+                                machineTag.getString("id"),
+                                Class.forName(machineTag.getString("name"))
+                        );
+                    } catch (Exception e) {
+                        LogUtils.getLogger().info(e.toString());
+                    }
+
+                    VariableRecord variable = new VariableRecord(
+                            variableTag.getString("id"),
+                            variableTag.getString("name"),
+                            variableTag.getString("value")
+                    );
+
+                    if (machine != null) {
+                        this.notifications.put(variable, machine);
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+
+        ListTag variableList = new ListTag();
+        for (var entry : variables.entrySet()) {
+            CompoundTag entryTag = getVariableTag(entry.getKey(), entry.getValue());
+            variableList.add(entryTag);
+        }
+        tag.put("Variables", variableList);
+
+        ListTag notifList = new ListTag();
+        for (var entry : notifications.entrySet()) {
+            CompoundTag entryTag = getNotifTag(entry);
+            variableList.add(entryTag);
+        }
+        tag.put("Notifications", notifList);
+    }
+
+    private static @NotNull CompoundTag getVariableTag(MachineRecord machine, VariableRecord variable) {
+        CompoundTag machineTag = new CompoundTag();
+        machineTag.putString("id", machine.id);
+        machineTag.putString("name", machine.type.getCanonicalName());
+        CompoundTag variableTag = new CompoundTag();
+        variableTag.putString("id", variable.id);
+        variableTag.putString("name", variable.name);
+        variableTag.putString("value", variable.value);
+        CompoundTag entryTag = new CompoundTag();
+        entryTag.put("machine", machineTag);
+        entryTag.put("variable", variableTag);
+        return entryTag;
+    }
+
+    private static @NotNull CompoundTag getNotifTag(Map.Entry<VariableRecord, MachineRecord> entry) {
+        return getVariableTag(entry.getValue(), entry.getKey());
+    }
+
+    public void addVariable(String machineId, Class<?> machineClass, String variableId, String variableName, String variableValue) {
+        if (variables.size() >= getMaxVariables()) return;
+
+        var machineRecord = new MachineRecord(machineId, machineClass);
+        var variableRecord = new VariableRecord(variableId, variableName, variableValue);
+        variables.put(machineRecord, variableRecord);
+        notifySubscribers(variableRecord);
+        setChanged();
+    }
+
+    private void notifySubscribers(VariableRecord variable) {
+        if (getMainNode().getGrid() == null) return;
+        List<MachineRecord> toNotify = new ArrayList<>();
+        for (var entry : notifications.entrySet()){
+            if (Objects.equals(entry.getKey().name, variable.name)){
+                toNotify.add(entry.getValue());
+            }
+        }
+
+        for (MachineRecord target : toNotify) {
+            AtomicBoolean notified = new AtomicBoolean(false);
+            getMainNode().getGrid().getMachines(target.type).forEach(machine -> {
+                if (machine instanceof VariableMachine vm && Objects.equals(vm.getId(), target.id)) {
+                    vm.notifyVariable(variable.name, variable.value);
+                    notified.set(true);
+                }
+            });
+            if (!notified.get()){
+                notifications.remove(variable);
+            }
+        }
+    }
+
+    public void registerNotification(String variableId, String variableName, String machineId, Class<?> machineType) {
+        notifications.computeIfAbsent(new VariableRecord(variableId, variableName, ""),
+                k -> new MachineRecord(machineId, machineType));
+        setChanged();
+    }
+
+    @Override
+    public TickingRequest getTickingRequest(IGridNode node) {
+        return new TickingRequest(20, 20, false, true);
+    }
+
+    @Override
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (getMainNode().getGrid() == null || getLevel() == null) return TickRateModulation.IDLE;
+
+        getMainNode().getGrid().getMachines(MEDataControllerBE.class).forEach(machine -> {
+            if (!machine.equals(this)) {
+                getLevel().destroyBlock(getBlockPos(), true);
+            }
+        });
+
+        return TickRateModulation.IDLE;
+    }
+
+    public void removeVariable(String variableId, String variableName) {
+        variables.entrySet().removeIf(
+                entry -> Objects.equals(entry.getValue().id, variableId) &&
+                        Objects.equals(entry.getValue().name, variableName));
+        setChanged();
+    }
+
+    public void removeNotification(String machineId) {
+        notifications.entrySet().removeIf(
+                entry -> Objects.equals(entry.getValue().id, machineId));
+        setChanged();
+    }
+
+    public int getMaxVariables() {
+        int max = 0;
+        for (ItemStack stack : inv) {
+            if (stack.is(AEItems.CELL_COMPONENT_1K.asItem())) max += 1;
+            else if (stack.is(AEItems.CELL_COMPONENT_4K.asItem())) max += 4;
+            else if (stack.is(AEItems.CELL_COMPONENT_16K.asItem())) max += 16;
+            else if (stack.is(AEItems.CELL_COMPONENT_64K.asItem())) max += 64;
+            else if (stack.is(AEItems.CELL_COMPONENT_256K.asItem())) max += 256;
+        }
+        return max;
     }
 
     @Override
@@ -80,54 +242,8 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
     }
 
     @Override
-    public void onChangeInventory(InternalInventory inv, int slot) {
-        this.variables.clear();
-        if (this.getMenu() != null){
-            menu.maxVariables = menu.getMaxVariables();
-            menu.variableNum = menu.getVariableNum();
-        }
+    public void onChangeInventory(InternalInventory internalInventory, int i) {
         this.setChanged();
-    }
-
-    @Nullable
-    @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
-        if (id.equals(ISegmentedInventory.STORAGE)) {
-            return this.getInternalInventory();
-        } else if (id.equals(ISegmentedInventory.UPGRADES)) {
-            return this.upgrades;
-        }
-        return super.getSubInventory(id);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag data) {
-        super.saveAdditional(data);
-        this.inv.writeToNBT(data, "inv");
-        this.upgrades.writeToNBT(data, "upgrades");
-        data.putByteArray("variables", variables.serialize(true));
-        data.putByteArray("tonotify", toNotify.serialize(true));
-    }
-
-    @Override
-    public void loadTag(CompoundTag data) {
-        super.loadTag(data);
-        if (data.contains("inv")){
-            this.inv.readFromNBT(data, "inv");
-        }
-        if (data.contains("upgrades")){
-            this.upgrades.readFromNBT(data, "upgrades");
-        }
-        try{
-            if (data.contains("variables")) {
-                variables.deserialize(data.getByteArray("variables"));
-            }
-        } catch (Exception ignored) {}
-        try {
-            if (data.contains("tonotify")) {
-                toNotify.deserialize(data.getByteArray("tonotify"));
-            }
-        } catch (Exception ignored) {}
     }
 
     @Override
@@ -141,140 +257,9 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
 
     @Override
     public Component getDisplayName() {
-        return super.getDisplayName();
+        return Component.literal("ME Data Controller");
     }
 
-    public int getMaxVariables() {
-        int maxVariables = 0;
-        InternalInventory cellInv = getInternalInventory();
-        for (ItemStack stack : cellInv){
-            if (stack.getItem() == AEItems.CELL_COMPONENT_1K.asItem()){
-                maxVariables = maxVariables + 1;
-            } else if (stack.getItem() == AEItems.CELL_COMPONENT_4K.asItem()) {
-                maxVariables = maxVariables + 4;
-            } else if (stack.getItem() == AEItems.CELL_COMPONENT_16K.asItem()) {
-                maxVariables = maxVariables + 16;
-            } else if (stack.getItem() == AEItems.CELL_COMPONENT_64K.asItem()) {
-                maxVariables = maxVariables + 64;
-            } else if (stack.getItem() == AEItems.CELL_COMPONENT_256K.asItem()) {
-                maxVariables = maxVariables + 256;
-            }
-        }
-        return maxVariables;
-    }
-
-    public void setMenu(MEDataControllerMenu menu){
-        this.menu = menu;
-    }
-
-    public MEDataControllerMenu getMenu(){
-        return this.menu;
-    }
-
-    @Override
-    public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(20, 20, false, true);
-    }
-
-    public void addVariable(String id, String name, Integer value, Integer depth){
-        this.saveChanges();
-        if (this.variables.get(id) != null || this.variables.size() < this.getMaxVariables()) {
-            if (this.variables.get(id) != null && !Objects.equals(((DataVariable) this.variables.get(id)).name, name)){
-                addVariable(id, ((DataVariable) this.variables.get(id)).name, 0, depth);
-            }
-            this.variables.set(id, new DataVariable(name, value));
-            if (toNotify.get(name) != null){
-                var list = ((NotificationData) toNotify.get(name)).requesters;
-                var iterator = list.iterator();
-                while (iterator.hasNext()) {
-                    var def = iterator.next();
-                    var requester = NotificationData.get(def, this.getLevel().getServer());
-                    if (requester instanceof BlockEntity) {
-                        ((NotifyableBlockEntity) requester).doNotify(name, value, depth);
-                    } else if (requester instanceof AEBasePart) {
-                        ((NotifyablePart) requester).doNotify(name, value, depth);
-                    } else if (requester == null) {
-                        iterator.remove();
-                    }
-                }
-            }
-        }
-    }
-
-    public Integer getVariable(String key) {
-        return this.variables.toStream()
-                .filter(nd -> Objects.equals(((Map.Entry<String, DataVariable>) nd).getValue().name, key))
-                .map(nd -> ((Map.Entry<String, DataVariable>) nd).getValue().value)
-                .findFirst()
-                .orElse(0);
-    }
-
-    public void registerNotification(String variable, AEBaseBlockEntity target){
-        if (this.toNotify.get(variable) == null){
-            this.toNotify.set(variable, new NotificationData());
-        }
-        ((NotificationData) this.toNotify.get(variable)).addRequester(target);
-    }
-
-    public void registerNotification(String variable, AEBasePart target){
-        if (this.toNotify.get(variable) == null){
-            this.toNotify.set(variable, new NotificationData());
-        }
-        ((NotificationData) this.toNotify.get(variable)).addRequester(target);
-    }
-
-    public void unRegisterNotification(AEBaseBlockEntity target){
-        this.toNotify.toStream().forEach(entry -> {
-            ((Map.Entry<String, NotificationData>) entry).getValue().removeRequester(target);
-        });
-    }
-
-    public void unRegisterNotification(AEBasePart target){
-        this.toNotify.toStream().forEach(entry -> {
-            ((Map.Entry<String, NotificationData>) entry).getValue().removeRequester(target);
-        });
-    }
-
-    @Override
-    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        Set<MEDataControllerBE> controllers = getMainNode().getGrid().getMachines(MEDataControllerBE.class);
-        for (MEDataControllerBE controller : controllers){
-            if (!controller.getBlockPos().equals(this.getBlockPos())){
-                getLevel().destroyBlock(getBlockPos(), true);
-            }
-        }
-        if (getMainNode().getGrid() != null) {
-            Set<String> existingMachines = new HashSet<>();
-            for (DataExtractorPart extractor : getMainNode().getGrid().getMachines(DataExtractorPart.class)) {
-                existingMachines.add(extractor.identifier);
-            }
-
-            List<DataVariable> variablesCopy = this.variables.toStream()
-                    .map(nd -> ((Map.Entry<String, DataVariable>) nd).getValue())
-                    .toList();
-            for (DataVariable dv : variablesCopy) {
-                if (!existingMachines.contains(dv.name)) {
-                    this.variables.del(dv.name);
-                }
-            }
-        }
-        if (getLevel() == null) return TickRateModulation.IDLE;
-        Iterator<Map.Entry<String, Object>> it = this.toNotify.getData().entrySet().iterator();
-
-        while (it.hasNext()) {
-            Map.Entry<String, Object> entry = it.next();
-            Object raw = entry.getValue();
-
-            if (!(raw instanceof NotificationData data)) {
-                continue;
-            }
-
-            data.requesters.removeIf(bed -> NotificationData.get(bed, getLevel().getServer()) == null);
-
-            if (data.requesters.isEmpty()) {
-                it.remove();
-            }
-        }
-        return TickRateModulation.IDLE;
-    }
+    public record VariableRecord(String id, String name, String value) {}
+    public record MachineRecord(String id, Class<?> type) {}
 }

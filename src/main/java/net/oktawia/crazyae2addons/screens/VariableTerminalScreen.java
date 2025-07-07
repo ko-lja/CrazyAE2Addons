@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.menus.VariableTerminalMenu;
 import net.oktawia.crazyae2addons.misc.IconButton;
+import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -62,10 +63,11 @@ public class VariableTerminalScreen<C extends VariableTerminalMenu> extends AEBa
             final int rowIndex = i;
 
             Button delete = Button.builder(Component.literal("X"), btn -> {
-                List<Map.Entry<String, Integer>> vars = getFilteredVars(getMenu().getVariableList());
+                List<Triple<String, String, String>> vars = getFilteredVars(getMenu().getVariableList());
                 int index = currentPage * VARS_PER_PAGE + rowIndex;
                 if (index < vars.size()) {
-                    getMenu().removeVariable(vars.get(index).getKey());
+                    var variable = vars.get(index);
+                    getMenu().removeVariable(variable.getLeft() + "|" + variable.getMiddle()); // id|name
                 }
             }).build();
 
@@ -88,8 +90,12 @@ public class VariableTerminalScreen<C extends VariableTerminalMenu> extends AEBa
         IconButton addBtn = new IconButton(Icon.ENTER, (b) -> {
             try {
                 String name = nameField.getValue().trim();
-                int value = Integer.parseInt(valueField.getValue().trim());
-                getMenu().addVariable(name + "=" + value);
+                String value = valueField.getValue().trim();
+                if (!name.isEmpty()) {
+                    getMenu().addVariable(name + "=" + value);
+                    nameField.setValue("");
+                    valueField.setValue("");
+                }
                 nameField.setValue("");
                 valueField.setValue("");
             } catch (NumberFormatException ignored) {}
@@ -104,7 +110,7 @@ public class VariableTerminalScreen<C extends VariableTerminalMenu> extends AEBa
     }
 
     private void refreshVariables() {
-        List<Map.Entry<String, Integer>> vars = getFilteredVars(getMenu().getVariableList());
+        List<Triple<String, String, String>> vars = getFilteredVars(getMenu().getVariableList());
 
         for (int i = 0; i < VARS_PER_PAGE; i++) {
             int index = currentPage * VARS_PER_PAGE + i;
@@ -113,7 +119,13 @@ public class VariableTerminalScreen<C extends VariableTerminalMenu> extends AEBa
 
             if (index < vars.size()) {
                 var entry = vars.get(index);
-                setTextContent(labelId, Component.literal(entry.getKey() + " = " + entry.getValue()));
+                String id = entry.getLeft();
+                String name = entry.getMiddle();
+                String value = entry.getRight();
+
+                Component label = Component.literal("[" + id + "] " + name + " = " + value);
+                setTextContent(labelId, label);
+
                 delete.visible = true;
             } else {
                 setTextContent(labelId, Component.empty());
@@ -122,10 +134,12 @@ public class VariableTerminalScreen<C extends VariableTerminalMenu> extends AEBa
         }
     }
 
-    private @NotNull List<Map.Entry<String, Integer>> getFilteredVars(List<Map.Entry<String, Integer>> input) {
+
+
+    private @NotNull List<Triple<String, String, String>> getFilteredVars(List<Triple<String, String, String>> input) {
         if (search.isBlank()) return input;
         return input.stream()
-                .filter(e -> e.getKey().toLowerCase().contains(search))
+                .filter(e -> e.getMiddle().toLowerCase().contains(search))
                 .toList();
     }
 }

@@ -1,10 +1,8 @@
 package net.oktawia.crazyae2addons.defs.regs;
 
-import appeng.core.AppEng;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.implementations.PatternProviderMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
@@ -13,9 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.compat.CC.CCDataExtractorPart;
-import net.oktawia.crazyae2addons.compat.DataExtracor.CompatDataExtractorPart;
 import net.oktawia.crazyae2addons.compat.GregTech.GTAmpereMeterBE;
-import net.oktawia.crazyae2addons.compat.GregTech.GTDataExtractorPart;
 import net.oktawia.crazyae2addons.compat.GregTech.GTEnergyExporterPart;
 import net.oktawia.crazyae2addons.logic.*;
 import net.oktawia.crazyae2addons.mobstorage.MobExportBus;
@@ -62,22 +58,9 @@ public class CrazyMenuRegistrar {
             reg(id("me_data_controller"), MEDataControllerMenu::new, MEDataControllerBE.class);
 
     public static final RegistryObject<MenuType<DataExtractorMenu>> DATA_EXTRACTOR_MENU =
-            IsModLoaded.isGTCEuLoaded() ? IsModLoaded.isCCLoaded()
-                    ? reg(id("data_extractor"), DataExtractorMenu::new, CompatDataExtractorPart.class)
-                    : reg(id("data_extractor"), DataExtractorMenu::new, GTDataExtractorPart.class)
-                    : IsModLoaded.isCCLoaded()
+            IsModLoaded.isCCLoaded()
                     ? reg(id("data_extractor"), DataExtractorMenu::new, CCDataExtractorPart.class)
-                    : reg(id("data_extractor"), DataExtractorMenu::new, DataExtractorPart.class)
-            ;
-
-    public static final RegistryObject<MenuType<DataProcessorMenu>> DATA_PROCESSOR_MENU =
-            reg(id("data_processor"), DataProcessorMenu::new, DataProcessorBE.class);
-
-    public static final RegistryObject<MenuType<DataProcessorSubMenu>> DATA_PROCESSOR_SUB_MENU =
-            reg(id("data_processor_sub"), DataProcessorSubMenu::new, DataProcessorBE.class);
-
-    public static final RegistryObject<MenuType<DataTrackerMenu>> DATA_TRACKER_MENU =
-            reg(id("data_tracker"), DataTrackerMenu::new, DataTrackerBE.class);
+                    : reg(id("data_extractor"), DataExtractorMenu::new, DataExtractorPart.class);
 
     public static final RegistryObject<MenuType<ChunkyFluidP2PTunnelMenu>> CHUNKY_FLUID_P2P_TUNNEL_MENU =
             reg(id("chunky_p2p"), ChunkyFluidP2PTunnelMenu::new, ChunkyFluidP2PTunnelPart.class);
@@ -94,12 +77,6 @@ public class CrazyMenuRegistrar {
             ModList.get().isLoaded("gtceu")
                     ? reg(id("ampere_meter"), AmpereMeterMenu::new, GTAmpereMeterBE.class)
                     : reg(id("ampere_meter"), AmpereMeterMenu::new, AmpereMeterBE.class);
-
-    public static final RegistryObject<MenuType<IsolatedDataProcessorMenu>> ISOLATED_DATA_PROCESSOR_MENU =
-            reg(id("isolated_data_processor"), IsolatedDataProcessorMenu::new, IsolatedDataProcessorBE.class);
-
-    public static final RegistryObject<MenuType<IsolatedDataProcessorSubMenu>> ISOLATED_DATA_PROCESSOR_SUB_MENU =
-            reg(id("isolated_data_processor_sub"), IsolatedDataProcessorSubMenu::new, IsolatedDataProcessorBE.class);
 
     public static final RegistryObject<MenuType<CrazyPatternMultiplierMenu>> CRAZY_PATTERN_MULTIPLIER_MENU =
             reg(id("crazy_pattern_multiplier"), CrazyPatternMultiplierMenu::new, CrazyPatternMultiplierHost.class);
@@ -161,9 +138,6 @@ public class CrazyMenuRegistrar {
     public static final RegistryObject<MenuType<VariableTerminalMenu>> VARIABLE_TERMINAL_MENU =
             reg(id("variable_terminal"), VariableTerminalMenu::new, VariableTerminalPart.class);
 
-    public static final RegistryObject<MenuType<DataSetterMenu>> DATA_SETTER_MENU =
-            reg(id("data_setter"), DataSetterMenu::new, DataSetterBE.class);
-
     public static final RegistryObject<MenuType<AutoBuilderMenu>> AUTO_BUILDER_MENU =
             reg(id("auto_builder"), AutoBuilderMenu::new, AutoBuilderBE.class);
 
@@ -178,6 +152,9 @@ public class CrazyMenuRegistrar {
 
     public static final RegistryObject<MenuType<PatternManagementUnitControllerMenu>> PATTERN_MANAGEMENT_UNIT_CONTROLLER_MENU =
             reg(id("pattern_management_unit_controller_menu"), PatternManagementUnitControllerMenu::new, PatternManagementUnitControllerBE.class);
+
+    public static final RegistryObject<MenuType<PlayerDataExtractorMenu>> PLAYER_DATA_EXTRACTOR_MENU =
+            reg(id("player_data_extractor_menu"), PlayerDataExtractorMenu::new, PlayerDataExtractorPart.class);
 
     private CrazyMenuRegistrar() {}
 }

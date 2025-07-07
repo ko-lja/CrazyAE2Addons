@@ -24,7 +24,8 @@ public class CrazyRecipes {
                                 new ItemStack(CrazyBlockRegistrar.PENROSE_COIL.get()).copyWithCount(307),
                                 new ItemStack(CrazyBlockRegistrar.PENROSE_PORT.get()).copyWithCount(4),
                                 new ItemStack(CrazyBlockRegistrar.PENROSE_CONTROLLER.get()).copyWithCount(1)
-                        )
+                        ),
+                        new ItemStack(CrazyBlockRegistrar.PENROSE_CONTROLLER.get()).copyWithCount(1)
                 ),
 
                 new CrazyEntry(
@@ -36,7 +37,8 @@ public class CrazyRecipes {
                                 new ItemStack(CrazyBlockRegistrar.ENERGY_STORAGE_FRAME_BLOCK.get()).copyWithCount(202),
                                 new ItemStack(CrazyBlockRegistrar.ENERGY_STORAGE_PORT_BLOCK.get()).copyWithCount(3),
                                 new ItemStack(CrazyBlockRegistrar.ENERGY_STORAGE_CONTROLLER_BLOCK.get()).copyWithCount(1)
-                        )
+                        ),
+                        new ItemStack(CrazyBlockRegistrar.ENERGY_STORAGE_CONTROLLER_BLOCK.get()).copyWithCount(1)
                 ),
 
                 new CrazyEntry(
@@ -46,7 +48,8 @@ public class CrazyRecipes {
                                 new ItemStack(CrazyBlockRegistrar.ENTROPY_CRADLE.get()).copyWithCount(236),
                                 new ItemStack(CrazyBlockRegistrar.ENTROPY_CRADLE_CAPACITOR.get()).copyWithCount(24),
                                 new ItemStack(CrazyBlockRegistrar.ENTROPY_CRADLE_CONTROLLER.get()).copyWithCount(1)
-                        )
+                        ),
+                        new ItemStack(CrazyBlockRegistrar.ENTROPY_CRADLE_CONTROLLER.get()).copyWithCount(1)
                 ),
 
                 new CrazyEntry(
@@ -56,7 +59,8 @@ public class CrazyRecipes {
                                 new ItemStack(CrazyBlockRegistrar.SPAWNER_EXTRACTOR_WALL.get()).copyWithCount(101),
                                 new ItemStack(AEBlocks.QUARTZ_VIBRANT_GLASS).copyWithCount(36),
                                 new ItemStack(CrazyBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER.get()).copyWithCount(1)
-                        )
+                        ),
+                        new ItemStack(CrazyBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER.get()).copyWithCount(1)
                 ),
 
                 new CrazyEntry(
@@ -68,7 +72,8 @@ public class CrazyRecipes {
                                 new ItemStack(CrazyBlockRegistrar.MOB_FARM_DAMAGE.get()).copyWithCount(16),
                                 new ItemStack(CrazyBlockRegistrar.MOB_FARM_INPUT.get()).copyWithCount(2),
                                 new ItemStack(CrazyBlockRegistrar.MOB_FARM_CONTROLLER.get()).copyWithCount(1)
-                        )
+                        ),
+                        new ItemStack(CrazyBlockRegistrar.MOB_FARM_CONTROLLER.get()).copyWithCount(1)
                 ),
 
                 new CrazyEntry(
@@ -79,7 +84,8 @@ public class CrazyRecipes {
                                 new ItemStack(CrazyBlockRegistrar.PATTERN_MANAGEMENT_UNIT_FRAME_BLOCK.get()).copyWithCount(44),
                                 new ItemStack(CrazyBlockRegistrar.PATTERN_MANAGEMENT_UNIT_BLOCK.get()).copyWithCount(27),
                                 new ItemStack(CrazyBlockRegistrar.PATTERN_MANAGEMENT_UNIT_CONTROLLER_BLOCK.get()).copyWithCount(1)
-                        )
+                        ),
+                        new ItemStack(CrazyBlockRegistrar.PATTERN_MANAGEMENT_UNIT_CONTROLLER_BLOCK.get()).copyWithCount(1)
                 )
         );
     }
@@ -215,5 +221,6 @@ public class CrazyRecipes {
                         new ItemStack(AEItems.SINGULARITY).copyWithCount(8192),
                         new ItemStack(CrazyItemRegistrar.SUPER_SINGULARITY.get())
                 )
+        );
     }
 }

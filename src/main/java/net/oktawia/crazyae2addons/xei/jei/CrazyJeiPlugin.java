@@ -1,26 +1,19 @@
 package net.oktawia.crazyae2addons.xei.jei;
 
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
-import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
-import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
-import net.oktawia.crazyae2addons.xei.common.CradleEntry;
+import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.xei.common.CrazyEntry;
 import net.oktawia.crazyae2addons.xei.common.CrazyRecipes;
 
 import java.util.List;
 
 @JeiPlugin
-public class CrazyPlugin implements IModPlugin {
-    private static final ResourceLocation ID = new ResourceLocation("crazyae2addons", "jei_plugin");
+public class CrazyJeiPlugin implements IModPlugin {
+    private static final ResourceLocation ID = CrazyAddons.makeId("jei_plugin");
     public static CrazyEntry currentEntry;
 
     @Override

@@ -43,18 +43,6 @@ public final class Screens {
                 DataExtractorScreen<DataExtractorMenu>::new,
                 "/screens/data_extractor.json");
 
-        InitScreens.register(CrazyMenuRegistrar.DATA_PROCESSOR_MENU.get(),
-                DataProcessorScreen<DataProcessorMenu>::new,
-                "/screens/data_processor.json");
-
-        InitScreens.register(CrazyMenuRegistrar.DATA_PROCESSOR_SUB_MENU.get(),
-                DataProcessorSubScreen<DataProcessorSubMenu>::new,
-                "/screens/data_processor_sub.json");
-
-        InitScreens.register(CrazyMenuRegistrar.DATA_TRACKER_MENU.get(),
-                DataTrackerScreen<DataTrackerMenu>::new,
-                "/screens/data_tracker.json");
-
         InitScreens.register(CrazyMenuRegistrar.CHUNKY_FLUID_P2P_TUNNEL_MENU.get(),
                 ChunkyFluidP2PTunnelScreen<ChunkyFluidP2PTunnelMenu>::new,
                 "/screens/chunky_fluid_p2p_tunnel.json");
@@ -70,14 +58,6 @@ public final class Screens {
         InitScreens.register(CrazyMenuRegistrar.AMPERE_METER_MENU.get(),
                 AmpereMeterScreen<AmpereMeterMenu>::new,
                 "/screens/ampere_meter.json");
-
-        InitScreens.register(CrazyMenuRegistrar.ISOLATED_DATA_PROCESSOR_MENU.get(),
-                IsolatedDataProcessorScreen<IsolatedDataProcessorMenu>::new,
-                "/screens/data_processor.json");
-
-        InitScreens.register(CrazyMenuRegistrar.ISOLATED_DATA_PROCESSOR_SUB_MENU.get(),
-                IsolatedDataProcessorSubScreen<IsolatedDataProcessorSubMenu>::new,
-                "/screens/data_processor_sub.json");
 
         InitScreens.register(CrazyMenuRegistrar.CRAZY_PATTERN_MULTIPLIER_MENU.get(),
                 CrazyPatternMultiplierScreen<CrazyPatternMultiplierMenu>::new,
@@ -196,12 +176,6 @@ public final class Screens {
         );
 
         InitScreens.register(
-                CrazyMenuRegistrar.DATA_SETTER_MENU.get(),
-                DataSetterScreen<DataSetterMenu>::new,
-                "/screens/data_setter.json"
-        );
-
-        InitScreens.register(
                 CrazyMenuRegistrar.AUTO_BUILDER_MENU.get(),
                 AutoBuilderScreen<AutoBuilderMenu>::new,
                 "/screens/auto_builder.json"
@@ -229,6 +203,12 @@ public final class Screens {
                 CrazyMenuRegistrar.PATTERN_MANAGEMENT_UNIT_CONTROLLER_MENU.get(),
                 PatternManagementUnitControllerScreen<PatternManagementUnitControllerMenu>::new,
                 "/screens/pattern_management_unit_controller.json"
+        );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.PLAYER_DATA_EXTRACTOR_MENU.get(),
+                PlayerDataExtractorScreen<PlayerDataExtractorMenu>::new,
+                "/screens/player_data_extractor.json"
         );
     }
 

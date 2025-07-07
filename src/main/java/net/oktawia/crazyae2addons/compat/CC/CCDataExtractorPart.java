@@ -30,57 +30,7 @@ public class CCDataExtractorPart extends DataExtractorPart implements IGridTicka
     }
 
     @Override
-    public List<String> extractNumericInfoFromObject(Object obj) {
-        if (obj == null) return List.of();
-        List<String> info = new ArrayList<>();
-        try {
-            info.addAll(extractFields(target));
-            info.addAll(extractMethods(target));
-            info.addAll(extractCC());
-            info = info.stream().distinct().toList();
-        } catch (Throwable ignored) {
-        }
-        return info;
-    }
-
-    public List<String> extractCC() {
-        List<String> data = new ArrayList<>();
-        if (COMPUTERCRAFT_LOADED && getSide() != null) {
-            target.getCapability(CAPABILITY_PERIPHERAL, getSide().getOpposite()).ifPresent(per -> {
-                if (per instanceof IDynamicPeripheral dyn) {
-                    FakeComputerAccess computer = new FakeComputerAccess(identifier);
-                    dyn.attach(computer);
-
-                    String[] methods = dyn.getMethodNames();
-                    for (int i = 0; i < methods.length; i++) {
-                        String m = methods[i];
-                        if (!m.startsWith("get") && !m.startsWith("is")) continue;
-                        try {
-                            FakeLuaContext context = new FakeLuaContext();
-                            dyn.callMethod(
-                                    computer,
-                                    context,
-                                    i,
-                                    new ObjectArguments()
-                            );
-                            Object[] values = context.getLastResult();
-                            if (values != null && values.length > 0) {
-                                Object first = values[0];
-                                if (first instanceof Number || first instanceof Boolean) {
-                                    data.add("cc:" + m + "()");
-                                }
-                            }
-                        } catch (LuaException ignored) {}
-                    }
-                    dyn.detach(computer);
-                }
-            });
-        }
-        return data;
-    }
-
-    @Override
-    public Integer extractData() {
+    public String extractData() {
         if (target != null && available != null && selected >= 0 && selected < available.size()) {
             String key = available.get(selected);
             if (key.startsWith("cc:")) {
@@ -90,9 +40,9 @@ public class CCDataExtractorPart extends DataExtractorPart implements IGridTicka
         return super.extractData();
     }
 
-    private int callCCMethod(String key) {
+    private String callCCMethod(String key) {
         if (!COMPUTERCRAFT_LOADED || target == null || getSide() == null) {
-            return 0;
+            return "";
         }
         String methodName = key.substring(3, key.length() - 2);
         return target.getCapability(CAPABILITY_PERIPHERAL, getSide().getOpposite())
@@ -116,8 +66,7 @@ public class CCDataExtractorPart extends DataExtractorPart implements IGridTicka
                                 Object[] vals = context.getLastResult();
                                 if (vals != null && vals.length > 0) {
                                     Object v = vals[0];
-                                    if (v instanceof Number n) return n.intValue();
-                                    if (v instanceof Boolean b) return b ? 1 : 0;
+                                    return v.toString();
                                 }
                             } catch (LuaException ignored) {
                             }
@@ -126,9 +75,9 @@ public class CCDataExtractorPart extends DataExtractorPart implements IGridTicka
                     }
 
                     dyn.detach(computer);
-                    return 0;
+                    return "";
                 })
-                .orElse(0);
+                .orElse("");
     }
 
     private record FakeComputerAccess(String id) implements IComputerAccess {

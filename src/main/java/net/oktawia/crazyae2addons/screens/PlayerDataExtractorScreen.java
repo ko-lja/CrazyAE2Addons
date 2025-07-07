@@ -1,10 +1,8 @@
 package net.oktawia.crazyae2addons.screens;
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
-import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -13,10 +11,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.Utils;
 import net.oktawia.crazyae2addons.menus.DataExtractorMenu;
+import net.oktawia.crazyae2addons.menus.PlayerDataExtractorMenu;
+
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
-public class DataExtractorScreen<C extends DataExtractorMenu> extends AEBaseScreen<C> {
+public class PlayerDataExtractorScreen<C extends PlayerDataExtractorMenu> extends AEBaseScreen<C> {
 
     public boolean initialized = false;
     public boolean initialized2 = false;
@@ -28,9 +29,9 @@ public class DataExtractorScreen<C extends DataExtractorMenu> extends AEBaseScre
     public AETextField input;
     public AETextField delay;
 
-    public DataExtractorScreen(
-            DataExtractorMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
-        super((C) menu, playerInventory, title, style);
+    public PlayerDataExtractorScreen(
+            C menu, Inventory playerInventory, Component title, ScreenStyle style) {
+        super(menu, playerInventory, title, style);
         if (!this.initialized){
             setupGui();
             this.initialized = true;
@@ -105,6 +106,21 @@ public class DataExtractorScreen<C extends DataExtractorMenu> extends AEBaseScre
         this.delay.setBordered(false);
         this.widgets.add("input", this.input);
         this.widgets.add("delay", this.delay);
+        this.widgets.addButton("toggleMode", Component.literal(getMenu().playerMode ? "Closest player" : "Bind player"), (btn) -> {
+            getMenu().togglePlayerMode();
+            btn.setMessage(Component.literal(getMenu().playerMode ? "Closest player" : "Bind player"));
+        });
+        String playerName = "Unknown";
+        var player = Minecraft.getInstance().level.getPlayerByUUID(UUID.fromString(getMenu().boundPlayer));
+        if (player != null) {
+            playerName = player.getName().getString();
+        }
+        this.widgets.addButton("bindPlayer", Component.literal("Bound to: " + playerName), (btn) -> {
+            if (Minecraft.getInstance().player != null) {
+                getMenu().bindPlayer(Minecraft.getInstance().player.getStringUUID());
+                btn.setMessage(Component.literal("Bound to: " + Minecraft.getInstance().player.getName().getString()));
+            }
+        });
     }
 
     public void renderPage(int start, int end) {

@@ -4,6 +4,7 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
+import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
@@ -36,60 +37,73 @@ public class CrazyPreview extends WidgetGroup {
     private final SceneWidget sceneWidgetAll;
     private final SceneWidget sceneWidgetLayer;
     private final ResourceLocation structureId;
-    private final String displayName;
+    private final ItemStackTransfer selectedStackTransfer;
     private int layer = -1;
     private int minY = 0;
     private int maxY = 0;
     private Set<BlockPos> allPositions = new HashSet<>();
+    private final SlotWidget selectedBlockSlot;
+    private ItemStack selectedStack = ItemStack.EMPTY;
+    private BlockPos selectedBlockPos = null;
 
     public CrazyPreview(ResourceLocation structureId, List<ItemStack> ingredients, String displayName) {
         super(0, 0, WIDTH, HEIGHT);
         setClientSideWidget();
         this.structureId = structureId;
-        this.displayName = displayName;
 
-        sceneWidgetAll = new SceneWidget(5, 5, 150, 150, world).setRenderFacing(false);
-        sceneWidgetLayer = new SceneWidget(5, 5, 150, 150, world).setRenderFacing(false);
+        sceneWidgetAll = new SceneWidget(5, 20, 150, 150, world).setRenderFacing(false);
+        sceneWidgetLayer = new SceneWidget(5, 20, 150, 150, world).setRenderFacing(false);
+        LabelWidget label = new LabelWidget(5, 5, displayName);
+
+        sceneWidgetAll.setOnSelected((pos, facing) -> {
+            selectedBlockPos = pos;
+            updateSelectedBlock(pos);
+        });
+
+        sceneWidgetLayer.setOnSelected((pos, facing) -> {
+            selectedBlockPos = pos;
+            updateSelectedBlock(pos);
+        });
 
         addWidget(sceneWidgetAll);
         addWidget(sceneWidgetLayer);
+        addWidget(label);
+
+        this.selectedStackTransfer = new ItemStackTransfer(ItemStack.EMPTY);
+
+        selectedBlockSlot = new SlotWidget(selectedStackTransfer, 0, 5, 25, false, false)
+                .setBackgroundTexture(SlotWidget.ITEM_SLOT_TEXTURE);
+
+        addWidget(selectedBlockSlot);
 
         sceneWidgetAll.setVisible(true);
         sceneWidgetLayer.setVisible(false);
 
-        addWidget(new ButtonWidget(130, 10, 20, 20,
+        addWidget(new ButtonWidget(130, 20, 20, 20,
                 new com.lowdragmc.lowdraglib.gui.texture.TextTexture("L")
                         .setSupplier(() -> layer >= 0 ? "L:" + layer : "ALL"),
                 b -> switchLayer()));
 
         int x = 5;
+        int y = 160;
         for (ItemStack stack : ingredients) {
-            addWidget(new SlotWidget(new ItemStackTransfer(stack), 0, x, 160, false, false)
+            addWidget(new SlotWidget(new ItemStackTransfer(stack), 0, x, y, false, false)
                     .setBackgroundTexture(SlotWidget.ITEM_SLOT_TEXTURE)
                     .setIngredientIO(IngredientIO.INPUT));
-            x += 22;
+            y -= 18;
         }
 
         loadStructure();
     }
 
-    @Override
-    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
-
-        int x = sceneWidgetAll.getRect().left - 1;
-        int y = sceneWidgetAll.getRect().up - 1;
-        int w = sceneWidgetAll.getRect().right - 3;
-        int h = sceneWidgetAll.getRect().down - 4;
-
-        int borderColor = 0xFF3F3F3F;
-
-        graphics.fill(x, y, x + w, y + 1, borderColor);
-        graphics.fill(x, y + h - 1, x + w, y + h, borderColor);
-        graphics.fill(x, y, x + 1, y + h, borderColor);
-        graphics.fill(x + w - 1, y, x + w, y + h, borderColor);
-        int centerX = (x + w) / 2;
-        graphics.drawCenteredString(Minecraft.getInstance().font, displayName, centerX, y - 30, 0xFFFFFF);
+    private void updateSelectedBlock(BlockPos pos) {
+        if (pos == null) {
+            selectedStack = ItemStack.EMPTY;
+        } else {
+            BlockState state = world.getBlockState(pos);
+            selectedStack = state.isAir() ? ItemStack.EMPTY : new ItemStack(state.getBlock());
+        }
+        selectedStackTransfer.setStackInSlot(0, selectedStack);
     }
 
     private void switchLayer() {

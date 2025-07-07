@@ -8,6 +8,8 @@ displayName="${mod_name}"
 credits=".siann & kolja_ on discord"
 authors="${mod_authors}"
 description='''${mod_description}'''
+[[mixins]]
+config = "mixins.crazyae2addons.json"
 [[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true
@@ -70,10 +72,7 @@ description='''${mod_description}'''
     side = "CLIENT"
 [[dependencies.${mod_id}]]
     modId = "emi"
-    mandatory = true
+    mandatory = false
     versionRange = "*"
     ordering = "NONE"
     side = "CLIENT"
-
-[[mixins]]
-config = "mixins.crazyae2addons.json"

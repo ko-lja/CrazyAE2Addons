@@ -6,4 +6,4 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public record CrazyEntry(ResourceLocation structureId, Component name, List<ItemStack> requiredItems) {}
+public record CrazyEntry(ResourceLocation structureId, Component name, List<ItemStack> requiredItems, ItemStack output) {}
