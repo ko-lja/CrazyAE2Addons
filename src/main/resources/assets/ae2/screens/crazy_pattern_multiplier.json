@@ -33,15 +33,35 @@
     }
   },
   "widgets": {
+    "clear": {
+      "left": 8,
+      "top": 128
+    },
     "value": {
-      "left": 40,
+      "left": 30,
       "top": 130,
-      "width": 70,
+      "width": 65,
       "height": 16
     },
     "confirm": {
-      "left": 130,
+      "left": 100,
       "top": 128
+    },
+    "circuitVal": {
+      "left": 123,
+      "top": 130,
+      "width": 25,
+      "height": 16
+    },
+    "circuit": {
+      "left": 152,
+      "top": 128
+    },
+    "limit": {
+      "left": 98,
+      "top": 26,
+      "width": 52,
+      "height": 16
     }
   }
 }

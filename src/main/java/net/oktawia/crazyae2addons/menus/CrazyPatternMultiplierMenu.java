@@ -15,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.CrazyPatternMultiplierHost;
-import net.oktawia.crazyae2addons.misc.AppEngFilteredSlot;
 import net.oktawia.crazyae2addons.misc.AppEngManyFilteredSlot;
 
 import java.util.List;
@@ -23,21 +22,34 @@ import java.util.List;
 public class CrazyPatternMultiplierMenu extends AEBaseMenu {
 
     public static String ACTION_MODIFY_PATTERNS = "actionModifyPatterns";
+    public static String CLEAR = "clearPatterns";
+    public static String CIRCUIT = "circuitAction";
+    public static String LIMIT = "limitAction";
     public CrazyPatternMultiplierHost host;
 
     @GuiSync(73)
     public double mult;
+    @GuiSync(74)
+    public Integer limit;
 
     public CrazyPatternMultiplierMenu(int id, Inventory ip, CrazyPatternMultiplierHost host) {
         super(CrazyMenuRegistrar.CRAZY_PATTERN_MULTIPLIER_MENU.get(), id, ip, host);
         this.createPlayerInventorySlots(ip);
         this.host = host;
         this.mult = host.getItemStack().getTag() == null ? 0 : host.getItemStack().getTag().getDouble("mult");
+        if (host.getItemStack().getOrCreateTag().contains("limit")){
+            this.limit = host.getItemStack().getOrCreateTag().getInt("limit");
+        } else {
+            this.limit = 0;
+        }
         host.setMenu(this);
         for (int i = 0; i < 36; i++){
-            this.addSlot(new AppEngManyFilteredSlot(host.inv, 0, List.of(AEItems.PROCESSING_PATTERN.stack(), AEItems.CRAFTING_PATTERN.stack())), SlotSemantics.ENCODED_PATTERN);
+            this.addSlot(new AppEngManyFilteredSlot(host.inv, i, List.of(AEItems.PROCESSING_PATTERN.stack(), AEItems.CRAFTING_PATTERN.stack(), AEItems.BLANK_PATTERN.stack())), SlotSemantics.ENCODED_PATTERN);
         }
         registerClientAction(ACTION_MODIFY_PATTERNS, Double.class, this::modifyPatterns);
+        registerClientAction(CLEAR, this::clearPatterns);
+        registerClientAction(CIRCUIT, Integer.class, this::setCircuit);
+        registerClientAction(LIMIT, Integer.class, this::setLimit);
     }
 
     public void modifyPatterns(Double multiplier) {
@@ -50,12 +62,12 @@ public class CrazyPatternMultiplierMenu extends AEBaseMenu {
             return;
         }
         for (int i = 0; i < host.inv.size(); i++) {
-            ItemStack is = modify(host.inv.getStackInSlot(i), multiplier, this.getPlayer().level());
+            ItemStack is = modify(host.inv.getStackInSlot(i), multiplier, this.limit, this.getPlayer().level());
             this.host.inv.setItemDirect(i, is);
         }
     }
 
-    public static ItemStack modify(ItemStack stack, double multiplier, Level level) {
+    public static ItemStack modify(ItemStack stack, double multiplier, int limit, Level level) {
         if (!(stack.getItem() instanceof EncodedPatternItem pattern))
             return stack;
 
@@ -67,7 +79,7 @@ public class CrazyPatternMultiplierMenu extends AEBaseMenu {
         if (!(detail instanceof AEProcessingPattern process))
             return stack;
 
-        GenericStack[] input  = process.getSparseInputs();
+        GenericStack[] input = process.getSparseInputs();
         GenericStack[] output = process.getOutputs();
 
         if (multiplier < 1) {
@@ -81,7 +93,22 @@ public class CrazyPatternMultiplierMenu extends AEBaseMenu {
             }
         }
 
-        GenericStack[] newInputs  = new GenericStack[input.length];
+        if (limit > 0) {
+            int totalOutput = 0;
+            for (GenericStack out : output) {
+                if (out != null)
+                    totalOutput += (int) out.amount();
+            }
+
+            if (totalOutput > 0) {
+                double maxMultiplier = Math.floor((double) limit / totalOutput);
+                if (maxMultiplier < multiplier) {
+                    multiplier = maxMultiplier;
+                }
+            }
+        }
+
+        GenericStack[] newInputs = new GenericStack[input.length];
         GenericStack[] newOutputs = new GenericStack[output.length];
 
         for (int i = 0; i < input.length; i++) {
@@ -101,12 +128,56 @@ public class CrazyPatternMultiplierMenu extends AEBaseMenu {
         ItemStack modifiedStack = PatternDetailsHelper.encodeProcessingPattern(newInputs, newOutputs);
 
         if (ignoreNbtTag != null) {
-            modifiedStack.getTag().put("ignorenbt", ignoreNbtTag);
+            modifiedStack.getOrCreateTag().put("ignorenbt", ignoreNbtTag);
         }
         if (circuitTag != null) {
-            modifiedStack.getTag().put("circuit", circuitTag);
+            modifiedStack.getOrCreateTag().put("circuit", circuitTag);
         }
 
         return modifiedStack;
+    }
+
+    public void clearPatterns(){
+        if (isClientSide()){
+            sendClientAction(CLEAR);
+        } else {
+            ItemStack is = AEItems.BLANK_PATTERN.stack();
+            for (int i = 0; i < host.inv.size(); i++) {
+                if (!host.inv.getStackInSlot(i).isEmpty()){
+                    this.host.inv.setItemDirect(i, is.copyWithCount(1));
+                }
+            }
+        }
+    }
+
+    public void setCircuit(Integer circuit){
+        if (isClientSide()) {
+            sendClientAction(CIRCUIT, circuit);
+        } else {
+            for (int i = 0; i < host.inv.size(); i++) {
+
+                ItemStack item = host.inv.getStackInSlot(i);
+                CompoundTag tag = item.getOrCreateTag();
+
+                if (circuit == -1) {
+                    tag.remove("circuit");
+                    tag.remove("CustomModelData");
+                } else {
+                    tag.putInt("circuit", circuit);
+                    tag.putInt("CustomModelData", circuit == 0 ? 33 : circuit);
+                }
+
+                item.setTag(tag);
+            }
+        }
+    }
+
+    public void setLimit(Integer val) {
+        this.limit = val;
+        CompoundTag tag = this.host.getItemStack().getOrCreateTag();
+        tag.putInt("limit", val);
+        if (isClientSide()){
+            sendClientAction(LIMIT, val);
+        }
     }
 }

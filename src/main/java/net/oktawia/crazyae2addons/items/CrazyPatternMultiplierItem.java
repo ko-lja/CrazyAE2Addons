@@ -1,9 +1,7 @@
 package net.oktawia.crazyae2addons.items;
 
-import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartHelper;
@@ -59,21 +57,21 @@ public class CrazyPatternMultiplierItem extends AEBaseItem implements IMenuItem 
             return InteractionResult.PASS;
 
         CompoundTag tag = ctx.getItemInHand().getTag();
-        if (tag == null) return InteractionResult.FAIL;
+        if (tag == null || !tag.contains("mult") || !tag.contains("limit")) return InteractionResult.FAIL;
         double mult = tag.getDouble("mult");
+        int limit = tag.getInt("limit");
         if (ctx.getPlayer() == null) return InteractionResult.FAIL;
-        IActionSource src = IActionSource.ofPlayer(ctx.getPlayer());
 
         IPart part = getClickedPart(ctx);
-        if (part instanceof InterfaceLogicHost iih && handleInterface(iih, mult, src)
-                || part instanceof PatternProviderLogicHost pph && handlePatternProvider(pph, mult)) {
+        if (part instanceof InterfaceLogicHost iih && handleInterface(iih, mult, limit)
+                || part instanceof PatternProviderLogicHost pph && handlePatternProvider(pph, mult, limit)) {
             return InteractionResult.SUCCESS;
         }
 
         var be = ctx.getLevel().getBlockEntity(ctx.getClickedPos());
-        if (be instanceof InterfaceLogicHost iih2 && handleInterface(iih2, mult, src)
-                || be instanceof PatternProviderLogicHost pph2 && handlePatternProvider(pph2, mult)
-                || be instanceof Container ctn && handleContainer(ctn, mult, be.getLevel())) {
+        if (be instanceof InterfaceLogicHost iih2 && handleInterface(iih2, mult, limit)
+                || be instanceof PatternProviderLogicHost pph2 && handlePatternProvider(pph2, mult, limit)
+                || be instanceof Container ctn && handleContainer(ctn, mult, limit, be.getLevel())) {
             return InteractionResult.SUCCESS;
         }
 
@@ -88,7 +86,7 @@ public class CrazyPatternMultiplierItem extends AEBaseItem implements IMenuItem 
         return sel != null ? sel.part : null;
     }
 
-    private static boolean handleInterface(InterfaceLogicHost host, double mult, IActionSource src) {
+    private static boolean handleInterface(InterfaceLogicHost host, double mult, int limit) {
         var storage = host.getStorage();
         boolean success = false;
         for (int i = 0; i < storage.size(); i++) {
@@ -97,7 +95,7 @@ public class CrazyPatternMultiplierItem extends AEBaseItem implements IMenuItem 
             if (gs.what() instanceof AEItemKey key
                     && AEItems.PROCESSING_PATTERN.isSameAs(key.toStack())) {
                 ItemStack old = key.toStack();
-                ItemStack nw  = CrazyPatternMultiplierMenu.modify(old, mult, host.getBlockEntity().getLevel());
+                ItemStack nw  = CrazyPatternMultiplierMenu.modify(old, mult, limit, host.getBlockEntity().getLevel());
                 storage.setStack(i, GenericStack.fromItemStack(nw));
                 success = true;
             }
@@ -105,25 +103,25 @@ public class CrazyPatternMultiplierItem extends AEBaseItem implements IMenuItem 
         return success;
     }
 
-    private static boolean handlePatternProvider(PatternProviderLogicHost host, double mult) {
+    private static boolean handlePatternProvider(PatternProviderLogicHost host, double mult, int limit) {
         var inv = host.getTerminalPatternInventory();
         boolean success = false;
         for (int i = 0; i < inv.size(); i++) {
             ItemStack is = inv.getStackInSlot(i);
             if (AEItems.PROCESSING_PATTERN.isSameAs(is)) {
-                inv.setItemDirect(i, CrazyPatternMultiplierMenu.modify(is, mult, host.getBlockEntity().getLevel()));
+                inv.setItemDirect(i, CrazyPatternMultiplierMenu.modify(is, mult, limit, host.getBlockEntity().getLevel()));
                 success = true;
             }
         }
         return success;
     }
 
-    private static boolean handleContainer(Container ctn, double mult, Level level) {
+    private static boolean handleContainer(Container ctn, double mult, int limit, Level level) {
         boolean success = false;
         for (int i = 0; i < ctn.getContainerSize(); i++) {
             ItemStack is = ctn.getItem(i);
             if (AEItems.PROCESSING_PATTERN.isSameAs(is)) {
-                ctn.setItem(i, CrazyPatternMultiplierMenu.modify(is, mult, level));
+                ctn.setItem(i, CrazyPatternMultiplierMenu.modify(is, mult, limit, level));
                 success = true;
             }
         }

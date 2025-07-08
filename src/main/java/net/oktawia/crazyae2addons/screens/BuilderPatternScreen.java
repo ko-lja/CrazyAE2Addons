@@ -9,11 +9,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.menus.AutoBuilderMenu;
 import net.oktawia.crazyae2addons.menus.BuilderPatternMenu;
 import net.oktawia.crazyae2addons.misc.IconButton;
 import net.oktawia.crazyae2addons.misc.MultilineTextFieldWidget;
 import net.oktawia.crazyae2addons.misc.ProgramExpander;
+import net.oktawia.crazyae2addons.misc.SyntaxHighlighter;
 import org.lwjgl.glfw.GLFW;
 
 public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseScreen<C> {
@@ -105,6 +105,7 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
                 font, 0, 0, 202, 135,
                 Component.literal("Input program")
         );
+        input.setTokenizer(SyntaxHighlighter::tokenize);
         scrollbar = new Scrollbar();
         scrollbar.setSize(12, 100);
         scrollbar.setRange(0, 100, 4);

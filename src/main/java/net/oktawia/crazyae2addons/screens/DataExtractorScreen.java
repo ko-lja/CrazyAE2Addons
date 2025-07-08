@@ -48,6 +48,9 @@ public class DataExtractorScreen<C extends DataExtractorMenu> extends AEBaseScre
         }
         String selected;
         if (!getMenu().available.isEmpty()){
+            if (getMenu().selected >= Arrays.stream(getMenu().available.split("\\|")).toList().size()){
+                getMenu().selected = Arrays.stream(getMenu().available.split("\\|")).toList().size() - 1;
+            }
             selected = "Selected: " + Arrays.stream(getMenu().available.split("\\|")).toList().get(getMenu().selected);
         } else {
             selected = "Selected: ";

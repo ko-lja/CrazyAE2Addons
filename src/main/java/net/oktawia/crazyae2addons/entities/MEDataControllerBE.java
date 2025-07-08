@@ -53,6 +53,8 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
     public void loadTag(CompoundTag tag) {
         super.loadTag(tag);
 
+        this.inv.readFromNBT(tag, "inv");
+
         this.variables.clear();
         this.notifications.clear();
 
@@ -121,6 +123,8 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
 
+        this.inv.writeToNBT(tag, "inv");
+
         ListTag variableList = new ListTag();
         for (var entry : variables.entrySet()) {
             CompoundTag entryTag = getVariableTag(entry.getKey(), entry.getValue());
@@ -177,7 +181,7 @@ public class MEDataControllerBE extends AENetworkInvBlockEntity implements IGrid
             AtomicBoolean notified = new AtomicBoolean(false);
             getMainNode().getGrid().getMachines(target.type).forEach(machine -> {
                 if (machine instanceof VariableMachine vm && Objects.equals(vm.getId(), target.id)) {
-                    vm.notifyVariable(variable.name, variable.value);
+                    vm.notifyVariable(variable.name, variable.value, this);
                     notified.set(true);
                 }
             });

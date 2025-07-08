@@ -2,9 +2,7 @@
   "values": [
     "crazyae2addons:me_data_controller",
     "crazyae2addons:data_processor",
-    "crazyae2addons:data_tracker",
     "crazyae2addons:ampere_meter",
-    "crazyae2addons:isolated_data_processor",
     "crazyae2addons:impulsed_pattern_provider",
     "crazyae2addons:signalling_interface",
     "crazyae2addons:auto_enchanter",
@@ -38,7 +36,6 @@
     "crazyae2addons:dense_energy_storage_256k",
     "crazyae2addons:auto_builder",
     "crazyae2addons:auto_builder_creative_supply",
-    "crazyae2addons:data_setter",
     "crazyae2addons:broken_pattern_provider",
     "crazyae2addons:entropy_cradle",
     "crazyae2addons:entropy_cradle_controller",

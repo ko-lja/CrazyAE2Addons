@@ -175,7 +175,6 @@ public class PatternManagementUnitValidator {
                     List<Block> allowed = symbols.get(symbol);
 
                     if (allowed == null || !allowed.contains(block)) {
-                        LogUtils.getLogger().info("mismatch {} {} {}", block, symbol, checkPos);
                         markWalls(level, origin, state, SpawnerExtractorWallBlock.FORMED, false, controller);
                         return false;
                     }

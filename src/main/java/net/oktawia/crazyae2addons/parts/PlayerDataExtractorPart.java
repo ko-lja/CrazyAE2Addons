@@ -53,7 +53,6 @@ public class PlayerDataExtractorPart extends AEBasePart implements IGridTickable
     public UUID target;
     public List<String> available = List.of();
     public int selected = 0;
-    public Object resolveTarget;
     public String identifier = randomHexId();
 
     public PlayerDataExtractorMenu menu;

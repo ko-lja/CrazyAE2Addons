@@ -156,5 +156,8 @@ public class CrazyMenuRegistrar {
     public static final RegistryObject<MenuType<PlayerDataExtractorMenu>> PLAYER_DATA_EXTRACTOR_MENU =
             reg(id("player_data_extractor_menu"), PlayerDataExtractorMenu::new, PlayerDataExtractorPart.class);
 
+    public static final RegistryObject<MenuType<DataflowPatternMenu>> DATAFLOW_PATTERN_MENU =
+            reg(id("dataflow_pattern_menu"), DataflowPatternMenu::new, DataflowPatternHost.class);
+
     private CrazyMenuRegistrar() {}
 }

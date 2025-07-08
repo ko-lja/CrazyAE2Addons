@@ -1,10 +1,21 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json"],
+  "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
-    "texture": "guis/blank_background_no_inv.png",
-    "srcRect": [0, 0, 176, 205]
+    "texture": "guis/builder_pattern.png",
+    "srcRect": [0, 0, 256, 256]
+  },"slots": {
+  "PLAYER_INVENTORY": {
+    "left": 47,
+    "bottom": 82,
+    "grid": "BREAK_AFTER_9COLS"
   },
+  "PLAYER_HOTBAR": {
+    "left": 47,
+    "bottom": 24,
+    "grid": "HORIZONTAL"
+  }
+},
   "text": {
     "dialog_title": {
       "text": {
@@ -15,32 +26,43 @@
         "top": 6
       }
     },
-    "info1": {
-      "position": {
-        "top": 30,
-        "left": 88
+    "player_inventory_title": {
+      "text": {
+        "translate": "container.inventory"
       },
-      "align": "CENTER"
-    },
-    "info2": {
       "position": {
-        "top": 45,
-        "left": 88
-      },
-      "align": "CENTER"
+        "left": 47,
+        "bottom": 93
+      }
     }
   },
   "widgets": {
     "value": {
-      "left": 15,
-      "top": 77,
-      "width": 110,
-      "height": 16
+      "left": 8,
+      "top": 22,
+      "width": 202,
+      "height": 135
+    },
+    "mode": {
+      "left": 231,
+      "top": 60
+    },
+    "font": {
+      "left": 227,
+      "top": 40,
+      "width": 25,
+      "height": 12
+    },
+    "scroll": {
+      "left": 212,
+      "top": 23,
+      "width": 10,
+      "height": 133
     },
     "confirm": {
-      "left": 135,
-      "top": 77,
-      "width": 30,
+      "left": 231,
+      "top": 16,
+      "width": 16,
       "height": 16
     }
   }

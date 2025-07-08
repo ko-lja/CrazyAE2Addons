@@ -248,6 +248,10 @@ public class CrazyItemRegistrar {
             ITEMS.register("player_data_extractor",
                     () -> new PlayerDataExtractorPartItem(new Item.Properties()));
 
+    public static final RegistryObject<DataFlowPatternItem> DATAFLOW_PATTERN =
+            ITEMS.register("dataflow_pattern",
+                    () -> new DataFlowPatternItem(new Item.Properties()));
+
     private CrazyItemRegistrar() {}
 
 }

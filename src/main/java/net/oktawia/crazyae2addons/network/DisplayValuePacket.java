@@ -19,13 +19,17 @@ public class DisplayValuePacket {
     public final Direction direction;
     public final byte spin;
     public final String variables;
+    public final Integer fontSize;
+    public final Boolean mode;
 
-    public DisplayValuePacket(BlockPos blockPos, String textValue, Direction partsDirection, byte spin, String variables) {
+    public DisplayValuePacket(BlockPos blockPos, String textValue, Direction side, byte spin, String variables, int fontSize, boolean mode) {
         this.pos = blockPos;
         this.textValue = textValue;
-        this.direction = partsDirection;
+        this.direction = side;
         this.spin = spin;
         this.variables = variables;
+        this.fontSize = fontSize;
+        this.mode = mode;
     }
 
     public static void encode(DisplayValuePacket packet, FriendlyByteBuf buf) {
@@ -34,6 +38,8 @@ public class DisplayValuePacket {
         buf.writeUtf(packet.textValue);
         buf.writeByte(packet.spin);
         buf.writeUtf(packet.variables);
+        buf.writeBoolean(packet.mode);
+        buf.writeInt(packet.fontSize);
     }
 
     public static DisplayValuePacket decode(FriendlyByteBuf buf) {
@@ -42,6 +48,8 @@ public class DisplayValuePacket {
         String textValue = buf.readUtf();
         byte spin = buf.readByte();
         String variables = buf.readUtf();
+        boolean mod = buf.readBoolean();
+        int fontSiz = buf.readInt();
         Direction partsDirection = null;
         switch (dir){
             case "up" -> partsDirection = Direction.UP;
@@ -51,7 +59,7 @@ public class DisplayValuePacket {
             case "south" -> partsDirection = Direction.SOUTH;
             case "east" -> partsDirection = Direction.EAST;
         }
-        return new DisplayValuePacket(pos, textValue, partsDirection, spin, variables);
+        return new DisplayValuePacket(pos, textValue, partsDirection, spin, variables, fontSiz, mod);
     }
 
     public static void handle(DisplayValuePacket packet, Supplier<NetworkEvent.Context> ctxSupplier) {
@@ -65,6 +73,8 @@ public class DisplayValuePacket {
                     if (displayPart != null) {
                         displayPart.textValue = packet.textValue;
                         displayPart.spin = packet.spin;
+                        displayPart.mode = packet.mode;
+                        displayPart.fontSize = packet.fontSize;
                         HashMap<String, String> variablesMap = new HashMap<>();
                         for (String s : packet.variables.split("\\|")) {
                             String[] arr = s.split(":", 2);

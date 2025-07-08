@@ -28,6 +28,7 @@ public class PlayerDataExtractorScreen<C extends PlayerDataExtractorMenu> extend
     public AbstractWidget btn4;
     public AETextField input;
     public AETextField delay;
+    public Button playerButton;
 
     public PlayerDataExtractorScreen(
             C menu, Inventory playerInventory, Component title, ScreenStyle style) {
@@ -36,7 +37,6 @@ public class PlayerDataExtractorScreen<C extends PlayerDataExtractorMenu> extend
             setupGui();
             this.initialized = true;
         }
-        renderPage(getMenu().page * 4, (getMenu().page + 1) * 4);
     }
 
     @Override
@@ -45,6 +45,11 @@ public class PlayerDataExtractorScreen<C extends PlayerDataExtractorMenu> extend
         if (!initialized2){
             this.input.setValue(this.getMenu().valueName);
             this.delay.setValue(String.valueOf(this.getMenu().delay));
+            var player = Minecraft.getInstance().level.getPlayerByUUID(UUID.fromString(getMenu().boundPlayer));
+            if (player != null) {
+                this.playerButton.setMessage(Component.literal("Bound to: " + player.getName().getString()));
+            }
+            renderPage(getMenu().page * 4, (getMenu().page + 1) * 4);
             initialized2 = true;
         }
         String selected;
@@ -111,16 +116,12 @@ public class PlayerDataExtractorScreen<C extends PlayerDataExtractorMenu> extend
             btn.setMessage(Component.literal(getMenu().playerMode ? "Closest player" : "Bind player"));
         });
         String playerName = "Unknown";
-        var player = Minecraft.getInstance().level.getPlayerByUUID(UUID.fromString(getMenu().boundPlayer));
-        if (player != null) {
-            playerName = player.getName().getString();
-        }
-        this.widgets.addButton("bindPlayer", Component.literal("Bound to: " + playerName), (btn) -> {
+        this.playerButton = new Button.Builder(Component.literal("Bound to: " + playerName), (btn) -> {
             if (Minecraft.getInstance().player != null) {
                 getMenu().bindPlayer(Minecraft.getInstance().player.getStringUUID());
                 btn.setMessage(Component.literal("Bound to: " + Minecraft.getInstance().player.getName().getString()));
-            }
-        });
+            }}).build();
+        this.widgets.add("bindPlayer", this.playerButton);
     }
 
     public void renderPage(int start, int end) {
@@ -188,7 +189,7 @@ public class PlayerDataExtractorScreen<C extends PlayerDataExtractorMenu> extend
             Runnable setColorFunction = () -> this.input.setTextColor(0xFFFFFF);
             Utils.asyncDelay(setColorFunction, 1);
             getMenu().saveName(name);
-            getMenu().saveDelay(Integer.parseInt(delay));
+            getMenu().saveDelay(delay.isEmpty() ? 0 : Integer.parseInt(delay));
         }
     }
 

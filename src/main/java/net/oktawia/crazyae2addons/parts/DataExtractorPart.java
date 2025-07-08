@@ -54,8 +54,6 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
     @PartModels public static final IPartModel MODELS_ON  = new PartModel(MODEL_BASE, new ResourceLocation(AppEng.MOD_ID, "part/import_bus_on"));
     @PartModels public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, new ResourceLocation(AppEng.MOD_ID, "part/import_bus_has_channel"));
 
-
-
     public BlockEntity target;
     public List<String> available = List.of();
     public int selected = 0;
@@ -178,9 +176,6 @@ public class DataExtractorPart extends AEBasePart implements IGridTickable, Menu
 
         if (!data.equals(this.available)) {
             this.available = data;
-            if (selected >= available.size()) {
-                selected = available.isEmpty() ? 0 : available.size() - 1;
-            }
         }
 
         this.resolveTarget = target;

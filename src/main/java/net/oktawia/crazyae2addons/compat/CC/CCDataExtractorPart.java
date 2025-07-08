@@ -8,8 +8,12 @@ import dan200.computercraft.api.lua.*;
 import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.network.PacketDistributor;
+import net.oktawia.crazyae2addons.network.DataValuesPacket;
+import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.parts.DataExtractorPart;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,10 +45,11 @@ public class CCDataExtractorPart extends DataExtractorPart implements IGridTicka
     }
 
     private String callCCMethod(String key) {
-        if (!COMPUTERCRAFT_LOADED || target == null || getSide() == null) {
-            return "";
-        }
-        String methodName = key.substring(3, key.length() - 2);
+        if (!COMPUTERCRAFT_LOADED || target == null || getSide() == null) return "";
+
+        String raw = key.substring(3);
+        String methodName = raw.endsWith("()") ? raw.substring(0, raw.length() - 2) : raw;
+
         return target.getCapability(CAPABILITY_PERIPHERAL, getSide().getOpposite())
                 .filter(per -> per instanceof IDynamicPeripheral)
                 .map(per -> {
@@ -57,19 +62,13 @@ public class CCDataExtractorPart extends DataExtractorPart implements IGridTicka
                         if (methods[i].equals(methodName)) {
                             try {
                                 FakeLuaContext context = new FakeLuaContext();
-                                dyn.callMethod(
-                                        computer,
-                                        context,
-                                        i,
-                                        new ObjectArguments()
-                                );
+                                dyn.callMethod(computer, context, i, new ObjectArguments());
+                                dyn.detach(computer);
                                 Object[] vals = context.getLastResult();
                                 if (vals != null && vals.length > 0) {
-                                    Object v = vals[0];
-                                    return v.toString();
+                                    return vals[0].toString();
                                 }
-                            } catch (LuaException ignored) {
-                            }
+                            } catch (LuaException ignored) {}
                             break;
                         }
                     }
@@ -79,6 +78,51 @@ public class CCDataExtractorPart extends DataExtractorPart implements IGridTicka
                 })
                 .orElse("");
     }
+
+    @Override
+    public void extractPossibleData() {
+        super.extractPossibleData();
+
+        if (!COMPUTERCRAFT_LOADED || target == null || getSide() == null) return;
+
+        target.getCapability(CAPABILITY_PERIPHERAL, getSide().getOpposite()).ifPresent(per -> {
+            if (per instanceof IDynamicPeripheral dyn) {
+                List<String> combined = new ArrayList<>(available);
+                FakeComputerAccess computer = new FakeComputerAccess(identifier);
+                dyn.attach(computer);
+
+                String[] methods = dyn.getMethodNames();
+                for (int i = 0; i < methods.length; i++) {
+                    String methodName = methods[i];
+                    try {
+                        FakeLuaContext context = new FakeLuaContext();
+                        dyn.callMethod(computer, context, i, new ObjectArguments());
+                        Object[] result = context.getLastResult();
+                        if (result != null && result.length > 0) {
+                            Object first = result[0];
+                            if (first instanceof Number || first instanceof Boolean || first instanceof String) {
+                                String entry = "cc:" + methodName + "()";
+                                if (!combined.contains(entry)) {
+                                    combined.add(entry);
+                                }
+                            }
+                        }
+                    } catch (LuaException ignored) {}
+                }
+
+                dyn.detach(computer);
+                available = combined;
+            }
+        });
+
+        if (!getLevel().isClientSide()) {
+            NetworkHandler.INSTANCE.send(
+                    PacketDistributor.TRACKING_CHUNK.with(() -> getLevel().getChunkAt(getBlockEntity().getBlockPos())),
+                    new DataValuesPacket(getBlockEntity().getBlockPos(), getSide(), available, selected, valueName)
+            );
+        }
+    }
+
 
     private record FakeComputerAccess(String id) implements IComputerAccess {
 

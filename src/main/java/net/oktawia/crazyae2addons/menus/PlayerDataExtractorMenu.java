@@ -42,7 +42,7 @@ public class PlayerDataExtractorMenu extends AEBaseMenu {
         host.setMenu(this);
         this.host = host;
         this.playerMode = host.playerMode;
-        this.boundPlayer = host.target.toString();
+        this.boundPlayer = host.target == null ? "" : host.target.toString();
         registerClientAction(ACTION_SYNC_SELECTED, Integer.class, this::syncValue);
         registerClientAction(ACTION_GET_DATA, this::getData);
         registerClientAction(ACTION_SAVE_NAME, String.class, this::saveName);

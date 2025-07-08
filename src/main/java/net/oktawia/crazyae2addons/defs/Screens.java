@@ -210,6 +210,12 @@ public final class Screens {
                 PlayerDataExtractorScreen<PlayerDataExtractorMenu>::new,
                 "/screens/player_data_extractor.json"
         );
+
+        InitScreens.register(
+                CrazyMenuRegistrar.DATAFLOW_PATTERN_MENU.get(),
+                DataflowPatternScreen<DataflowPatternMenu>::new,
+                "/screens/dataflow_pattern.json"
+        );
     }
 
     private Screens() {}
